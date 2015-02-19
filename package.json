@@ -1,0 +1,27 @@
+{
+  "name": "recipes",
+  "version": "1.0.0",
+  "description": "Recipe organizer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kar288/recipes"
+  },
+  "keywords": [
+    "recipe",
+    "organizer",
+    "catalogue"
+  ],
+  "author": "Carmela Acevedo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kar288/recipes/issues"
+  },
+  "homepage": "https://github.com/kar288/recipes",
+  "dependencies": {
+    "express": "^4.11.2"
+  }
+}
