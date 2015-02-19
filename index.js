@@ -35,7 +35,7 @@ app.get('/googled336ac59e4c9735b.html', function(request, response) {
 
 app.get('/addRecipe', function(request, response) {
   var url = request.param('url');
-  response.send(url);
+  response.send('Hello World!');
 });
 
 app.listen(app.get('port'), function() {
