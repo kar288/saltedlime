@@ -5,15 +5,18 @@ var cors = cors = require('cors');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+var bodyParser = require('body-parser');
+var request = require('request');
+var cheerio = require('cheerio');
 
 var consolidate = require('consolidate');
 
 app.use(cors());
 app.set('views', './public');
 
-io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', function(socket) {
   socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
+  socket.on('my other event', function(data) {
     console.log(data);
   });
 });
@@ -24,6 +27,7 @@ app.use(require('grunt-contrib-livereload/lib/utils').livereloadSnippet);
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser());
 
 app.get('/', function(request, response) {
   // response.send('Hello World!');
@@ -37,10 +41,15 @@ app.get('/googled336ac59e4c9735b.html', function(request, response) {
 
 
 app.post('/addRecipe', function(req, res) {
-  var url = req.params.url;
-  // response.send(url);
-  res.json({msg: 'This is CORS-enabled for all origins!' + url});
-  console.log('addrecipe: ' + url);
+  var url = req.body.url;
+  // res.json({msg: 'URL' + url});
+  request(url, function(error, response, html) {
+    if (!error) {
+      var a = cheerio.load(html);
+      res.json({msg: html});
+    }
+  });
+
 });
 
 app.listen(app.get('port'), function() {
