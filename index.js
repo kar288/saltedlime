@@ -9,6 +9,11 @@ app.get('/', function(request, response) {
   response.sendfile('./public/index.html');
 });
 
+app.get('/googled336ac59e4c9735b.html', function(request, response) {
+  // response.send('Hello World!');
+  response.sendfile('./public/index.html');
+});
+
 app.listen(app.get('port'), function() {
   console.log("Node app is running at localhost:" + app.get('port'));
 });
