@@ -36,7 +36,7 @@ app.get('/googled336ac59e4c9735b.html', function(request, response) {
 });
 
 
-app.get('/addRecipe/:url(\\w+)', function(req, res) {
+app.post('/addRecipe', function(req, res) {
   var url = req.params.url;
   // response.send(url);
   res.json({msg: 'This is CORS-enabled for all origins!' + url});
