@@ -33,9 +33,14 @@ app.get('/googled336ac59e4c9735b.html', function(request, response) {
   response.sendfile('./public/index.html');
 });
 
-app.get('/addRecipe', function(request, response) {
-  var url = request.param('url');
-  response.send('Hello World!');
+app.get('/user/:id([0-9]+)', function(req, res){
+  res.send('user ' + req.params.id);
+});
+
+app.get('/addRecipe/:url(\\w+)', function(request, response) {
+  var url = request.params.url;
+  response.send(url);
+  console.log('addrecipe: ' + url);
 });
 
 app.listen(app.get('port'), function() {
