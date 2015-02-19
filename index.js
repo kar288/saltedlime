@@ -1,12 +1,14 @@
 'use strict';
 
 var express = require('express');
+var cors = cors = require('cors');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
 var consolidate = require('consolidate');
 
+app.use(cors());
 app.set('views', './public');
 
 io.sockets.on('connection', function (socket) {
@@ -33,13 +35,11 @@ app.get('/googled336ac59e4c9735b.html', function(request, response) {
   response.sendfile('./public/index.html');
 });
 
-app.get('/user/:id([0-9]+)', function(req, res){
-  res.send('user ' + req.params.id);
-});
 
-app.get('/addRecipe/:url(\\w+)', function(request, response) {
-  var url = request.params.url;
-  response.send(url);
+app.get('/addRecipe/:url(\\w+)', function(req, res) {
+  var url = req.params.url;
+  // response.send(url);
+  res.json({msg: 'This is CORS-enabled for all origins!' + url});
   console.log('addrecipe: ' + url);
 });
 
