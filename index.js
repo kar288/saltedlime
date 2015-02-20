@@ -8,9 +8,9 @@ var io = require('socket.io').listen(server);
 var bodyParser = require('body-parser');
 var request = require('request');
 var cheerio = require('cheerio');
-var closure = require('./closure-library/closure/goog/bootstrap/nodejs.js');
+// var closure = require('./closure-library/closure/goog/bootstrap/nodejs.js');
 
-goog.require('goog.string');
+// goog.require('goog.string');
 
 var consolidate = require('consolidate');
 
@@ -67,9 +67,9 @@ var traverse = function(nodes, s) {
       traverse(nodes[i].children, s);
     } else {
       var d = nodes[i].data;
-      if (!goog.string.isEmpty(d)) {
+      // if (!goog.string.isEmpty(d)) {
         s.push(nodes[i].data);
-      }
+      // }
     }
   }
 };
