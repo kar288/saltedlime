@@ -48,28 +48,31 @@ app.post('/addRecipe', function(req, res) {
   request(url, function(error, response, html) {
     if (!error) {
       var $ = cheerio.load(html);
-      var ingredients = $('[itemprop=ingredients]');
-      var is = [];
-      for (var i = 0; i < ingredients.length; i++) {
-        var children = ingredients[i].children;
-        var s = [];
-        traverse(children, s);
-        is.push(s.join(' '));
-      }
-      res.json({msg: is});
+      var ingredients = getElements($, 'ingredients');
+      var instructions = getElements($, 'recipeInstructions');
+      res.json({instructions: instructions, ingredients: ingredients});
     }
   });
 });
+
+var getElements = function($, type) {
+  var elements = $('[itemprop=' + type + ']');
+  var values = [];
+  for (var i = 0; i < elements.length; i++) {
+    var children = elements[i].children;
+    var s = [];
+    traverse(children, s);
+    values.push(s.join(' '));
+  }
+  return values;
+};
 
 var traverse = function(nodes, s) {
   for (var i = 0; i < nodes.length; i++) {
     if (nodes[i].children) {
       traverse(nodes[i].children, s);
     } else {
-      var d = nodes[i].data;
-      // if (!goog.string.isEmpty(d)) {
-        s.push(nodes[i].data);
-      // }
+      s.push(nodes[i].data);
     }
   }
 };
