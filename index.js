@@ -8,6 +8,8 @@ var io = require('socket.io').listen(server);
 var bodyParser = require('body-parser');
 var request = require('request');
 var cheerio = require('cheerio');
+var Sequelize = require('sequelize');
+var pg = require('pg');
 // var closure = require('./closure-library/closure/goog/bootstrap/nodejs.js');
 
 // goog.require('goog.string');
@@ -33,7 +35,8 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser());
 
 app.get('/', function(request, response) {
-  // response.send('Hello World!');
+  console.log(pg);
+  console.log('fjdkajsl');
   response.sendfile('./public/index.html');
 });
 
@@ -81,9 +84,9 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running at localhost:' + app.get('port'));
 });
 
-var pg = require('pg');
 
 app.get('/db', function(request, response) {
+  console.log(process.env);
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     client.query('SELECT * FROM test_table', function(err, result) {
       done();
