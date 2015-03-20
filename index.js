@@ -62,7 +62,21 @@ app.post('/addRecipe', function(req, res) {
       var $ = cheerio.load(html);
       var ingredients = getElements($, 'ingredients');
       var instructions = getElements($, 'recipeInstructions');
-      res.json({instructions: instructions, ingredients: ingredients});
+      var image = $('[itemprop=image]')[0].attribs.src;
+      Recipe.findOrCreate({where: {url: url, image: image}}).success(function(recipe, o) {
+        console.log(recipe);
+        for (var i = 0; i < ingredients.length; i++) {
+          var is = [];
+          Ingredient.findOrCreate({where: {name: ingredients[i]}})
+              .success(function(ingredient, o) {
+                recipe.addIngredient(ingredient);
+                is.push(ingredient);
+                if (is.length == ingredients.length) {
+                  res.json({instructions: instructions, ingredients: ingredients});
+                }
+              });
+        }
+      });
     }
   });
 });

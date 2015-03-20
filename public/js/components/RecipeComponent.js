@@ -87,7 +87,7 @@ app.recipes.RecipeComponent.prototype.createDom = function() {
 app.recipes.RecipeComponent.prototype.decorateInternal = function(element) {
   goog.base(this, 'decorateInternal', element);
   if (!this.getLabelText()) {
-    this.setLabelText(this.initialLabel_);
+    this.setContent(this.initialLabel_);
   }
 
   var elem = this.getElement();
@@ -168,13 +168,13 @@ app.recipes.RecipeComponent.prototype.onKey_ = function(event) {
  *
  * @param {string} text The text to set as the label.
  */
-app.recipes.RecipeComponent.prototype.setLabelText = function(text) {
+app.recipes.RecipeComponent.prototype.setContent = function(text, imageUrl) {
   if (this.getElement()) {
     goog.dom.setTextContent(this.getElement(), text);
   }
 
   var image = goog.dom.createElement('img');
-  image.src = 'https://scontent-atl.xx.fbcdn.net/hphotos-xpa1/v/t1.0-9/10256795_10154417248450307_8634138147757046796_n.jpg?oh=89e090ca50688c784f13e251e8c987f6&oe=557EE9C0';
+  image.src = imageUrl;
   image.style.width = '30px';
   this.getElement().appendChild(image);
 };

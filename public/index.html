@@ -40,7 +40,7 @@
                 var xhr = e.target;
                 var rs = xhr.getResponseJson();
                 for (var i = 0; i < rs.length; i++) {
-                    var recipe = new app.recipes.Recipe(rs[i].id, rs[i].url);
+                    var recipe = new app.recipes.Recipe(rs[i].id, rs[i].url, rs[i].image);
                     recipe.createComponent();
                 }
             });
