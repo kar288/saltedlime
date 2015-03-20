@@ -35,6 +35,7 @@
     "pg-native": "^1.8.0",
     "request": "^2.53.0",
     "sequelize": "^2.0.3",
+    "sequelize-cli": "^1.4.0",
     "socket.io": "~0.9.13"
   },
   "devDependencies": {

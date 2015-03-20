@@ -97,7 +97,7 @@ app.get('/addRecipe2', function(req, res) {
   var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   var rString = req.query.recipe || randomString(32, chars);
 
-  Recipe.findOrCreate({where: {url: rString}}).success(function(recipe, o) {
+  Recipe.findOrCreate({where: {url: rString, image: 'someimage'}}).success(function(recipe, o) {
     console.log(recipe);
     for (var i = 0; i < 5; i++) {
       var iString = randomString(3, 'abc');
@@ -115,7 +115,6 @@ app.get('/addRecipe2', function(req, res) {
 });
 
 app.get('/getRecipe', function(req, res) {
-  console.log("GET RECIPE----------------");
   // var rs = [];
   // if (!req.query.id) {
   //   Recipe.findAll().success(function(recipes, o) {
