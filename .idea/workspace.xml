@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5e893d19-6b1e-4457-94f1-9bb5cc2d45c2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/migrations/20150320093506-unnamed-migration.js" afterPath="$PROJECT_DIR$/migrations/20150320093506-unnamed-migration.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/Recipe.js" afterPath="$PROJECT_DIR$/models/Recipe.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/components/Recipe.js" afterPath="$PROJECT_DIR$/public/js/components/Recipe.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/components/RecipeComponent.js" afterPath="$PROJECT_DIR$/public/js/components/RecipeComponent.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/index.html" afterPath="$PROJECT_DIR$/public/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.js" afterPath="$PROJECT_DIR$/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/index.js" afterPath="$PROJECT_DIR$/models/index.js" />
-    </list>
+    <list default="true" id="5e893d19-6b1e-4457-94f1-9bb5cc2d45c2" name="Default" comment="" />
     <ignored path="recipes.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -114,8 +106,8 @@
           <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/models/index.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.5182724" vertical-offset="447" max-vertical-offset="1350">
-                  <caret line="61" column="0" selection-start-line="61" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.63455147" vertical-offset="447" max-vertical-offset="1350">
+                  <caret line="68" column="5" selection-start-line="68" selection-start-column="5" selection-end-line="68" selection-end-column="5" />
                   <folding />
                 </state>
               </provider>
@@ -137,11 +129,11 @@
         <option value="$PROJECT_DIR$/migrations/config/config.json" />
         <option value="$PROJECT_DIR$/models/Recipe.js" />
         <option value="$PROJECT_DIR$/migrations/20150320093506-unnamed-migration.js" />
-        <option value="$PROJECT_DIR$/models/index.js" />
         <option value="$PROJECT_DIR$/index.js" />
         <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$PROJECT_DIR$/public/js/components/Recipe.js" />
         <option value="$PROJECT_DIR$/public/js/components/RecipeComponent.js" />
+        <option value="$PROJECT_DIR$/models/index.js" />
       </list>
     </option>
   </component>
@@ -524,12 +516,12 @@
       <created>1426807092349</created>
       <option name="number" value="Default" />
       <updated>1426807092349</updated>
-      <workItem from="1426807092954" duration="7554000" />
+      <workItem from="1426807092954" duration="7693000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7554000" />
+    <option name="totallyTimeSpent" value="7693000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="1023" extended-state="6" />
@@ -679,8 +671,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5182724" vertical-offset="447" max-vertical-offset="1350">
-          <caret line="61" column="0" selection-start-line="61" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.63455147" vertical-offset="447" max-vertical-offset="1350">
+          <caret line="68" column="5" selection-start-line="68" selection-start-column="5" selection-end-line="68" selection-end-column="5" />
           <folding />
         </state>
       </provider>
