@@ -35,6 +35,7 @@
 //                box3.setLabelText((++value).toString());
 //            });
 //            t.start();
+            console.log('started');
             goog.net.XhrIo.send('/getRecipes', function(e) {
                 var xhr = e.target;
                 var rs = xhr.getResponseJson();
