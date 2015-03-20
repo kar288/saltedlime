@@ -8,14 +8,25 @@ var io = require('socket.io').listen(server);
 var bodyParser = require('body-parser');
 var request = require('request');
 var cheerio = require('cheerio');
-var Sequelize = require('sequelize');
-var pg = require('pg');
-// var closure = require('./closure-library/closure/goog/bootstrap/nodejs.js');
+var models = require('./models/').setup();
+var orm = require('./models/index');
+var closure = require('./closure-library/closure/goog/bootstrap/nodejs.js');
 
-// goog.require('goog.string');
+goog.require('goog.string');
+
+
+var Recipe = orm.model('Recipe');
+var Ingredient = orm.model('Ingredient');
 
 var consolidate = require('consolidate');
 
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.use(bodyParser.json({
+  extended: true
+}));
 app.use(cors());
 app.set('views', './public');
 
@@ -26,17 +37,10 @@ io.sockets.on('connection', function(socket) {
   });
 });
 
-// use livereload middleware
-app.use(require('grunt-contrib-livereload/lib/utils').livereloadSnippet);
-
-
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser());
 
 app.get('/', function(request, response) {
-  console.log(pg);
-  console.log('fjdkajsl');
   response.sendfile('./public/index.html');
 });
 
@@ -84,18 +88,62 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running at localhost:' + app.get('port'));
 });
 
+app.get('/addRecipe2', function(req, res) {
+  var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var rString = req.query.recipe || randomString(32, chars);
 
-app.get('/db', function(request, response) {
-  console.log(process.env);
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-    client.query('SELECT * FROM test_table', function(err, result) {
-      done();
-      if (err)
-       { console.error(err); response.send('Error ' + err); }
-      else
-       { response.send(result.rows); }
-    });
+  Recipe.findOrCreate({where: {url: rString}}).success(function(recipe, o) {
+    console.log(recipe);
+    for (var i = 0; i < 5; i++) {
+      var iString = randomString(3, 'abc');
+      var is = [];
+      Ingredient.findOrCreate({where: {name: iString}})
+        .success(function(ingredient, o) {
+          recipe.addIngredient(ingredient);
+          is.push(ingredient);
+          if (is.length == 5) {
+            res.send(is);
+          }
+      });
+    }
   });
+});
+
+app.get('/getRecipe', function(req, res) {
+  // var rs = [];
+  // if (!req.query.id) {
+  //   Recipe.findAll().success(function(recipes, o) {
+  //     for (var i = 0; i < recipes.length; i++) {
+  //       rs.push(recipes[i]);
+  //       recipes[i].getIngredients.success(function(is) {
+  //         rs.push(is);
+  //         if (rs.length == recipes.length) {
+  //           res.send(rs);
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+  // Recipe.find(req.query.id).success(function(recipe) {
+  //   // var is = [];
+  //   // console.log(recipe.getIngredients);
+  //   recipe.getIngredients().success(function(is) {
+  //     res.send(is);
+  //   });
+  //   // res.send(recipe);
+  // });
+  Ingredient.findAll().success(function(is) {
+    res.send(is);
+  });
+});
+
+function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
+}
+app.get('/db', function(request, response) {
+  response.send('kla')
 });
 
 exports = module.exports = server;

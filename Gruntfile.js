@@ -8,14 +8,30 @@ module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         express: {
-            livereload: {
+            all: {
                 options: {
                     port: 9000,
                     bases: path.resolve('public'),
                     monitor: {},
                     debug: true,
-                    server: path.resolve('./index')
+                    server: path.resolve('./index'),
+                    livereload: true,
+                    showStack: true
                 }
+            }
+        },
+        watch: {
+            all: {
+                files: '*',
+                options: {
+                    livereload: true,
+                    showStack: true
+                }
+            }
+        },
+        open: {
+            all: {
+                path: 'http://localhost:8080/index.html'
             }
         },
 
@@ -31,7 +47,7 @@ module.exports = function(grunt) {
             },
             test: {
                 src: ['test/**/*.js']
-            },
+            }
         },
 
         regarde: {
@@ -73,13 +89,13 @@ module.exports = function(grunt) {
     // These plugins provide necessary tasks.
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-livereload');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jsbeautifier');
     grunt.loadNpmTasks('grunt-express');
     grunt.loadNpmTasks('grunt-regarde');
 
     grunt.registerTask('format', ['jshint', 'jsbeautifier']);
-    grunt.registerTask('server', ['livereload-start', 'express', 'regarde']);
+    grunt.registerTask('server', ['express', 'watch', 'regarde']);
     // Default task.
     grunt.registerTask('default', ['format', 'server']);
 
