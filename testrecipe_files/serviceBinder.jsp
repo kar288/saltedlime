@@ -1,1 +1,0 @@
-try{ s3.ajax.callbackOD({rid:'b', dat:{"echo":[]}}); }catch(e){}

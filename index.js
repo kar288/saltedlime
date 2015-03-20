@@ -10,7 +10,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var models = require('./models/').setup();
 var orm = require('./models/index');
-var closure = require('./closure-library/closure/goog/bootstrap/nodejs.js');
+var closure = require('./public/js/closure-library/closure/goog/bootstrap/nodejs.js');
 
 goog.require('goog.string');
 
@@ -41,12 +41,17 @@ app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(request, response) {
+
   response.sendfile('./public/index.html');
 });
 
 app.get('/googled336ac59e4c9735b.html', function(request, response) {
   // response.send('Hello World!');
-  response.sendfile('./public/index.html');
+
+  Recipe.find({id: req.query.id}).success(function(r) {
+    response.sendfile('./public/index.html', {recipes: r});
+  });
+
 });
 
 
@@ -110,6 +115,7 @@ app.get('/addRecipe2', function(req, res) {
 });
 
 app.get('/getRecipe', function(req, res) {
+  console.log("GET RECIPE----------------");
   // var rs = [];
   // if (!req.query.id) {
   //   Recipe.findAll().success(function(recipes, o) {
@@ -132,8 +138,14 @@ app.get('/getRecipe', function(req, res) {
   //   });
   //   // res.send(recipe);
   // });
-  Ingredient.findAll().success(function(is) {
-    res.send(is);
+  Recipe.find({id: req.query.id}).success(function(r) {
+    res.json(r);
+  });
+});
+
+app.get('/getRecipes', function(req, res) {
+  Recipe.findAll().success(function(r) {
+    res.json(r);
   });
 });
 
