@@ -10,7 +10,9 @@ var request = require('request');
 var cheerio = require('cheerio');
 var models = require('./models/').setup();
 var orm = require('./models/index');
+var swig = require('swig');
 var closure = require('./public/js/closure-library/closure/goog/bootstrap/nodejs.js');
+
 
 goog.require('goog.string');
 
@@ -28,7 +30,12 @@ app.use(bodyParser.json({
   extended: true
 }));
 app.use(cors());
-app.set('views', './public');
+
+// Rendering engine and global variables
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+app.set('views', './public/views');
+app.locals.something = 'something.....';
 
 io.sockets.on('connection', function(socket) {
   socket.emit('news', { hello: 'world' });
@@ -42,7 +49,7 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(request, response) {
 
-  response.sendfile('./public/index.html');
+  response.render('index');
 });
 
 app.get('/googled336ac59e4c9735b.html', function(request, response) {
