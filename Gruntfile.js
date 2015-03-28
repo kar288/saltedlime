@@ -60,7 +60,7 @@ module.exports = function(grunt) {
                 tasks: 'express-restart:livereload'
             },
             express: {
-                files: 'public/index.html',
+                files: 'views/index.html',
                 tasks: 'livereload'
             }
         },

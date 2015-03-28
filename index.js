@@ -160,7 +160,8 @@ app.post('/addRecipe', function(req, res) {
         console.log(recipe);
         for (var i = 0; i < ingredients.length; i++) {
           var is = [];
-          Ingredient.findOrCreate({where: {name: ingredients[i]}})
+          var ingredientName = goog.string.collapseWhitespace(ingredients[i]);
+          Ingredient.findOrCreate({where: {name: ingredientName}})
               .success(function(ingredient, o) {
                 recipe.addIngredient(ingredient);
                 is.push(ingredient);
@@ -251,11 +252,28 @@ app.get('/getRecipe', function(req, res) {
 app.get('/getRecipes', function(req, res) {
   Recipe.findAll().success(function(recipes) {
     var all = [];
+    var allIs = [];
     for (var i = 0; i < recipes.length; i++) {
       var recipe = recipes[i].dataValues;
-      all.push({url: recipe.url, image: recipe.image, title: recipe.title});
+        all.push({id: recipe.id,
+          url: recipe.url,
+          image: recipe.image,
+          title: recipe.title,
+          ingredients: []});
+      recipes[i].getIngredients().success(function(ingredients) {
+        var is = [];
+        for (var j = 0; j < ingredients.length; j++) {
+          is.push(ingredients[j].dataValues.name);
+        }
+        allIs.push(is);
+        if (allIs.length == recipes.length) {
+          for (var j = 0; j < recipes.length; j++) {
+            all[j].ingredients = allIs[j];
+          }
+          res.render('index', {recipes: all});
+        }
+      });
     }
-    res.render('index', {recipes: all});
   });
 });
 

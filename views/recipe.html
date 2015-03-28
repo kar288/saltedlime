@@ -1,7 +1,18 @@
 
 {% for recipe in recipes %}
-  <div>
-    <a href="{{recipe.url}}"><img src="{{recipe.image}}" style="width: 50px"></a>
-    {{recipe.title}}
+  <div class="row">
+    <div class="col-sm-2">
+      <a href="{{recipe.url}}"><img src="{{recipe.image}}" style="width: 100px" recipe="{{recipe.id}}"></a>
+    </div>
+    <div class="col-sm-10">
+      <h3>
+        {{recipe.title}}
+      </h3>
+      {% for ingredient in recipe.ingredients %}
+        <div>
+        {{ingredient}}
+        </div>
+      {% endfor %}
+    </div>
   </div>
 {% endfor %}

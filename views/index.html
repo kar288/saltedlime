@@ -4,18 +4,17 @@
     <title>goog.ui.Component</title>
     <meta charset="utf-8">
     <script src="js/closure-library/closure/goog/base.js"></script>
-    <script>
+   <!--  <script>
         goog.require('goog.net.XhrIo');
         goog.require('goog.ui.Component');
         goog.require('goog.Timer');
-    </script>
-    <script src="js/components/RecipeComponent.js"></script>
-    <script src="js/components/Recipe.js"></script>
+    </script> -->
+    <!-- <script src="js/components/RecipeComponent.js"></script> -->
+    <!-- <script src="js/components/Recipe.js"></script> -->
 
-    <script>
+   <!--  <script>
         goog.require('app.recipes.Recipe');
-    </script>
-    <script src="js/closure-library/closure/goog/demos/samplecomponent.js"></script>
+    </script> -->
 
     <!--Application CSS Files-->
     {% for cssFile in cssFiles %}
@@ -26,62 +25,16 @@
     {% for jsFile in jsFiles %}
         <script type="text/javascript" src="{{jsFile}}"></script>
     {% endfor %}
-    <script>
-        function initPage() {
-            // Shows default initial label
-//            var box1 = new goog.demos.SampleComponent();
-//            box1.render(goog.dom.getElement('target1'));
-//
-//            // Shows label taken from DIV text
-//            var box2 = new goog.demos.SampleComponent();
-//            box2.decorate(goog.dom.getElement('target2'));
-//
-//            // Shows initial Label + setting label
-//            var box3 = new goog.demos.SampleComponent('Counting...');
-//            box3.decorate(goog.dom.getElement('target3'));
-//
-//            var t = new goog.Timer(2000);
-//            var value = 0;
-//            goog.events.listen(t, goog.Timer.TICK, function (e) {
-//                box3.setLabelText((++value).toString());
-//            });
-//            t.start();
-            console.log('started');
-            // goog.net.XhrIo.send('/getRecipes', function(e) {
-            //     var xhr = e.target;
-            //     var rs = xhr.getResponseJson();
-            //     for (var i = 0; i < rs.length; i++) {
-            //         var recipe = new app.recipes.Recipe(rs[i].id, rs[i].url, rs[i].image);
-            //         recipe.createComponent();
-            //     }
-            // });
-        }
-        goog.events.listen(window, goog.events.EventType.LOAD, initPage);
-
-    </script>
-
-    <link rel="stylesheet" href="js/closure-library/closure/goog/demos/css/demo.css">
-    <style>
-        .goog-sample-component {
-            height: 1em;
-            padding: 1em;
-            color: white;
-            text-align: center;
-            font-size: 150%;
-        }
-    </style>
 </head>
 <body>
-    <header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-inverse"></header>
+    <!-- <header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-inverse"></header> -->
     <section class="content">
         <section class="container">
             {% block content %}{% endblock %}
         </section>
     </section>
-<h1> Recipes fjkadlj</h1>
-{{ something }}
+<h1> Recipes </h1>
 <div id="recipes">
-
     {% include "recipe.html" %}
 </div>
 
