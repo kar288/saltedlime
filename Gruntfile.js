@@ -4,6 +4,14 @@ var path = require('path');
 
 
 module.exports = function(grunt) {
+    // Unified Watch Object
+    var watchFiles = {
+        serverViews: ['app/views/**/*.*'],
+        serverJS: ['gruntfile.js', 'server.js', 'config/**/*.js', 'app/**/*.js', '!app/tests/'],
+        clientViews: ['public/modules/**/views/**/*.html', 'public/views/*.html'],
+        clientJS: ['public/js/*.js', 'public/modules/**/*.js'],
+        clientCSS: ['public/modules/**/*.css']
+    };
 
     // Project configuration.
     grunt.initConfig({
@@ -21,11 +29,37 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            all: {
-                files: '*',
+            serverViews: {
+                files: watchFiles.serverViews,
                 options: {
-                    livereload: true,
-                    showStack: true
+                    livereload: true
+                }
+            },
+            serverJS: {
+                files: watchFiles.serverJS,
+                tasks: ['jshint'],
+                options: {
+                    livereload: true
+                }
+            },
+            clientViews: {
+                files: watchFiles.clientViews,
+                options: {
+                    livereload: true
+                }
+            },
+            clientJS: {
+                files: watchFiles.clientJS,
+                tasks: ['jshint'],
+                options: {
+                    livereload: true
+                }
+            },
+            clientCSS: {
+                files: watchFiles.clientCSS,
+                tasks: ['csslint'],
+                options: {
+                    livereload: true
                 }
             }
         },

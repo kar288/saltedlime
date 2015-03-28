@@ -154,9 +154,8 @@ app.post('/addRecipe', function(req, res) {
       var $ = cheerio.load(html);
       var ingredients = getElements($, 'ingredients');
       var instructions = getElements($, 'recipeInstructions');
-      console.log(instructions)
       var title = $('[itemprop=name]')[0].children[0].data;
-      var image = getImage($).attribs.src;
+      var image = getImage($);
       Recipe.findOrCreate({where: {url: url, image: image, title: title}}).success(function(recipe, o) {
         for (var i = 0; i < ingredients.length; i++) {
           var is = [];
@@ -183,8 +182,18 @@ var getImage = function($) {
       return type != undefined && !goog.string.contains(type, 'Recipe');
     });
     if (parent === null) {
-      return elements[i];
+      return elements[i].attribs.src;
     }
+  }
+  var recipe = goog.dom.findNode($('body')[0], function(el) {
+    var type = el.attribs ? el.attribs.itemtype : null;
+    return type && goog.string.contains(type, 'Recipe');
+  });
+  var image = goog.dom.findNode(recipe, function(el) {
+    return el.name == 'img';
+  });
+  if (image) {
+    return image.attribs.src;
   }
   return null;
 };
@@ -193,16 +202,11 @@ var getElements = function($, type) {
   var elements = $('[itemprop=' + type + ']');
   var values = [];
   for (var i = 0; i < elements.length; i++) {
-    var parent = goog.dom.getAncestor(elements[i], function(el) {
-      var type = el.attribs.itemtype;
-      return type != undefined && !goog.string.contains(type, 'Recipe');
-    });
-    if (parent === null) {
-      var children = elements[i].children;
-      var s = [];
-      traverse(children, s);
-      values.push(goog.string.collapseWhitespace(s.join(' ')));
-    }
+    var children = elements[i].children;
+    var s = [];
+    traverse(children, s);
+    values.push(goog.string.collapseWhitespace(s.join(' ')));
+
   }
   return values;
 };
@@ -219,25 +223,6 @@ var traverse = function(nodes, s) {
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running at localhost:' + app.get('port'));
-});
-
-app.get('/addRecipe2', function(req, res) {
-  var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var rString = req.query.recipe;
-  Recipe.findOrCreate({where: {url: rString, image: 'someimage'}}).success(function(recipe, o) {
-    for (var i = 0; i < 5; i++) {
-      var iString = 'abc';
-      var is = [];
-      Ingredient.findOrCreate({where: {name: iString}})
-        .success(function(ingredient, o) {
-          recipe.addIngredient(ingredient);
-          is.push(ingredient);
-          if (is.length == 5) {
-            res.send(is);
-          }
-      });
-    }
-  });
 });
 
 app.get('/getRecipe', function(req, res) {
@@ -269,6 +254,7 @@ app.get('/getRecipe', function(req, res) {
 });
 
 app.get('/getRecipes', function(req, res) {
+  console.log('nodeenv--------------', process.env.NODE_ENV);
   Recipe.findAll().success(function(recipes) {
     var all = [];
     var allIs = [];
@@ -294,6 +280,7 @@ app.get('/getRecipes', function(req, res) {
       });
     }
   });
+  // res.render('index');
 });
 
 exports = module.exports = server;
