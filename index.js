@@ -134,7 +134,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/node_modules'));
 
 app.get('/', function(request, response) {
-  response.render('index', {recipes: [1, 2, 3, 4, 'jdkla']});
+  response.render('index.html', {recipes: [1, 2, 3, 4, 'jdkla']});
 });
 
 app.get('/googled336ac59e4c9735b.html', function(request, response) {
