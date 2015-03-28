@@ -1,6 +1,5 @@
 'use strict';
 
-
 var express = require('express');
 var cors = cors = require('cors');
 var app = express();
@@ -98,6 +97,7 @@ var getCSSAssets = function() {
 };
 
 goog.require('goog.string');
+goog.require('goog.dom');
 
 
 var Recipe = orm.model('Recipe');
@@ -154,10 +154,10 @@ app.post('/addRecipe', function(req, res) {
       var $ = cheerio.load(html);
       var ingredients = getElements($, 'ingredients');
       var instructions = getElements($, 'recipeInstructions');
+      console.log(instructions)
       var title = $('[itemprop=name]')[0].children[0].data;
-      var image = $('[itemprop=image]')[0].attribs.src;
+      var image = getImage($).attribs.src;
       Recipe.findOrCreate({where: {url: url, image: image, title: title}}).success(function(recipe, o) {
-        console.log(recipe);
         for (var i = 0; i < ingredients.length; i++) {
           var is = [];
           var ingredientName = goog.string.collapseWhitespace(ingredients[i]);
@@ -175,14 +175,34 @@ app.post('/addRecipe', function(req, res) {
   });
 });
 
+var getImage = function($) {
+  var elements = $('[itemprop=image]');
+  for (var i = 0; i < elements.length; i++) {
+    var parent = goog.dom.getAncestor(elements[i], function(el) {
+      var type = el.attribs.itemtype;
+      return type != undefined && !goog.string.contains(type, 'Recipe');
+    });
+    if (parent === null) {
+      return elements[i];
+    }
+  }
+  return null;
+};
+
 var getElements = function($, type) {
   var elements = $('[itemprop=' + type + ']');
   var values = [];
   for (var i = 0; i < elements.length; i++) {
-    var children = elements[i].children;
-    var s = [];
-    traverse(children, s);
-    values.push(s.join(' '));
+    var parent = goog.dom.getAncestor(elements[i], function(el) {
+      var type = el.attribs.itemtype;
+      return type != undefined && !goog.string.contains(type, 'Recipe');
+    });
+    if (parent === null) {
+      var children = elements[i].children;
+      var s = [];
+      traverse(children, s);
+      values.push(goog.string.collapseWhitespace(s.join(' ')));
+    }
   }
   return values;
 };
@@ -205,7 +225,6 @@ app.get('/addRecipe2', function(req, res) {
   var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   var rString = req.query.recipe;
   Recipe.findOrCreate({where: {url: rString, image: 'someimage'}}).success(function(recipe, o) {
-    console.log(recipe);
     for (var i = 0; i < 5; i++) {
       var iString = 'abc';
       var is = [];
