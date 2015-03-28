@@ -117,7 +117,7 @@ app.use(cors());
 // Rendering engine and global variables
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
-app.set('views', './app/views');
+app.set('views', 'views');
 app.locals.something = 'som....';
 app.locals.jsFiles = getJavaScriptAssets(false);
 app.locals.cssFiles = getCSSAssets();
