@@ -65,7 +65,7 @@ var singleton = function singleton() {
           }
       }
       sequelize.sync({force: true});
-      //sequelize.sync();
+      // sequelize.sync();
     }
     if (singleton.caller != singleton.getInstance) {
         throw new Error('This object cannot be instanciated');

@@ -5,6 +5,7 @@ var orm = require('../models'),
 //Creating our module
 module.exports = {
     model: {
+        title: Seq.STRING,
         url: Seq.STRING,
         image: Seq.STRING
     },

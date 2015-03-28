@@ -1,5 +1,6 @@
 'use strict';
 
+
 var express = require('express');
 var cors = cors = require('cors');
 var app = express();
@@ -11,8 +12,90 @@ var cheerio = require('cheerio');
 var models = require('./models/').setup();
 var orm = require('./models/index');
 var swig = require('swig');
+var _ = require('lodash');
+var glob = require('glob');
 var closure = require('./public/js/closure-library/closure/goog/bootstrap/nodejs.js');
 
+
+var assets = {
+    lib: {
+      css: [
+        'public/js/bootstrap/dist/css/bootstrap.css',
+        'public/js/bootstrap/dist/css/bootstrap-theme.css',
+      ],
+      js: [
+        'public/js/angular/angular.js',
+        'public/js/angular-resource/angular-resource.js',
+        'public/js/angular-animate/angular-animate.js',
+        'public/js/angular-ui-router/release/angular-ui-router.js',
+        'public/js/angular-ui-utils/ui-utils.js',
+        'public/js/angular-bootstrap/ui-bootstrap-tpls.js'
+      ]
+    },
+    css: [
+      'public/modules/**/css/*.css'
+    ],
+    js: [
+      'public/config.js',
+      'public/application.js',
+      'public/modules/*/*.js',
+      'public/modules/*/*[!tests]*/*.js'
+    ]
+  };
+
+var getGlobbedFiles = function(globPatterns, removeRoot) {
+  // URL paths regex
+  var urlRegex = new RegExp('^(?:[a-z]+:)?\/\/', 'i');
+
+  // The output array
+  var output = [];
+
+  // If glob pattern is array so we use each pattern in a recursive way, otherwise we use glob
+  if (_.isArray(globPatterns)) {
+    globPatterns.forEach(function(globPattern) {
+      output = _.union(output, getGlobbedFiles(globPattern, removeRoot));
+    });
+  } else if (_.isString(globPatterns)) {
+    if (urlRegex.test(globPatterns)) {
+      output.push(globPatterns);
+    } else {
+      glob(globPatterns, {
+        sync: true
+      }, function(err, files) {
+        if (removeRoot) {
+          files = files.map(function(file) {
+            return file.replace(removeRoot, '');
+          });
+        }
+
+        output = _.union(output, files);
+      });
+    }
+  }
+  return output;
+};
+
+/**
+ * Get the modules JavaScript files
+ */
+var getJavaScriptAssets = function(includeTests) {
+  var output = getGlobbedFiles(assets.lib.js.concat(assets.js), 'public/');
+
+  // To include tests
+  if (includeTests) {
+    output = _.union(output, getGlobbedFiles(assets.tests));
+  }
+
+  return output;
+};
+
+/**
+ * Get the modules CSS files
+ */
+var getCSSAssets = function() {
+  var output = getGlobbedFiles(assets.lib.css.concat(assets.css), 'public/');
+  return output;
+};
 
 goog.require('goog.string');
 
@@ -34,8 +117,10 @@ app.use(cors());
 // Rendering engine and global variables
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
-app.set('views', './public/views');
-app.locals.something = 'something.....';
+app.set('views', './app/views');
+app.locals.something = 'som....';
+app.locals.jsFiles = getJavaScriptAssets(false);
+app.locals.cssFiles = getCSSAssets();
 
 io.sockets.on('connection', function(socket) {
   socket.emit('news', { hello: 'world' });
@@ -46,10 +131,10 @@ io.sockets.on('connection', function(socket) {
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/node_modules'));
 
 app.get('/', function(request, response) {
-
-  response.render('index');
+  response.render('index', {recipes: [1, 2, 3, 4, 'jdkla']});
 });
 
 app.get('/googled336ac59e4c9735b.html', function(request, response) {
@@ -69,8 +154,9 @@ app.post('/addRecipe', function(req, res) {
       var $ = cheerio.load(html);
       var ingredients = getElements($, 'ingredients');
       var instructions = getElements($, 'recipeInstructions');
+      var title = $('[itemprop=name]')[0].children[0].data;
       var image = $('[itemprop=image]')[0].attribs.src;
-      Recipe.findOrCreate({where: {url: url, image: image}}).success(function(recipe, o) {
+      Recipe.findOrCreate({where: {url: url, image: image, title: title}}).success(function(recipe, o) {
         console.log(recipe);
         for (var i = 0; i < ingredients.length; i++) {
           var is = [];
@@ -116,12 +202,11 @@ app.listen(app.get('port'), function() {
 
 app.get('/addRecipe2', function(req, res) {
   var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var rString = req.query.recipe || randomString(32, chars);
-
+  var rString = req.query.recipe;
   Recipe.findOrCreate({where: {url: rString, image: 'someimage'}}).success(function(recipe, o) {
     console.log(recipe);
     for (var i = 0; i < 5; i++) {
-      var iString = randomString(3, 'abc');
+      var iString = 'abc';
       var is = [];
       Ingredient.findOrCreate({where: {name: iString}})
         .success(function(ingredient, o) {
@@ -164,18 +249,14 @@ app.get('/getRecipe', function(req, res) {
 });
 
 app.get('/getRecipes', function(req, res) {
-  Recipe.findAll().success(function(r) {
-    res.json(r);
+  Recipe.findAll().success(function(recipes) {
+    var all = [];
+    for (var i = 0; i < recipes.length; i++) {
+      var recipe = recipes[i].dataValues;
+      all.push({url: recipe.url, image: recipe.image, title: recipe.title});
+    }
+    res.render('index', {recipes: all});
   });
-});
-
-function randomString(length, chars) {
-    var result = '';
-    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
-    return result;
-}
-app.get('/db', function(request, response) {
-  response.send('kla')
 });
 
 exports = module.exports = server;
@@ -183,3 +264,4 @@ exports = module.exports = server;
 exports.use = function() {
   app.use.apply(app, arguments);
 };
+
