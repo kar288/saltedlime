@@ -13,14 +13,13 @@
         goog.require('goog.net.XhrIo');
         goog.require('goog.ui.Component');
         goog.require('goog.dom');
-    </script>
-    <script src="//localhost:35729/livereload.js"></script>
-    <!-- <script src="js/components/RecipeComponent.js"></script> -->
-    <!-- <script src="js/components/Recipe.js"></script> -->
+        goog.require('goog.structs');
+        goog.require('goog.Uri');
 
-   <!--  <script>
-        goog.require('app.recipes.Recipe');
-    </script> -->
+    </script>
+    {% if env == 'development' %}
+        <script src="//localhost:35729/livereload.js"></script>
+    {% endif %}
 
     <!--Application CSS Files-->
     {% for cssFile in cssFiles %}
@@ -33,18 +32,75 @@
     {% endfor %}
 </head>
 <body>
-    <!-- <header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-inverse"></header> -->
+<script>
+  // This is called with the results from from FB.getLoginStatus().
+  function statusChangeCallback(r) {
+    if (r.status === 'connected') {
+      // Logged into your app and Facebook.
+      FB.api('/me', function(response) {
+        console.log(response);
+        var data = goog.Uri.QueryData.createFromMap(new goog.structs.Map({
+            name: response.name,
+            fbAppId: response.id,
+            email: response.email
+        }));
+        // goog.net.XhrIo.send('/signIn', function(e) {
+        //     var xhr = e.target;
+        //     var signInResponse = xhr.getResponseJson();
+        //     console.log(signInResponse);
+        // }, 'POST', data.toString());
+      });
+    }
+  }
+
+  // This function is called when someone finishes with the Login
+  // Button.  See the onlogin handler attached to it in the sample
+  // code below.
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : {{fbAppId}},
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.3'
+    });
+
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();" autologoutlink="true">
+</fb:login-button>
+<a href="/auth/google">Sign In with Google</a>
+
     <section class="content">
         <section class="container">
             {% block content %}{% endblock %}
         </section>
     </section>
-<h1> Recipes </h1>
+<h1> Recipes   k  </h1>
 
-<form>
+<form action="/addRecipe" method="POST" id="addRecipe" target="blank_">
 Add recipe:
-<input type="text" placeholder="address" name="recipeUrl" class="recipeInput">
-<button type="submit">Submit</button>
+<input type="text" placeholder="address" name="url" class="recipeInput">
+<input type="submit" value="Submit">
 </form>
 
 <div id="recipes">

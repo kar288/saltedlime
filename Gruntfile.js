@@ -6,9 +6,9 @@ var path = require('path');
 module.exports = function(grunt) {
     // Unified Watch Object
     var watchFiles = {
-        serverViews: ['app/views/**/*.*'],
+        serverViews: ['app/views/**/*.*', 'views/*.html'],
         serverJS: ['gruntfile.js', 'server.js', 'config/**/*.js', 'app/**/*.js', '!app/tests/'],
-        clientViews: ['public/modules/**/views/**/*.html', 'public/views/*.html'],
+        clientViews: ['public/modules/**/views/**/*.html', 'views/*.html'],
         clientJS: ['public/js/*.js', 'public/modules/**/*.js'],
         clientCSS: ['public/modules/**/*.css']
     };
@@ -23,7 +23,7 @@ module.exports = function(grunt) {
                     monitor: {},
                     debug: true,
                     server: path.resolve('./index'),
-                    livereload: true,
+                    // livereload: true,
                     showStack: true
                 }
             }
@@ -36,14 +36,14 @@ module.exports = function(grunt) {
                 }
             },
             serverJS: {
-                files: watchFiles.serverJS,
+                files: ['views/index.html'],
                 tasks: ['jshint'],
                 options: {
                     livereload: true
                 }
             },
             clientViews: {
-                files: watchFiles.clientViews,
+                files: ['views/index.html'],
                 options: {
                     livereload: true
                 }
@@ -65,7 +65,7 @@ module.exports = function(grunt) {
         },
         open: {
             all: {
-                path: 'http://localhost:8080/index.html'
+                path: 'http://localhost:8080'
             }
         },
 
@@ -95,7 +95,7 @@ module.exports = function(grunt) {
             },
             express: {
                 files: 'views/index.html',
-                tasks: 'livereload'
+                tasks: ['livereload']
             }
         },
 
@@ -129,7 +129,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-regarde');
 
     grunt.registerTask('format', ['jshint', 'jsbeautifier']);
-    grunt.registerTask('server', ['express', 'watch', 'regarde']);
+    grunt.registerTask('server', ['express', 'watch']);
     // Default task.
     grunt.registerTask('default', ['format', 'server']);
 

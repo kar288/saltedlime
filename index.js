@@ -28,7 +28,8 @@ var assets = {
         'public/js/angular-animate/angular-animate.js',
         'public/js/angular-ui-router/release/angular-ui-router.js',
         'public/js/angular-ui-utils/ui-utils.js',
-        'public/js/angular-bootstrap/ui-bootstrap-tpls.js'
+        'public/js/angular-bootstrap/ui-bootstrap-tpls.js',
+        'publice/js/jquery/dis/jquery.js'
       ]
     },
     css: [
@@ -79,7 +80,6 @@ var getGlobbedFiles = function(globPatterns, removeRoot) {
  */
 var getJavaScriptAssets = function(includeTests) {
   var output = getGlobbedFiles(assets.lib.js.concat(assets.js), 'public/');
-
   // To include tests
   if (includeTests) {
     output = _.union(output, getGlobbedFiles(assets.tests));
@@ -99,9 +99,30 @@ var getCSSAssets = function() {
 goog.require('goog.string');
 goog.require('goog.dom');
 
+var passport = require('passport');
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
+var GOOGLE_CLIENT_ID =
+  '788135140677-2vnmeqsbec9jrviu10l61i69sg3p2u3b.apps.googleusercontent.com';
+var GOOGLE_CLIENT_SECRET = 'vEvB3JGlpymsNDG6ADeDb3nu';
+
+passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://127.0.0.1:9000/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
+  }
+));
+
+
 
 var Recipe = orm.model('Recipe');
 var Ingredient = orm.model('Ingredient');
+var User = orm.model('User');
 
 var consolidate = require('consolidate');
 
@@ -118,7 +139,10 @@ app.use(cors());
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 app.set('views', 'views');
-app.locals.something = 'som....';
+app.locals.env = process.env.NODE_ENV;
+app.locals.fbAppId =
+  process.env.NODE_ENV ? '628807420552479' : '628799940553227';
+
 app.locals.jsFiles = getJavaScriptAssets(false);
 app.locals.cssFiles = getCSSAssets();
 
@@ -127,6 +151,7 @@ io.sockets.on('connection', function(socket) {
   socket.on('my other event', function(data) {
     console.log(data);
   });
+
 });
 
 app.set('port', (process.env.PORT || 5000));
@@ -147,8 +172,67 @@ app.get('/googled336ac59e4c9735b.html', function(request, response) {
 });
 
 
+app.get('/account', ensureAuthenticated, function(req, res) {
+  res.render('account', { user: req.user });
+});
+
+app.get('/login', function(req, res) {
+  res.render('login', { user: req.user });
+});
+
+// GET /auth/google
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  The first step in Google authentication will involve
+//   redirecting the user to google.com.  After authorization, Google
+//   will redirect the user back to this application at /auth/google/callback
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }),
+  function(req, res) {
+    // The request will be redirected to Google for authentication, so this
+    // function will not be called.
+  });
+
+// GET /auth/google/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+  });
+
+app.get('/logout', function(req, res) {
+  req.logout();
+  res.redirect('/');
+});
+
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login');
+}
+
+
+app.get('/addRecipes', function(req, res) {
+  var recipes = [{"url":"http://www.thekitchn.com/recipe-spiced-lentil-sweet-potato-and-kale-whole-wheat-pockets-181100"},{"url":"http://www.thekitchn.com/recipe-simple-kale-potato-soup-weeknight-dinner-recipes-from-the-kitchn-13802"},{"url":"http://www.bbcgoodfood.com/recipes/cabbage-red-rice-salad-tahini-dressing"},{"url":"http://www.bbcgoodfood.com/recipes/courgette-couscous-salad-tahini-dressing"},{"url":"http://www.bbcgoodfood.com/recipes/coleslaw-tahini-yogurt-dressing"},{"url":"http://www.bbcgoodfood.com/recipes/1901/roast-tomatoes-with-asparagus-and-black-olives"},{"url":"http://www.bbcgoodfood.com/recipes/3151/mozzarella-tomato-and-black-olive-tarts"}];
+  for (var i = 0; i < recipes; i++) {
+    console.log(recipes[i]);
+    addRecipe(recipes[i]);
+  }
+});
+
+
 app.post('/addRecipe', function(req, res) {
-  var url = req.body.url;
+  addRecipe(req.body.url);
+});
+
+var addRecipe = function(url, sendResponse) {
   request(url, function(error, response, html) {
     if (!error) {
       var $ = cheerio.load(html);
@@ -156,23 +240,26 @@ app.post('/addRecipe', function(req, res) {
       var instructions = getElements($, 'recipeInstructions');
       var title = $('[itemprop=name]')[0].children[0].data;
       var image = getImage($);
-      Recipe.findOrCreate({where: {url: url, image: image, title: title}}).success(function(recipe, o) {
+
+      Recipe.findOrCreate({where:
+        {url: url, image: image, title: title}}).success(function(recipe, o) {
         for (var i = 0; i < ingredients.length; i++) {
           var is = [];
           var ingredientName = goog.string.collapseWhitespace(ingredients[i]);
           Ingredient.findOrCreate({where: {name: ingredientName}})
-              .success(function(ingredient, o) {
-                recipe.addIngredient(ingredient);
-                is.push(ingredient);
-                if (is.length == ingredients.length) {
-                  res.json({instructions: instructions, ingredients: ingredients});
-                }
-              });
+            .success(function(ingredient, o) {
+              recipe.addIngredient(ingredient);
+              is.push(ingredient);
+              if (is.length == ingredients.length && sendResponse) {
+                res.json({instructions: instructions,
+                  ingredients: ingredients});
+              }
+            });
         }
       });
     }
   });
-});
+};
 
 var getImage = function($) {
   var elements = $('[itemprop=image]');
@@ -226,35 +313,19 @@ app.listen(app.get('port'), function() {
 });
 
 app.get('/getRecipe', function(req, res) {
-  // var rs = [];
-  // if (!req.query.id) {
-  //   Recipe.findAll().success(function(recipes, o) {
-  //     for (var i = 0; i < recipes.length; i++) {
-  //       rs.push(recipes[i]);
-  //       recipes[i].getIngredients.success(function(is) {
-  //         rs.push(is);
-  //         if (rs.length == recipes.length) {
-  //           res.send(rs);
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
-  // Recipe.find(req.query.id).success(function(recipe) {
-  //   // var is = [];
-  //   // console.log(recipe.getIngredients);
-  //   recipe.getIngredients().success(function(is) {
-  //     res.send(is);
-  //   });
-  //   // res.send(recipe);
-  // });
   Recipe.find({id: req.query.id}).success(function(r) {
     res.json(r);
   });
 });
 
+
+app.get('/allRecipeUrls', function(req, res) {
+  Recipe.all({attributes: ['url']}).success(function(r) {
+    res.json(r);
+  });
+});
+
 app.get('/getRecipes', function(req, res) {
-  console.log('nodeenv--------------', process.env.NODE_ENV);
   Recipe.findAll().success(function(recipes) {
     var all = [];
     var allIs = [];
@@ -272,15 +343,21 @@ app.get('/getRecipes', function(req, res) {
         }
         allIs.push(is);
         if (allIs.length == recipes.length) {
+          var rs = {};
           for (var j = 0; j < recipes.length; j++) {
-            all[j].ingredients = allIs[j];
+            var r =  all[j];
+            rs[r.id] = {url: r.url,
+              image: r.image,
+              title: r.title,
+              ingredients: allIs[j]};
           }
-          res.render('index', {recipes: all});
+          res.render('index', {recipes: rs});
         }
       });
     }
+  }).error(function() {
+    res.render('index');
   });
-  // res.render('index');
 });
 
 exports = module.exports = server;
