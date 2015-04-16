@@ -86,16 +86,21 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();" autologoutlink="true">
-</fb:login-button>
+<!-- <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" autologoutlink="true">
+</fb:login-button> -->
+{% if not user %}
 <a href="/auth/google">Sign In with Google</a>
+{% else %}
+<a href="/logout">Sign out</a>
+{% endif %}
 
     <section class="content">
         <section class="container">
             {% block content %}{% endblock %}
         </section>
     </section>
-<h1> Recipes   k  </h1>
+hi {{user}}!!
+<h1> Recipes </h1>
 
 <form action="/addRecipe" method="POST" id="addRecipe" target="blank_">
 Add recipe:

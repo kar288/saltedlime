@@ -6,9 +6,11 @@ var orm = require('../models'),
 module.exports = {
     model: {
         name: Seq.STRING,
-        fb: {type: Seq.STRING, unique: true},
+        googleId: {type: Seq.STRING, unique: true},
         email: {type: Seq.STRING, unique: true},
-        password: Seq.STRING
+        password: Seq.STRING,
+        picture: {type: Seq.STRING, unique: true},
+        googleEtag: {type: Seq.STRING, unique: true}
     },
     relations: {
         hasMany: 'Recipe'
