@@ -132,12 +132,10 @@ app.use(express.static(__dirname + '/node_modules'));
 app.use(cookieParser());
 
 passport.serializeUser(function(user, done) {
-  console.log('seriealizeUser');
   done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
-  console.log('deserializeUser');
   User.find(id)
     .success(function(user) {
         done(null, user);
@@ -401,31 +399,32 @@ app.get('/getRecipes', function(req, res) {
   User.find({where: {id: id}}).success(function(user) {
     if (!user) {
       res.render('index');
+      return;
     }
     user.getRecipes().success(function(recipes) {
-      var all = [];
+      var all = {};
       var allIs = [];
       for (var i = 0; i < recipes.length; i++) {
         var recipe = recipes[i].dataValues;
-          all.push({id: recipe.id,
-            url: recipe.url,
+          all[recipe.id] = {url: recipe.url,
             image: recipe.image,
             title: recipe.title,
-            ingredients: []});
+            ingredients: []};
         recipes[i].getIngredients().success(function(ingredients) {
           var is = [];
+          var recipeId = ingredients[0].IngredientRecipe.dataValues.RecipeId;
           for (var j = 0; j < ingredients.length; j++) {
             is.push(ingredients[j].dataValues.name);
           }
-          allIs.push(is);
+          allIs.push({ingredients: is, recipeId: recipeId});
           if (allIs.length == recipes.length) {
             var rs = {};
             for (var j = 0; j < recipes.length; j++) {
-              var r =  all[j];
-              rs[r.id] = {url: r.url,
+              var r = all[allIs[j].recipeId];
+              rs[allIs[j].recipeId] = {url: r.url,
                 image: r.image,
                 title: r.title,
-                ingredients: allIs[j]};
+                ingredients: allIs[j].ingredients};
             }
             res.render('index',
               {recipes: rs, user: req.user ? req.user.dataValues.name : null});
