@@ -64,8 +64,8 @@ var singleton = function singleton() {
               models[name][relName](models[related]);
           }
       }
-      // sequelize.sync({force: true});
-      sequelize.sync();
+      sequelize.sync({force: true});
+      // sequelize.sync();
     }
     if (singleton.caller != singleton.getInstance) {
         throw new Error('This object cannot be instanciated');

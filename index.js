@@ -156,12 +156,14 @@ passport.use(new GoogleStrategy({
   function(accessToken, refreshToken, profile, done) {
     console.log('logging in');
     var profile = profile._json;
+    console.log(profile);
     User.findOrCreate({
         where: {
           googleId: profile.id,
           googleEtag: profile.etag,
           picture: profile.image.url,
-          name: profile.displayName
+          name: profile.displayName,
+          email: profile.emails[0].value
         }
       })
       .success(function(user) {
@@ -237,7 +239,8 @@ app.get('/login', function(req, res) {
 //   will redirect the user back to this application at /auth/google/callback
 app.get('/auth/google',
   passport.authenticate('google', {
-    scope: ['https://www.googleapis.com/auth/plus.login']
+    scope: ['https://www.googleapis.com/auth/plus.login',
+    'https://www.googleapis.com/auth/plus.profile.emails.read']
   }),
   function(req, res) {
     // The request will be redirected to Google for authentication, so this
