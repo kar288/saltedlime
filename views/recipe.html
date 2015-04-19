@@ -5,13 +5,8 @@
     </div>
     <div class="col-sm-10">
       <h3>
-        {{recipe.title}}
+        <a href="getRecipe?id={{loop.key}}">{{recipe.title}}</a>
       </h3>
-      {% for ingredient in recipe.ingredients %}
-        <div>
-        {{ingredient}}
-        </div>
-      {% endfor %}
     </div>
   </div>
 {% endfor %}

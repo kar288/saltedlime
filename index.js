@@ -20,34 +20,35 @@ var cookieParser = require('cookie-parser');
 var consolidate = require('consolidate');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var md5 = require('MD5');
 
 
 var assets = {
-    lib: {
-      css: [
-        'public/js/bootstrap/dist/css/bootstrap.css',
-        'public/js/bootstrap/dist/css/bootstrap-theme.css'
-      ],
-      js: [
-        'public/js/angular/angular.js',
-        'public/js/angular-resource/angular-resource.js',
-        'public/js/angular-animate/angular-animate.js',
-        'public/js/angular-ui-router/release/angular-ui-router.js',
-        'public/js/angular-ui-utils/ui-utils.js',
-        'public/js/angular-bootstrap/ui-bootstrap-tpls.js',
-        'publice/js/jquery/dis/jquery.js'
-      ]
-    },
+  lib: {
     css: [
-      'public/modules/**/css/*.css'
+      'public/js/bootstrap/dist/css/bootstrap.css',
+      'public/js/bootstrap/dist/css/bootstrap-theme.css'
     ],
     js: [
-      'public/config.js',
-      'public/application.js',
-      'public/modules/*/*.js',
-      'public/modules/*/*[!tests]*/*.js'
+      'public/js/angular/angular.js',
+      'public/js/angular-resource/angular-resource.js',
+      'public/js/angular-animate/angular-animate.js',
+      'public/js/angular-ui-router/release/angular-ui-router.js',
+      'public/js/angular-ui-utils/ui-utils.js',
+      'public/js/angular-bootstrap/ui-bootstrap-tpls.js',
+      'publice/js/jquery/dis/jquery.js'
     ]
-  };
+  },
+  css: [
+    'public/modules/**/css/*.css'
+  ],
+  js: [
+    'public/config.js',
+    'public/application.js',
+    'public/modules/*/*.js',
+    'public/modules/*/*[!tests]*/*.js'
+  ]
+};
 
 var getGlobbedFiles = function(globPatterns, removeRoot) {
   // URL paths regex
@@ -138,9 +139,9 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(id, done) {
   User.find(id)
     .success(function(user) {
-        done(null, user);
+      done(null, user);
     }).error(function(err) {
-        done(new Error('User ' + id + ' does not exist'));
+      done(new Error('User ' + id + ' does not exist'));
     });
 });
 
@@ -155,16 +156,19 @@ passport.use(new GoogleStrategy({
   function(accessToken, refreshToken, profile, done) {
     console.log('logging in');
     var profile = profile._json;
-    User.findOrCreate({where: {
-      googleId: profile.id,
-      googleEtag: profile.etag,
-      picture: profile.image.url,
-      name: profile.displayName}})
-    .success(function(user) {
-      return done(null, user[0].dataValues);
-    }).error(function(err) {
-      return done(err);
-    });
+    User.findOrCreate({
+        where: {
+          googleId: profile.id,
+          googleEtag: profile.etag,
+          picture: profile.image.url,
+          name: profile.displayName
+        }
+      })
+      .success(function(user) {
+        return done(null, user[0].dataValues);
+      }).error(function(err) {
+        return done(err);
+      });
   }
 ));
 
@@ -185,7 +189,9 @@ app.locals.jsFiles = getJavaScriptAssets(false);
 app.locals.cssFiles = getCSSAssets();
 
 io.sockets.on('connection', function(socket) {
-  socket.emit('news', { hello: 'world' });
+  socket.emit('news', {
+    hello: 'world'
+  });
   socket.on('my other event', function(data) {
     console.log(data);
   });
@@ -196,22 +202,32 @@ app.set('port', (process.env.PORT || 5000));
 
 app.get('/', function(request, response) {
   var user = request.user ? request.user.dataValues.name : null;
-  response.render('index.html', {user: user});
+  response.render('index.html', {
+    user: user
+  });
 });
 
 app.get('/googled336ac59e4c9735b.html', function(request, response) {
-  Recipe.find({id: req.query.id}).success(function(r) {
-    response.sendfile('./public/index.html', {recipes: r});
+  Recipe.find({
+    id: req.query.id
+  }).success(function(r) {
+    response.sendfile('./public/index.html', {
+      recipes: r
+    });
   });
 });
 
 
 app.get('/account', ensureAuthenticated, function(req, res) {
-  res.render('account', { user: req.user });
+  res.render('account', {
+    user: req.user
+  });
 });
 
 app.get('/login', function(req, res) {
-  res.render('login', { user: req.user });
+  res.render('login', {
+    user: req.user
+  });
 });
 
 // GET /auth/google
@@ -220,8 +236,9 @@ app.get('/login', function(req, res) {
 //   redirecting the user to google.com.  After authorization, Google
 //   will redirect the user back to this application at /auth/google/callback
 app.get('/auth/google',
-  passport.authenticate('google',
-    {scope: ['https://www.googleapis.com/auth/plus.login']}),
+  passport.authenticate('google', {
+    scope: ['https://www.googleapis.com/auth/plus.login']
+  }),
   function(req, res) {
     // The request will be redirected to Google for authentication, so this
     // function will not be called.
@@ -233,10 +250,11 @@ app.get('/auth/google',
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
+  passport.authenticate('google', {
+    failureRedirect: '/login'
+  }),
   function(req, res) {
-    res.redirect('/');
-    // res.json('');
+    res.redirect(req.session.redirectTo || '/');
   });
 
 app.get('/logout', function(req, res) {
@@ -250,24 +268,41 @@ app.get('/logout', function(req, res) {
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  req.session.redirectTo = req.originalUrl;
   res.redirect('/auth/google');
 }
 
 
 app.get('/addRecipes', function(req, res) {
-  var recipes = [{"url":"http://www.thekitchn.com/recipe-spiced-lentil-sweet-potato-and-kale-whole-wheat-pockets-181100"},{"url":"http://www.thekitchn.com/recipe-simple-kale-potato-soup-weeknight-dinner-recipes-from-the-kitchn-13802"},{"url":"http://www.bbcgoodfood.com/recipes/cabbage-red-rice-salad-tahini-dressing"},{"url":"http://www.bbcgoodfood.com/recipes/courgette-couscous-salad-tahini-dressing"},{"url":"http://www.bbcgoodfood.com/recipes/coleslaw-tahini-yogurt-dressing"},{"url":"http://www.bbcgoodfood.com/recipes/1901/roast-tomatoes-with-asparagus-and-black-olives"},{"url":"http://www.bbcgoodfood.com/recipes/3151/mozzarella-tomato-and-black-olive-tarts"}];
+  var recipes = [{
+    "url": "http://www.thekitchn.com/recipe-spiced-lentil-sweet-potato-and-kale-whole-wheat-pockets-181100"
+  }, {
+    "url": "http://www.thekitchn.com/recipe-simple-kale-potato-soup-weeknight-dinner-recipes-from-the-kitchn-13802"
+  }, {
+    "url": "http://www.bbcgoodfood.com/recipes/cabbage-red-rice-salad-tahini-dressing"
+  }, {
+    "url": "http://www.bbcgoodfood.com/recipes/courgette-couscous-salad-tahini-dressing"
+  }, {
+    "url": "http://www.bbcgoodfood.com/recipes/coleslaw-tahini-yogurt-dressing"
+  }, {
+    "url": "http://www.bbcgoodfood.com/recipes/1901/roast-tomatoes-with-asparagus-and-black-olives"
+  }, {
+    "url": "http://www.bbcgoodfood.com/recipes/3151/mozzarella-tomato-and-black-olive-tarts"
+  }];
   for (var i = 0; i < recipes; i++) {
-    addRecipe(recipes[i], true /* sendResponse */, res,
-    function(res, recipe) {
-      res.json(recipe);
-    });
+    addRecipe(recipes[i], true /* sendResponse */ , res,
+      function(res, recipe) {
+        res.json(recipe);
+      });
   }
 });
 
 
 app.post('/addRecipe', function(req, res) {
-  addRecipe(req.body.url, true /* sendResponse */, res,
+  addRecipe(req.body.url, true /* sendResponse */ , res,
     function(res, recipe) {
       var id = req.user ? req.user.dataValues.id : null;
       if (id) {
@@ -281,6 +316,32 @@ app.post('/addRecipe', function(req, res) {
     });
 });
 
+
+app.post('/addRecipeToUser', function(req, res) {
+  console.log('addrecipetouser');
+  addRecipe(req.body.url, true /* sendResponse */ , res,
+    function(res, recipe) {
+      var googleId = req.body.googleId;
+      var hashedETag = req.body.hashedETag;
+      User.find({
+        googleId: googleId
+      }).success(function(user) {
+        var etag = user.googleEtag.substr(1, user.googleEtag.indexOf('/') - 1);
+        console.log(etag);
+        console.log(md5(etag));
+        console.log(hashedETag);
+        if (md5(etag) == hashedETag) {
+          user.addRecipe(recipe);
+          res.json(recipe);
+        } else {
+          res.json('invalid user');
+        }
+      }).error(function(e) {
+        res.json('no user');
+      });
+    });
+});
+
 var addRecipe = function(url, sendResponse, res, callback) {
   request(url, function(error, response, html) {
     if (!error) {
@@ -290,22 +351,31 @@ var addRecipe = function(url, sendResponse, res, callback) {
       var title = $('[itemprop=name]')[0].children[0].data;
       var image = getImage($);
 
-      Recipe.findOrCreate({where:
-        {url: url, image: image, title: title}})
-      .success(function(recipe, o) {
-        for (var i = 0; i < ingredients.length; i++) {
-          var is = [];
-          var ingredientName = goog.string.collapseWhitespace(ingredients[i]);
-          Ingredient.findOrCreate({where: {name: ingredientName}})
-            .success(function(ingredient, o) {
-              recipe.addIngredient(ingredient);
-              is.push(ingredient);
-              if (is.length == ingredients.length && sendResponse) {
-                return callback(res, recipe);
-              }
-            });
-        }
-      });
+      Recipe.findOrCreate({
+          where: {
+            url: url,
+            image: image,
+            title: title
+          }
+        })
+        .success(function(recipe, o) {
+          for (var i = 0; i < ingredients.length; i++) {
+            var is = [];
+            var ingredientName = goog.string.collapseWhitespace(ingredients[i]);
+            Ingredient.findOrCreate({
+                where: {
+                  name: ingredientName
+                }
+              })
+              .success(function(ingredient, o) {
+                recipe.addIngredient(ingredient);
+                is.push(ingredient);
+                if (is.length == ingredients.length && sendResponse) {
+                  return callback(res, recipe);
+                }
+              });
+          }
+        });
     }
   });
 };
@@ -365,13 +435,21 @@ app.listen(app.get('port'), function() {
 });
 
 app.get('/getRecipe', function(req, res) {
-  Recipe.find({where: {id: req.query.id}}).success(function(r) {
+  Recipe.find({
+    where: {
+      id: req.query.id
+    }
+  }).success(function(r) {
     res.json(r);
   });
 });
 
 app.get('/getUser', function(req, res) {
-  User.find({where: {id: req.query.id}}).success(function(user) {
+  User.find({
+    where: {
+      id: req.query.id
+    }
+  }).success(function(user) {
     if (!user) {
       res.json('');
     }
@@ -387,53 +465,47 @@ app.get('/getUsers', ensureAuthenticated, function(req, res) {
   });
 });
 
-
 app.get('/allRecipeUrls', function(req, res) {
-  Recipe.all({attributes: ['url']}).success(function(r) {
+  Recipe.all({
+    attributes: ['url']
+  }).success(function(r) {
     res.json(r);
   });
 });
 
-app.get('/getRecipes', function(req, res) {
+app.get('/getRecipes', ensureAuthenticated, function(req, res) {
   var id = req.user ? req.user.dataValues.id : -1;
-  User.find({where: {id: id}}).success(function(user) {
+  User.find({
+    where: {
+      id: id
+    }
+  }).success(function(user) {
     if (!user) {
       res.render('index');
       return;
     }
     user.getRecipes().success(function(recipes) {
+      var userName = req.user ? req.user.dataValues.name : null;
       if (recipes.length == 0) {
-        res.render('index', {user: req.user ? req.user.dataValues.name : null});
+        res.render('index', {
+          user: userName
+        });
       }
       var all = {};
       var allIs = [];
       for (var i = 0; i < recipes.length; i++) {
         var recipe = recipes[i].dataValues;
-          all[recipe.id] = {url: recipe.url,
-            image: recipe.image,
-            title: recipe.title,
-            ingredients: []};
-        recipes[i].getIngredients().success(function(ingredients) {
-          var is = [];
-          var recipeId = ingredients[0].IngredientRecipe.dataValues.RecipeId;
-          for (var j = 0; j < ingredients.length; j++) {
-            is.push(ingredients[j].dataValues.name);
-          }
-          allIs.push({ingredients: is, recipeId: recipeId});
-          if (allIs.length == recipes.length) {
-            var rs = {};
-            for (var j = 0; j < recipes.length; j++) {
-              var r = all[allIs[j].recipeId];
-              rs[allIs[j].recipeId] = {url: r.url,
-                image: r.image,
-                title: r.title,
-                ingredients: allIs[j].ingredients};
-            }
-            res.render('index',
-              {recipes: rs, user: req.user ? req.user.dataValues.name : null});
-          }
-        });
+        all[recipe.id] = {
+          url: recipe.url,
+          image: recipe.image,
+          title: recipe.title,
+          ingredients: []
+        };
       }
+      res.render('index', {
+        recipes: all,
+        user: userName
+      });
     }).error(function() {
       res.render('index');
     });
