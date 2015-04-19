@@ -402,6 +402,9 @@ app.get('/getRecipes', function(req, res) {
       return;
     }
     user.getRecipes().success(function(recipes) {
+      if (recipes.length == 0) {
+        res.render('index', {user: req.user ? req.user.dataValues.name : null});
+      }
       var all = {};
       var allIs = [];
       for (var i = 0; i < recipes.length; i++) {
