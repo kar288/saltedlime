@@ -31,7 +31,7 @@
     </li>
   </ul>
   <div class="navbar-fixed">
-    <nav class="dark-primary-color">
+    <nav class="default-primary-color">
       <div class="nav-wrapper">
         <a href="{% url 'recipesHome' %}" class="brand-logo">Salted Lime</a>
         {% if user.is_authenticated %}
@@ -131,10 +131,10 @@
      <div class="container">
        <div class="row">
          <div class="col l4 m4 s4">
-           <a class="grey-text text-lighten-3" href="{% url 'about' %}">About</a>
+           <a class="grey-text text-darken-2" href="{% url 'about' %}">About</a>
          </div>
          <div class="col l4 m4 s4">
-           <a class="grey-text text-lighten-3" href="{% url 'contact' %}">Contact</a>
+           <a class="grey-text text-darken-3" href="{% url 'contact' %}">Contact</a>
          </div>
        </div>
      </div>
@@ -160,7 +160,7 @@
     $('.modal-trigger').leanModal();
   </script>
 </body>
-<link rel="shortcut icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static '/images/favicon-32x32.png' %}">
 <script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
 <script src="{% static 'js/materialize-tags/js/materialize-tags.min.js' %}"></script>
 </html>
