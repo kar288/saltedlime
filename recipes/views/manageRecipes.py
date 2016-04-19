@@ -243,7 +243,7 @@ def processBulk(request):
         for tag in tags:
             href = normalizeURL(tag.get('href'))
             text = tag.text if tag.text else href
-            if ((datetime.now() - start).seconds < 15 || done < 200) and recipeUser.notes.filter(url = href):
+            if ((datetime.now() - start).seconds < 15 or done < 200) and recipeUser.notes.filter(url = href):
             # if done < 0 and recipeUser.notes.filter(url = href):
                 done += 1
             else:
