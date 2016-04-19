@@ -246,7 +246,7 @@ def processBulk(request):
             text = tag.text if tag.text else href
             if ((datetime.now() - start).seconds < 15 or done < 200) and recipeUser.notes.filter(url = href):
             # if done < 0 and recipeUser.notes.filter(url = href):
-                print 'checking'
+                # print 'checking'
                 done += 1
             else:
                 # parsed_uri = urlparse(href)
