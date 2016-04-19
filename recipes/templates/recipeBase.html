@@ -2,20 +2,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <meta name=viewport content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="description" content="Recipe manager with notes, seasonal recommendations and sharing.">
-  <meta charset="utf-8">
+
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
   <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'js/materialize-tags/css/materialize-tags.min.css' %}">
   <link href="{% static 'css/recipes.css' %}" rel="stylesheet">
   <link href='https://fonts.googleapis.com/css?family=Yeseva+One&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  <!-- HTTPS required. HTTP will give a 403 forbidden response -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <!-- <link href='https://fonts.googleapis.com/css?family=Merriweather&subset=latin,latin-ext' rel='stylesheet' type='text/css'> -->
-  <!-- <link href='https://fonts.googleapis.com/css?family=Merriweather+Sans:400,800&subset=latin,latin-ext' rel='stylesheet' type='text/css'> -->
   <link href='https://fonts.googleapis.com/css?family=Merriweather+Sans:400,800&subset=latin' rel='stylesheet' type='text/css'>
   <title>{% block title %}{% endblock %} - Salted Lime</title>
 </head>
@@ -38,25 +36,8 @@
         <a href="{% url 'recipesHome' %}" class="brand-logo">Salted Lime</a>
         {% if user.is_authenticated %}
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-
-        <ul class="right hide-on-med-and-down">
-            <!-- <li>
-              <form action="{% url 'search' %}" method="get" >
-                <div class="input-field">
-                  <input id="search" type="search" name="query" value="{{query}}">
-                  <label for="search"><i class="material-icons">search</i></label>
-                </div>
-              </form>
-            </li> -->
-            <li>
-              <a class="special-yellow waves-effect waves-light btn-floating dropdown-button" data-activates="dropdown1"><i class="short-icon material-icons">add</i></a>
-            </li>
-            <li>
-              <a id="logout" href="{% url 'logout' %}" class="">Logout</a>
-            </li>
-        </ul>
-        <ul class="right">
-          <li>
+        <ul class="right hide-on-small-only">
+          <li class="hide-on-med-and-down">
             <form action="{% url 'search' %}" method="get">
               <div class="input-field">
                 <input id="search" type="search" name="query" value="{{query}}">
@@ -65,21 +46,43 @@
                     <i class="material-icons">search</i>
                   </a>
                 </label>
-                <!-- <i class="material-icons">close</i> -->
               </div>
             </form>
           </li>
+          <li>
+            <a class="special-yellow waves-effect waves-light btn-floating dropdown-button" data-activates="dropdown1"><i class="short-icon material-icons">add</i></a>
+          </li>
+          <li>
+            <a id="logout" href="{% url 'logout' %}" class="">Logout</a>
+          </li>
         </ul>
         <ul class="side-nav" id="mobile-demo">
-            <li>
-              <i class="material-icons right">add</i>
-            </li>
-            <li><a href="{% url 'addRecipe' %}">Add recipe</a></li>
-            <li><a href="{% url 'addRecipes' %}">Add recipes bulk</a></li>
-            <hr>
-            <li>
-              <a id="logout" href="{% url 'logout' %}" class="">Logout</a>
-            </li>
+          <li>
+            <form action="{% url 'search' %}" method="get">
+              <div class="input-field">
+                <input id="search" type="search" name="query" value="{{query}}">
+                <label for="search">
+                    <i class="material-icons">search</i>
+                  </a>
+                </label>
+              </div>
+            </form>
+          </li>
+          <li>
+            <a href="{% url 'advancedSearchHtml' title %}">
+              Advanced Search
+            </a>
+          </li>
+          <hr>
+          <li>
+            <i class="material-icons right">add</i>
+          </li>
+          <li><a href="{% url 'addRecipe' %}">Add recipe</a></li>
+          <li><a href="{% url 'addRecipes' %}">Add recipes bulk</a></li>
+          <hr>
+          <li>
+            <a id="logout" href="{% url 'logout' %}" class="">Logout</a>
+          </li>
         </ul>
       {% endif %}
       </div>
@@ -132,10 +135,6 @@
   <footer class="page-footer light-primary-color">
      <div class="container">
        <div class="row">
-         <!-- <div class="col l6 s12">
-           <h5 class="white-text">About</h5>
-           <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
-         </div> -->
          <div class="col l4 m4 s4">
            <a class="grey-text text-lighten-3" href="{% url 'about' %}">About</a>
          </div>
@@ -167,16 +166,6 @@
   </script>
 </body>
 <link rel="shortcut icon" type="image/x-icon" href="/media/favicon.ico">
-<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> -->
-<!-- <script src="{% static 'bootstrap/js/bootstrap.min.js'%}"></script> -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script> -->
 <script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
 <script src="{% static 'js/materialize-tags/js/materialize-tags.min.js' %}"></script>
-<!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> -->
-<!-- Compiled and minified JavaScript -->
-
-<!-- <link href='https://fonts.googleapis.com/css?family=Abril+Fatface' rel='stylesheet' type='text/css'> -->
-<!-- <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'> -->
-<script>
-</script>
 </html>
