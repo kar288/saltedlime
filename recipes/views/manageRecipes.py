@@ -10,6 +10,7 @@ from recipes.models import Note, RecipeUser
 from urlparse import urlparse
 from utils import *
 
+import math
 import socket
 
 def getTagsForNote(note):
@@ -248,15 +249,15 @@ def processBulk(request):
                 print 'checking'
                 done += 1
             else:
-                parsed_uri = urlparse(href)
-                domain = '{uri.netloc}'.format(uri=parsed_uri)
-                color = ''
-                if domain in cookingDomains or 'recipe' in text.lower():
-                    color = '#fff8e1'
+                # parsed_uri = urlparse(href)
+                # domain = '{uri.netloc}'.format(uri=parsed_uri)
+                # color = ''
+                # if domain in cookingDomains or 'recipe' in text.lower():
+                #     color = '#fff8e1'
                 urls.append({
                     'url': href,
                     'name': text,
-                    'color': color
+                    'color': ''
                 })
         context['urls'] = urls
         context['done'] = done
