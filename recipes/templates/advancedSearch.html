@@ -1,0 +1,117 @@
+{% extends "recipeBase.html" %}
+
+{% block content %}
+  <h5 style="text-align: center">
+    Advanced Search
+  </h5>
+  <div class="row">
+    <div class="col s12 m7 l4">
+      <form class="" action="{% url 'advancedSearch' %}" method="get">
+        <label class="recipe-form">
+          Title contains:
+          <input type="text" class="form-control" name="title" value="{{advancedQuery.title}}"></input>
+        </label>
+        <br>
+        - and -
+        <br>
+        <br>
+        <label class="recipe-form">
+          Ingredients contain (separate by commas):
+          <input type="text" class="form-control" name="ingredients" value="{{advancedQuery.ingredients}}"></input>
+        </label>
+        <input value="onlyIngredients"
+          name="onlyIngredients"
+          type="checkbox"
+          id="onlyIngredients"
+          {% if advancedQuery.onlyIngredients %}checked="checked"{% endif %}
+        />
+        <label for="onlyIngredients">Only these ingredients</label>
+        <br>
+
+        <br>
+        - and -
+        <br>
+        <br>
+        <label class="recipe-form">
+          Instructions contain:
+          <input type="text" class="form-control" name="instructions" value="{{advancedQuery.instructions}}"></input>
+        </label>
+        <input value="only-ingredients"
+          name="only-ingredients"
+          type="checkbox"
+          id="only-ingredients"
+          {% if onlyIngredients %}checked="checked"{% endif %}
+        />
+        <br>
+        <br>
+        - and -
+        <br>
+        <br>
+        <label class="recipe-form">
+          Rated better than:<br>
+          <fieldset class="rating">
+            {% for i in rates %}
+              {% if rating == i %}
+                <input checked type="radio" id="star{{i}}" name="rating" value="{{i}}"><label class="full" for="star{{i}}" title=""></label>
+              {% else %}
+                <input type="radio" id="star{{i}}" name="rating" value="{{i}}"><label class="full" for="star{{i}}" title=""></label>
+              {% endif %}
+            {% endfor %}
+          </fieldset>
+        </label>
+        <span class="rating-clear">
+          <i onclick="$('input[name=rating]').attr('checked',false)" class="material-icons">clear</i>
+        </span>
+        <br>
+        <br>
+        - and -
+        <br>
+        <br>
+        <div class="row">
+          <div class="input-field col s6">
+              <select id="difficulty" name="difficulty">
+                <option value="-" disabled selected>Choose your option</option>
+                <option value="E">Easy</option>
+                <option value="M">Medium</option>
+                <option value="H">High</option>
+              </select>
+              <label for="difficulty">Difficulty</label>
+          </div>
+          <div class="col s6">
+            <div class="recipe-form input-field">
+              <input placeholder="" name="servings" id="servings" type="text"/>
+              <label>Servings</label>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        - and -
+        <br>
+        <br>
+        <label class="recipe-form">
+          Note contains:
+          <input type="text" class="form-control" name="notes" value="{{advancedQuery.notes}}"></input>
+        </label>
+        <br>
+        - and -
+        <br>
+        <br>
+        <label class="recipe-form">
+          Tags (one per line):
+          <input type="text" class="form-control" name="tags" value="{{advancedQuery.tags}}"></input>
+        </label>
+        <br>
+        {% csrf_token %}
+        <input class="recipe-form btn btn-success" value="Search" type="submit"></input>
+      </form>
+    </div>
+    <div class="col s12 m5 l8">
+      <div class="row notes-container">
+        {% for note in notes %}
+          {% include 'smallRecipe.html' %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,112 @@
+<form class="recipe-form centered small" action="{% block url %}{% endblock %}" method="post">
+  {% block form-top %}
+  {% endblock %}
+  <div class="{% block form-class %}{% endblock %}">
+    <label class="recipe-form">
+      Title:
+      <input type="text" name="title" value="{{note.title}}"></input>
+    </label>
+    <br>
+    <label class="recipe-form">
+      Ingredients:
+      <textarea class="materialize-textarea" name="ingredients">{{note.ingredients}}</textarea>
+    </label>
+    <br>
+    <label class="recipe-form">
+      Instructions:
+      <textarea class="materialize-textarea" name="instructions">{{note.instructions}}</textarea>
+    </label>
+    <br>
+    <label class="recipe-form">
+      Image url:
+      <input type="text" name="image" value="{{note.image}}"></input>
+    </label>
+    <br>
+    <div class="row">
+      <div class="col s12 m4">
+        <label class="recipe-form">
+          Rating:<br>
+          <fieldset class="rating">
+            {% for i in rates %}
+              {% if note.rating == i %}
+                <input checked type="radio" id="star{{i}}" name="rating" value="{{i}}"><label class="full" for="star{{i}}" title=""></label>
+              {% else %}
+                <input type="radio" id="star{{i}}" name="rating" value="{{i}}"><label class="full" for="star{{i}}" title=""></label>
+              {% endif %}
+            {% endfor %}
+          </fieldset>
+        </label>
+        <span class="rating-clear">
+          <i onclick="$('input[name=rating]').attr('checked',false)" class="material-icons">clear</i>
+        </span>
+      </div>
+      <div class="input-field col s12 m4">
+          <select id="difficulty" name="difficulty">
+            <option value="-" {% if note.difficulty == "-" %}selected{% endif %}>Choose your option</option>
+            <option value="E" {% if note.difficulty == "E" %}selected{% endif %}>Easy</option>
+            <option value="M" {% if note.difficulty == "M" %}selected{% endif %}>Medium</option>
+            <option value="H" {% if note.difficulty == "H" %}selected{% endif %}>High</option>
+          </select>
+          <label for="difficulty">Difficulty</label>
+      </div>
+      <div class="col s12 m4">
+        <div class="recipe-form input-field">
+          <input placeholder="" value="{{note.servings}}" name="servings" id="servings" type="text"/>
+          <label>Servings</label>
+        </div>
+      </div>
+    </div>
+    <label class="recipe-form">
+      Notes:
+      <textarea class="materialize-textarea" name="text">{{note.text}}</textarea>
+    </label>
+    <br>
+    <label class="recipe-form">
+      Tags (one per line):
+      <input type="text" name="tags" value="{{note.tags}}" data-role="materialtags" />
+      <!-- <textarea class="materialize-textarea" name="tags">{{note.tags}}</textarea> -->
+    </label>
+    {% block recommended-tags %}
+      <div class="recipe-tags">
+        <h5> Recommended tags: </h5>
+        {% for tag in tags %}
+          <div class="recipe-tag to-add chip">
+            {{tag}}
+          </div>
+        {% endfor %}
+      </div>
+    {% endblock %}
+    <br>
+  </div>
+  {% csrf_token %}
+  <div class="row">
+    {% block cancelButton %}
+    <div class="col s12 no-padding">
+      <input class="recipe-form btn btn-success" type="submit"></input>
+    </div>
+    {% endblock %}
+  </div>
+</form>
+<script>
+  $('.more-button-fields').on('click', function(e) {
+    $('.recipe-more-fields').toggle('show');
+    if ($(this).text() === 'More Fields') {
+      $(this).text('Less Fields');
+    } else {
+      $(this).text('More Fields');
+    }
+  });
+  var removeListener = function() {
+    $('.recipe-tag.to-add').click(function(e) {
+      $('[name=tags]').materialtags('add', this.textContent.trim());
+      this.remove();
+    });
+  }
+  removeListener();
+  $('[name=tags]').on('itemRemoved', function(event) {
+    var val = event.item;
+    $('.recipe-tags')
+      .append('<div class="recipe-tag to-add chip">' + val + '</div>');
+    removeListener();
+  });
+</script>

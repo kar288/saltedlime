@@ -1,0 +1,17 @@
+{% extends "recipeForm.html" %}
+
+{% block url %}
+{% url 'editNote' note.id %}
+{% endblock %}
+
+{% block cancelButton %}
+
+<div class="col s10 no-padding">
+  <input class="recipe-form btn btn-success" type="submit"></input>
+</div>
+<div class="col s2">
+  <a class="recipe-original-link" href="{% url 'note' note.id %}">
+    Cancel
+  </a>
+</div>
+{% endblock %}

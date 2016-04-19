@@ -1,0 +1,128 @@
+{% extends "recipeBase.html" %}
+
+{% block title %}
+{{note.title}}
+{% endblock %}
+
+{% block content %}
+<div class="card recipe-card recipe-large">
+  <div class="light-primary-color card-content">
+    <span class="card-title grey-text text-darken-4">
+      <a target="_blank" class="primary-text-color" href="{{note.url}}">
+        {{note.title}} - {{note.site}}
+      </a>
+
+      <a class="recipe-original-link" href="{% url 'deleteNoteHtml' note.id %}">
+        (Delete)
+      </a>
+    </span>
+    <!-- <p><a href="#">This is a link</a></p> -->
+  </div>
+  {% if edit %}
+    {% include 'editRecipeForm.html' %}
+  {% else %}
+  <div class="recipe-middle row">
+    <div class="col s12 m12 l8">
+      <div class="card-image">
+        <div
+          class="recipe-image"
+          style="background-image: url('{{note.image}}')"
+        ></div>
+        {% if shared %}
+          <a class="tooltipped btn-floating btn-large special-yellow recipe-edit-button"
+            data-position="top"
+            data-delay="50"
+            data-tooltip="Add recipe"
+            href="{% url 'addSharedRecipe' note.id %}">
+            <i class="material-icons">add</i>
+          </a>
+        {% else %}
+          <a class="tooltipped btn-floating btn-large special-yellow recipe-edit-button"
+            data-position="top"
+            data-delay="50"
+            data-tooltip="Edit recipe"
+            href="{% url 'editNoteHtml' note.id %}">
+            <i class="material-icons">edit</i>
+          </a>
+          <a class="modal-trigger tooltipped btn-floating btn-large special-yellow recipe-share-button"
+            data-position="top"
+            data-delay="50"
+            href="#share-modal"
+            data-tooltip="Share recipe"
+            onclick="$.ajax('{% url 'shareNote' note.id %}')">
+            <i class="material-icons">link</i>
+          </a>
+        {% endif %}
+      </div>
+      <!-- <div class="card-wash"></div> -->
+    </div>
+    <div class="recipe-info  col s12 m12 l4">
+      <div class="recipe-note">
+        <div class="card-title grey-text text-darken-4"> Notes </div>
+        {{note.text}}
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="recipe-info col s12">
+      <div class="card-title grey-text text-darken-4"> Tags </div>
+      {% for tag in note.tags_as_list %}
+        <div class="recipe-tag chip">
+          <a href="{% url 'tags' tag %}">
+            {{tag}}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="row">
+    <div  class="recipe-info col s12 m4">
+      Rating:
+      {% include 'ratingStars.html' %}
+    </div>
+    <div class="recipe-info col s12 m4">
+      Difficulty: {{note.difficulty_long}}
+    </div>
+    <div class="recipe-info col s12 m4">
+      Servings: {% if note.servings %} {{note.servings}} {% else %} - {% endif %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="recipe-info col s12 m4">
+      <div class="card-title grey-text text-darken-4">
+        Ingredients
+      </div>
+      {% for ingredient in note.ingredients_as_list %}
+          <p>{{ ingredient }}</p>
+      {% endfor %}
+    </div>
+    <div class="recipe-info col s12 m8">
+      <div class="card-title grey-text text-darken-4">
+        Instructions
+      </div>
+      {% for instructions in note.instructions_as_list %}
+          <p>{{ instructions }}</p>
+      {% endfor %}
+    </div>
+  </div>
+   <div class="card-reveal">
+     <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+     <p>Here is some more information about this product that is only revealed once clicked on.</p>
+     {% include 'editRecipeForm.html' %}
+   </div>
+   {% endif %}
+ </div>
+
+ <div id="share-modal" class="modal">
+  <div class="modal-content">
+    <h4>Share recipe</h4>
+    <p>Copy the given link and share it with your friends</p>
+    <blockquote class="share-link">
+      {{shareUrl}}
+    </blockquote>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Done</a>
+  </div>
+</div>
+{% endblock %}

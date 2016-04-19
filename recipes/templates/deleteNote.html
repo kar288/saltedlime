@@ -1,0 +1,21 @@
+{% extends "recipeBase.html" %}
+
+{% block content %}
+  <div class="centered small">
+     <h5>
+       {{note.title}}
+     </h5>
+  </div>
+  <div class="row centered small">
+    <div class="col s6">
+      <a href="{% url 'note' note.id %}" class="btn blue recipe-form">
+        Cancel
+      </a>
+    </div>
+    <div class="col s6">
+      <a href="{% url 'deleteNote' note.id %}" class="btn red recipe-form">
+        Delete Recipe
+      </a>
+    </div>
+  </div>
+{% endblock %}

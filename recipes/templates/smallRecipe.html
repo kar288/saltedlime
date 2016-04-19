@@ -1,0 +1,27 @@
+
+<a href="{% url 'note' note.id %}">
+  <div class="card recipe-card" style="float: left">
+    <div class="card-image">
+      <div
+        class="recipe-image"
+        style="background-image: url('{{note.image}}')"
+      ></div>
+      <div class="card-wash"></div>
+      <div class="card-title">{{note.title}}</div>
+    </div>
+    <div class="card-content">
+      <div class=" recipe-details">
+        <div class="recipe-detail">
+          Rating:
+          {% include 'ratingStars.html' %}
+        </div>
+        <div class="recipe-detail">
+          Difficulty: {{note.difficulty_long}}
+        </div>
+        <div class="recipe-detail">
+          Servings: {% if note.servings %} {{note.servings}} {% else %} - {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</a>

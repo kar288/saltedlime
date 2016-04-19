@@ -1,0 +1,75 @@
+{% for recipe in recipes %}
+  <div class="recipe-add-row row">
+    <div class="recipe-url-add col s11 m11 l11">
+      <a href="{{recipe}}">{{recipe}}</a>
+    </div>
+    <div class="col s1 m1 l1">
+      <i id="check-{{forloop.counter0}}" class="green-text hidden material-icons">check</i>
+      <i class="tooltipped hidden material-icons"
+        data-position="top"
+        data-delay="50"
+        data-tooltip="Add recipe"
+        id="error-{{forloop.counter0}}">
+        error
+      </i>
+      <div id="spinner-{{forloop.counter0}}" class="hidden" style="position: relative;">
+        <div class="preloader-wrapper mini active">
+          <div class="spinner-layer spinner-green-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div><div class="gap-patch">
+              <div class="circle"></div>
+            </div><div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+<div class="done hidden">
+  All done!
+</div>
+<script>
+  console.log('a')
+  var done = 0;
+  var links = $('.recipe-url-add')
+  var addRecipe = function(links, index) {
+    if (index === links.length) {
+      // $('.done').removeClass('hidden');
+      $('.next').removeClass('hidden');
+      return;
+    }
+    $('#spinner-' + index).removeClass('hidden');
+    $.get('/recipes/addRecipeAsync/', {url: links[index].innerText})
+      .done(function(data) {
+        $('#spinner-' + index).addClass('hidden');
+        if (!data.error) {
+          $('#check-' + index).removeClass('hidden');
+        } else {
+          var error = $('#error-' + index);
+          if (data.error.level === 0) {
+            error.addClass('green-text');
+          } else if (data.error.level === 2) {
+            error.addClass('orange-text');
+          } else {
+            error.addClass('red-text');
+          }
+          error
+            .attr('data-tooltip', data.error.error)
+            .removeClass('hidden');
+        }
+        return addRecipe(links, index + 1)
+      }).fail(function(e) {
+        $('#spinner-' + index).addClass('hidden');
+        var error = $('#error-' + index);
+        error.addClass('red-text');
+        error
+          .attr('data-tooltip', e)
+          .removeClass('hidden');
+      });
+  }
+  addRecipe(links, 0);
+  $('.tooltipped').tooltip({delay: 50});
+</script>

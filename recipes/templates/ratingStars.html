@@ -1,0 +1,7 @@
+{% if note.rating == -1 %}
+-
+{% else %}
+  {% for i in note.rating_as_list %}
+    <i class="fa fa-star"></i>
+  {% endfor %}
+{% endif %}

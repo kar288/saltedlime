@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: NetflixRouletteAPI
+Version: 5.0
+Summary: The official python wrapper for the Netflix Roulette Web API
+Home-page: http://netflixroulette.net/api/
+Author: Andrew Sampson
+Author-email: andrew@codeusa523.org
+License: GNU GENERAL PUBLIC LICENSE V3.0
+Download-URL: http://netflixroulette.net/api/downloads/NetflixRouletteAPI-5.0.zip
+Description: UNKNOWN
+Keywords: netflix roulette webapi wrapper
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Communications :: Chat
+Classifier: Topic :: Internet

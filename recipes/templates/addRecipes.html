@@ -1,0 +1,149 @@
+{% extends "recipeBase.html" %}
+
+{% block content %}
+<div class="recipe-form centered small">
+  <h5 class="">
+    Add several recipes:
+  </h5>
+  {% if urls %}
+    You can review all of bookmarks. We have grouped them to make it easier to look over.
+    The links that we think are recipes have been highlighted so that you can find them faster.
+    If some of the links are already in your recipes they will appear at the bottom.
+    <div class="row">
+      <div class="col s11">
+      {% for page in pages %}
+        <div id="content-{{forloop.counter}}"
+          {% if forloop.counter > 1 %}class="hidden"{% endif %}>
+          <form method="POST"
+            id="bookmarks-{{forloop.counter}}"
+            action="."
+            class="bookmarks"
+            index="{{forloop.counter}}">
+            {% for url in page %}
+              <p class="exists-tooltip"
+                data-position="top"
+                data-delay="50"
+                data-tooltip="You already have this recipe!"
+                style="background-color: {{url.color}}; overflow: hidden;">
+                <input name="bookmark" type="checkbox" id="bookmark-{{forloop.counter}}" value="{{url.url}}"/>
+                <label style="height: 100%; width: 100%;" for="bookmark-{{forloop.counter}}">{{url.name}}</label>
+              </p>
+            {% endfor %}
+            {% csrf_token %}
+            <input class="recipe-form btn btn-success" type="submit"/>
+          </form>
+        </div>
+      {% endfor %}
+      </div>
+      <div class="col s1">
+        <i data-position="top"
+          data-delay="50"
+          data-tooltip="Skip"
+          class="waves-effect next material-icons"
+          style="margin-top: 200px">
+          chevron_right
+        </i>
+      </div>
+    </div>
+    <div class="progress">
+      <div index="1" stepSize="{{stepSize}}" class="determinate" style="width: {{stepSize}}%"></div>
+    </div>
+    {% if done %}
+      <div class="done-recipes">
+        We found {{done}} {% if done >= 200 %}or more {% endif %} links that are already in your recipes!
+      </div>
+    {% endif %}
+    <script>
+      var checkRecipes = function(urls) {
+        urls.forEach(url => {
+          console.log('check')
+          $.ajax({
+            url: '/recipes/recipeExists/',
+            type: 'get',
+            data: {'url': url.value},
+            dataType: 'json',
+            success: function(data) {
+              if (data.exists) {
+                $(this).parent().tooltip({delay: 50});
+                $(this).attr('disabled', 'disabled');
+              }
+            }.bind(url),
+            error: function(error) {
+              debugger;
+            }
+          });
+        });
+      }
+      checkRecipes($('#content-1').find('[name=bookmark]').toArray());
+      $('.bookmarks').on('submit', function(e) {
+        var index = this.getAttribute('index');
+        var form = $(this);
+        $('.next').addClass('hidden');
+        $.ajax({
+          url: '/recipes/addBulk/',
+          type: 'post',
+          data: form.serialize(),
+          dataType: 'json',
+          success: function(data) {
+            $('#content-' + index).html(data.rendered);
+            var height = parseInt($('#content-' + index).css('height'));
+            $('.next').attr('data-tooltip', 'Continue')
+              .css('margin-top', height / 2);
+          },
+          error: function(error) {
+            debugger;
+          }
+        });
+        e.preventDefault();
+      });
+      $('.next').on('click', function(e) {
+        var progress = $('.determinate');
+        var index = parseInt(progress.attr('index'));
+        if ($('[type="checkbox"]:checked').length) {
+          $('.bookmarks[index=' + index + ']').submit();
+          return;
+        }
+        $('#content-' + index).remove();
+        index++;
+        var width = parseFloat(progress.attr('stepSize')) * index;
+        progress.css('width', width + '%');
+        progress.attr('index', index);
+        if (width > 100) {
+          window.location = "/recipes/";
+        }
+        $('#content-' + index).removeClass('hidden');
+        var urls = $('#content-' + index).find('[name=bookmark]').toArray();
+        checkRecipes(urls);
+        var margin = Math.min(
+          parseInt($('#content-' + index).css('height')) / 2,
+          200
+        );
+        $('.next').attr('data-tooltip', 'Skip')
+          .css('margin-top', margin + 'px');
+      });
+    </script>
+  {% else %}
+    Export your chrome or firefox bookmarks as an HTML file and add them here, they will be processed so that you can choose which to import.
+    <br>
+    <form enctype="multipart/form-data" action="{% url 'processBulk' %}" method="post">
+
+      <div class="file-field input-field">
+        <div class="btn">
+          <span>File</span>
+          <input name="bookmarks" type="file">
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" placeholder="Chrome or Firefox bookmark HTML file" type="text">
+        </div>
+      </div>
+      <!-- <label class="recipe-form">
+        Chrome bookmarks
+        <input class="form-control" type="file" name="bookmarks"/>
+      </label> -->
+      <br>
+      {% csrf_token %}
+      <input class="recipe-form btn btn-success" value="Process" type="submit"/>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
