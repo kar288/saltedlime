@@ -19,8 +19,8 @@
 # import re
 # from BeautifulSoup import BeautifulSoup, NavigableString
 
+from accountManaging import *
 from datetime import datetime, date
-from django.contrib.auth import logout as auth_logout, login
 from django.contrib.auth.decorators import login_required
 from django.db.models.functions import Lower
 from django.http import JsonResponse, Http404
@@ -28,8 +28,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.views.decorators.clickjacking import xframe_options_exempt
 from parse import *
-from recipes.models import Recipe, Note, RecipeUser, Month
+from recipes.models import Note, RecipeUser, Month
 from urlparse import urlparse
+from utils import *
 
 import hashlib
 import logging
@@ -44,48 +45,10 @@ PAGE_SIZE = 12
 
 logger = logging.getLogger('recipesParsing')
 
-def getTableFields(field, direction):
-    fields =  [{
-            'field': 'image',
-            'display': '',
-            'selected': direction if 'image' == field else 0
-        }, {
-            'field': 'title',
-            'display': 'Title',
-            'selected': direction if 'title' == field else 0
-        }, {
-            'field': 'site',
-            'display': 'Site',
-            'selected': direction if 'site' == field else 0
-        }, {
-            'field': 'difficulty',
-            'display': 'Difficulty',
-            'selected': direction if 'difficulty' == field else 0
-        }, {
-            'field': 'servings',
-            'display': 'Servings',
-            'selected': direction if 'servings' == field else 0
-        }, {
-            'field': 'rating',
-            'display': 'Rating',
-            'selected': direction if 'rating' == field else 0
-        }, {
-            'field': 'created_at',
-            'display': 'Date',
-            'selected': direction if 'rating' == field else 0
-        }]
-    return fields
-
 def normalizeURL(url):
     if not url[-1] == '/':
         return url + '/'
     return url
-
-def getUser(user):
-    recipeUser = RecipeUser.objects.filter(googleUser = user) | RecipeUser.objects.filter(facebookUser = user)
-    if not recipeUser.exists():
-        raise Http404("No such user.")
-    return recipeUser[0]
 
 def pagination(request, context, page, notes):
     queries_without_page = request.GET.copy()
@@ -103,13 +66,10 @@ def pagination(request, context, page, notes):
     context['next'] = page + 1 if page + 1 <= len(pages) else 0
     context['rates'] = range(5, 0, -1)
 
-# @xframe_options_exempt
 def home(request):
     context = {}
     if not request.user.is_authenticated():
         return render(request, 'recipeBase.html', context)
-    print request.user
-    # auth_logout(request)
     recipeUser = getUser(request.user)
     notes = recipeUser.notes.all().order_by('-date_added')
 
@@ -144,9 +104,6 @@ def home(request):
             context['filters'][field] = values
     return render(request, 'index.html', context)
 
-def doneLogin(request):
-    return render(request, 'doneLogin.html', {})
-
 def getTopValues(notes, field, selected):
     vals = {}
     for note in notes:
@@ -172,27 +129,6 @@ def getTopValues(notes, field, selected):
     for el in sorted_vals_els:
         elements.append({'name': el, 'selected': el in selected})
     return elements
-
-@login_required(login_url='/')
-def table(request, field, direction):
-    context = {}
-    field = field if field else 'title'
-    recipeUser = getUser(request.user)
-
-    if field == 'rating' or field == 'created_at':
-        context['notes'] = recipeUser.notes.all().order_by(field)
-    else:
-        context['notes'] = recipeUser.notes.all().order_by(Lower(field))
-
-    direction = int(direction)
-    if direction == 1:
-        context['notes'] = context['notes'].reverse()
-    if direction == 1:
-        direction = 2
-    elif direction == 2 or direction == 0:
-        direction = 1
-    context['fields'] = getTableFields(field, direction)
-    return render(request, 'table.html', context)
 
 @login_required(login_url='/')
 def shareNote(request, noteId):
@@ -223,21 +159,9 @@ def addSharedRecipe(request, noteId):
             context['errors'] = ['No such recipe']
             return redirect('/')
     note.pk = None
-    # recipe = note.recipe
-    # recipe.pk = None
-    # recipe.save()
-    # note.recipe = recipe
     note.save()
     recipeUser.notes.add(note)
     return redirect('/note/' + str(note.id))
-
-@login_required(login_url='/')
-def tableAll(request, field):
-    context = {}
-    field = field if field else 'title'
-    context['notes'] = Note.objects.all().order_by(Lower(field))
-    context['fields'] = getTableFields(field, 1)
-    return render(request, 'table.html', context)
 
 @login_required(login_url='/')
 def note(request, noteId):
@@ -525,7 +449,6 @@ def getTagsForNote(note):
     return longerWords + tags
 
 def addRecipeByUrl(recipeUser, recipeUrl, post):
-    print 'logging'
     socket.setdefaulttimeout(30)
     logger.info(recipeUrl)
     if recipeUser.notes.filter(url = recipeUrl).exists():
@@ -534,25 +457,15 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
     try:
         domain = ''
         recipeData = {}
-        print recipeUrl
         if recipeUrl:
             recipeData = parseRecipe(recipeUrl)
             if not recipeData or len(recipeData) == 1:
                 return {'error': 'Empty recipe?', 'level': 3}
             domain = tldextract.extract(recipeUrl).domain
-        # recipe = Recipe.objects.create(
-        #   url = recipeUrl,
-        #   image = image,
-        #   ingredients = ingredients,
-        #   instructions = instructions,
-        #   title = title[:200],
-        #   date_added = datetime.now()
-        # )
         tags = ','.join(recipeData.get('tags', []))
         if post.get('tags', ''):
             tags += ',' + post.get('tags', '')
         note = Note.objects.create(
-        #   recipe = recipe,
           url = recipeUrl,
           image = recipeData.get('image', post.get('image', ''))[:400],
           ingredients = recipeData.get('ingredients', post.get('ingredients', '')),
@@ -653,9 +566,9 @@ def processBulk(request):
             else:
                 parsed_uri = urlparse(href)
                 domain = '{uri.netloc}'.format(uri=parsed_uri)
-                color = 'white'
+                color = ''
                 if domain in cookingDomains or 'recipe' in text.lower():
-                    color = 'rgba(38, 166, 154, 0.3)'
+                    color = '#fff8e1'
                 urls.append({
                     'url': href,
                     'name': text,
@@ -674,124 +587,8 @@ def processBulk(request):
     logger.info('Processing bulk time: ' + str((datetime.now() - start).seconds))
     return render(request, 'addRecipes.html', context)
 
-
-def save_profile_picture(strategy, user, response, details,
-                         is_new=False,*args,**kwargs):
-    profile = user.userprofile
-    profile.profile_photo.save('{0}_social.jpg'.format(user.username),
-                           ContentFile(response.content))
-    profile.save()
-
-def save_profile(backend, user, response, *args, **kwargs):
-  # print user.__class__;
-  # print kwargs['social']
-    # print response
-    data = {}
-    if backend.name == "google-oauth2":
-        data['profilePic'] = response.get('image', {}).get('url', None)
-        data['name'] = response.get('displayName', None)
-        data['email'] = response.get('emails', [{}])[0].get('value', None)
-        data['googleUser'] = user
-        recipeUser = RecipeUser.objects.filter(googleUser = user)
-    elif backend.name == 'facebook':
-        if 'id' in response:
-            data['profilePic'] = 'http://graph.facebook.com/' + response['id'] + '/picture?type=square'
-        data['name'] = response.get('name', None)
-        data['email'] = response.get('email', None)
-        data['facebookUser'] = user
-        recipeUser = RecipeUser.objects.filter(facebookUser = user)
-
-    if not recipeUser.exists():
-        userByEmail = RecipeUser.objects.filter(email = data['email'])
-        if userByEmail.exists():
-            logging.info('email exists, joining account')
-            recipeUser = userByEmail
-        else:
-            RecipeUser.objects.create(
-                googleUser = data.get('googleUser', None),
-                facebookUser = data.get('facebookUser', None),
-                profilePic = data.get('profilePic', None),
-                name = data.get('name', None),
-                email = data.get('email', None)
-            )
-            return;
-    recipeUser = recipeUser[0]
-    changed = False
-    for attr in data:
-        if not getattr(recipeUser, attr) and data[attr]:
-            setattr(recipeUser, attr, data[attr])
-            changed = True
-    if changed:
-        recipeUser.save()
-
-def logout(request):
-    """Logs out user"""
-    auth_logout(request)
-    return redirect('/')
-
 def about(request):
     return render(request, 'about.html')
 
 def contact(request):
     return render(request, 'contact.html')
-
-def facebook_phone(request):
-    return render(request, 'facebook_phone.html')
-
-api_version = "v1.0"
-app_id = ''
-app_secret = '';
-me_endpoint_base_url = 'https://graph.accountkit.com/v1.0/me';
-token_exchange_base_url = 'https://graph.accountkit.com/v1.0/access_token';
-import hmac
-import hashlib
-import base64
-
-def genAppSecretProof(app_secret, access_token):
-    h = hmac.new (
-        app_secret.encode('utf-8'),
-        msg=access_token.encode('utf-8'),
-        digestmod=hashlib.sha256
-    )
-    return h.hexdigest()
-
-def accountkit_login(request):
-    app_access_token = '|'.join(['AA', app_id, app_secret])
-    print app_access_token
-    params = \
-        'grant_type=' + 'authorization_code' + \
-        '&code=' + request.POST.get('code') + \
-        '&access_token=' + app_access_token
-
-    token_exchange_url = token_exchange_base_url + '?' + params;
-    print token_exchange_url
-    response = requests.get(token_exchange_url)
-    data = response.json()
-    # Request.get({url: token_exchange_url, json: true}, function(err, resp, respBody) {
-    #   var view = {
-    #     user_access_token: respBody.access_token,
-    #     expires_at: respBody.expires_at,
-    #     user_id: respBody.id,
-    #   };
-    #
-    #   // get account details at /me endpoint
-    print data
-
-    appsecret_proof = genAppSecretProof('', data['access_token'])
-    me_endpoint_url = me_endpoint_base_url + '?access_token=' + data['access_token'] + '&appsecret_proof=' + appsecret_proof;
-    me_endpoint_url = me_endpoint_base_url + '?access_token=' + data['access_token'];
-    print me_endpoint_url
-    response = requests.get(me_endpoint_url)
-    print response.text
-    #   Request.get({url: me_endpoint_url, json:true }, function(err, resp, respBody) {
-    #     // send login_success.html
-    #     if (respBody.phone) {
-    #       view.phone_num = respBody.phone.number;
-    #     } else if (respBody.email) {
-    #       view.email_addr = respBody.email.address;
-    #     }
-    #     var html = Mustache.to_html(loadLoginSuccess(), view);
-    #     response.send(html);
-    #   });
-    # });
-    return render(request, 'index.html')

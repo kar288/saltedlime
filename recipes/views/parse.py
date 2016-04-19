@@ -124,6 +124,7 @@ def parseRecipe(url):
     elif 'smittenkitchen' in url:
         parseSmittenKitchen(soup, recipe)
     elif 'thekitchn' in url:
+        print 'THE KITCHN'
         parseTheKitchn(soup, recipe)
     elif 'cookieandkate' in url:
         parseCookieAndKate(soup, recipe)
@@ -155,6 +156,8 @@ def parserTemplate(soup, recipe, tagAttr, tagLink, ingredientAttr,\
         else:
             recipe['servings'] = servings.text
         recipe['servings'] = recipe['servings'].strip()
+    else:
+        recipe['servings'] = ''
     return recipe
 
 
@@ -289,6 +292,7 @@ def parseTheKitchn(soup, recipe):
     node = soup.body.find(text=re.compile('^[ ]*(Serves|Yield|Makes)[s]*[: ].*'))
     recipe['servings'] = node
     if not node or node == None:
+        recipe['servings'] = ''
         return recipe
     while isinstance(node, NavigableString) or not node.name == 'p':
         if node.parent:
@@ -311,6 +315,8 @@ def parseTheKitchn(soup, recipe):
     if not len(recipe['ingredients']):
         recipe['ingredients'] = ingredients
     recipe['instructions'] = instructions
+    if not recipe['servings']:
+        recipe['servings'] = ''
     return recipe
 
 def parseGeneral(url, soup, recipe):

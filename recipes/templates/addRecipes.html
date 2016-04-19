@@ -26,7 +26,7 @@
                 data-tooltip="You already have this recipe!"
                 style="background-color: {{url.color}}; overflow: hidden;">
                 <input name="bookmark" type="checkbox" id="bookmark-{{forloop.counter}}" value="{{url.url}}"/>
-                <label style="height: 100%; width: 100%;" for="bookmark-{{forloop.counter}}">{{url.name}}</label>
+                <label class="bookmark-checkbox" for="bookmark-{{forloop.counter}}">{{url.name}}</label>
               </p>
             {% endfor %}
             {% csrf_token %}
@@ -45,8 +45,8 @@
         </i>
       </div>
     </div>
-    <div class="progress">
-      <div index="1" stepSize="{{stepSize}}" class="determinate" style="width: {{stepSize}}%"></div>
+    <div class="light-accent-color progress">
+      <div index="1" stepSize="{{stepSize}}" class="accent-color determinate" style="width: {{stepSize}}%"></div>
     </div>
     {% if done %}
       <div class="done-recipes">
@@ -56,9 +56,8 @@
     <script>
       var checkRecipes = function(urls) {
         urls.forEach(url => {
-          console.log('check')
           $.ajax({
-            url: '/recipes/recipeExists/',
+            url: '/recipeExists/',
             type: 'get',
             data: {'url': url.value},
             dataType: 'json',
@@ -80,7 +79,7 @@
         var form = $(this);
         $('.next').addClass('hidden');
         $.ajax({
-          url: '/recipes/addBulk/',
+          url: '/addBulk/',
           type: 'post',
           data: form.serialize(),
           dataType: 'json',
@@ -109,7 +108,7 @@
         progress.css('width', width + '%');
         progress.attr('index', index);
         if (width > 100) {
-          window.location = "/recipes/";
+          window.location = '/';
         }
         $('#content-' + index).removeClass('hidden');
         var urls = $('#content-' + index).find('[name=bookmark]').toArray();

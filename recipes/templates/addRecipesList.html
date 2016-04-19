@@ -32,9 +32,9 @@
   All done!
 </div>
 <script>
-  console.log('a')
+  console.log('a');
   var done = 0;
-  var links = $('.recipe-url-add')
+  var links = $('.recipe-url-add');
   var addRecipe = function(links, index) {
     if (index === links.length) {
       // $('.done').removeClass('hidden');
@@ -42,7 +42,7 @@
       return;
     }
     $('#spinner-' + index).removeClass('hidden');
-    $.get('/recipes/addRecipeAsync/', {url: links[index].innerText})
+    $.get('/addRecipeAsync/', {url: links[index].innerText})
       .done(function(data) {
         $('#spinner-' + index).addClass('hidden');
         if (!data.error) {

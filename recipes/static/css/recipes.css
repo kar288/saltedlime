@@ -20,11 +20,18 @@ main {
 .default-primary-color { background: #9C27B0; }
 .light-primary-color   { background: #E1BEE7 !important; }
 .text-primary-color    { color: #FFFFFF; }
-.accent-color          { background: #FFC107; }
+.accent-color          { background: #FFC107 !important; }
+.light-accent-color    { background: #fff8e1 !important; }
 .primary-text-color    { color: #212121; }
 .secondary-text-color  { color: #727272; }
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
+
+.bookmark-checkbox {
+  height: 100%;
+  margin: 5px;
+  width: 100%;
+}
 
 .sign-in {
   margin: 0 auto;
