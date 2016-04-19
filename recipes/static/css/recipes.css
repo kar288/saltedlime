@@ -133,6 +133,7 @@ input[type=text]:focus {
 }
 
 .recipe .btn {
+  color: #616161;
   background-color: #C8E6C9;
   /*background-color: #E1BEE7;*/
   font-family: 'Merriweather Sans', sans-serif;
@@ -144,6 +145,10 @@ input[type=text]:focus {
   /*background-color: #E1BEE7;*/
 }
 .recipe .btn-floating:hover {
+  background-color: #FFC107;
+}
+.recipe .btn-floating {
+  color: #FFF;
   background-color: #FFC107;
 }
 
@@ -178,7 +183,6 @@ input[type=text]:focus {
 }
 
 .recipe .left-filters .btn {
-  color: #616161;
   font-size: 0.9em;
   width: 100%;
   overflow: hidden;
