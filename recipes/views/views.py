@@ -40,14 +40,15 @@ def pagination(request, context, page, notes):
 
 def home(request):
     context = {}
+    get = request.GET
     if not request.user.is_authenticated():
+        context['next'] = get.get('next', '/')
         return render(request, 'recipeBase.html', context)
     recipeUser = getUser(request.user)
     notes = recipeUser.notes.all().order_by('-date_added')
 
     allNotes = recipeUser.notes.all().order_by('-date_added')
 
-    get = request.GET
     notes_per_field = []
 
     page = 1
