@@ -111,12 +111,12 @@
       </div>
       <ul class="sign-in">
         <li>
-          <a target="_blank" id="google_login" href="/soc/login/google-oauth2/?next={% url 'doneLogin' %}" class="btn">
+          <a id="google_login" href="/soc/login/google-oauth2/?next={% url 'doneLogin' %}" class="btn">
             Sign in with Google
           </a>
         </li>
         <li>
-          <a target="_blank" href="{% url 'social:begin' 'facebook' %}?next={% url 'doneLogin' %}" class="btn">
+          <a href="{% url 'social:begin' 'facebook' %}?next={% url 'doneLogin' %}" class="btn">
             Sign in with Facebook
           </a>
         </li>
