@@ -127,7 +127,7 @@
           data: form.serialize(),
           dataType: 'json',
           success: function(data) {
-            doneBookmarks += $('.active').length;
+            doneBookmarks += $('.bookmark.active').length;
             $('.active').remove();
             var processed = $('#processed');
             processed.html(data.rendered);
@@ -149,13 +149,15 @@
           $('.bookmarks').submit();
           return;
         }
+        debugger;
 
-        doneBookmarks += $('.active').length;
+        doneBookmarks += $('.bookmark.active').length;
         $('.active').remove();
         moveNext();
         var width = parseFloat((doneBookmarks + exists) * 100 / total);
         progress.css('width', width + '%');
-        if (width > 100) {
+        if (width >= 100) {
+          debugger;
           window.location = '/';
         }
 
