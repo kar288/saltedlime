@@ -11,29 +11,41 @@
     If some of the links are already in your recipes they will appear at the bottom.
     <div class="row">
       <div class="col s11">
-      {% for page in pages %}
-        <div id="content-{{forloop.counter}}"
-          {% if forloop.counter > 1 %}class="hidden"{% endif %}>
-          <form method="POST"
-            id="bookmarks-{{forloop.counter}}"
-            action="."
-            class="bookmarks"
-            index="{{forloop.counter}}">
-            {% for url in page %}
-              <p class="exists-tooltip"
-                data-position="top"
-                data-delay="50"
-                data-tooltip="You already have this recipe!"
+        <div class="" id="processed">
+          <div style="margin: 50px auto; width: 40px;">
+            <div class="preloader-wrapper small active">
+              <div class="spinner-layer spinner-green-only">
+                <div class="circle-clipper left">
+                  <div class="circle"></div>
+                </div><div class="gap-patch">
+                  <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                  <div class="circle"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form method="POST"
+          id="bookmarks"
+          action="."
+          class="bookmarks">
+            {% for url in urls %}
+              <p class="hidden bookmark"
+                id="bookmark-container-{{forloop.counter}}"
                 style="background-color: {{url.color}}; overflow: hidden;">
-                <input name="bookmark" type="checkbox" id="bookmark-{{forloop.counter}}" value="{{url.url}}"/>
+                <input name="bookmark"
+                  type="checkbox"
+                  index="{{forloop.counter}}"
+                  value="{{url.url}}"
+                  id="bookmark-{{forloop.counter}}"
+                />
                 <label class="bookmark-checkbox" for="bookmark-{{forloop.counter}}">{{url.name}}</label>
               </p>
             {% endfor %}
-            {% csrf_token %}
-            <input class="recipe-form btn btn-success" type="submit"/>
-          </form>
-        </div>
-      {% endfor %}
+          {% csrf_token %}
+          <!-- <input class="recipe-form btn btn-success" type="submit"/> -->
+        </form>
       </div>
       <div class="col s1">
         <i data-position="top"
@@ -48,34 +60,61 @@
     <div class="light-accent-color progress">
       <div index="1" stepSize="{{stepSize}}" class="accent-color determinate" style="width: {{stepSize}}%"></div>
     </div>
-    {% if done %}
-      <div class="done-recipes">
-        We found {{done}} {% if done >= 200 %}or more {% endif %} links that are already in your recipes!
-      </div>
-    {% endif %}
+    <div class="hidden done-recipes">
+      We found <span id="exists"></span> links that are already in your recipes!
+    </div>
     <script>
-      var checkRecipes = function(urls) {
-        urls.forEach(url => {
-          $.ajax({
-            url: '/recipeExists/',
-            type: 'get',
-            data: {'url': url.value},
-            dataType: 'json',
-            success: function(data) {
-              if (data.exists) {
-                $(this).parent().tooltip({delay: 50});
-                $(this).attr('disabled', 'disabled');
-              }
-            }.bind(url),
-            error: function(error) {
-              debugger;
-            }
-          });
-        });
+      var exists = 0;
+      var pages = [];
+      var bookmarks = $('.bookmark').toArray();
+      while (bookmarks.length) {
+        pages.push(bookmarks.splice(0, 100));
       }
-      checkRecipes($('#content-1').find('[name=bookmark]').toArray());
+      var doneBookmarks = 0;
+      var total = $('.bookmark').length;
+      var moveNext = function() {
+        $('#processed').html('');
+        var bookmarks = $('.bookmark').splice(0, 10);
+        $('.bookmarks').removeClass('hidden');
+        bookmarks.forEach(b => {
+          $(b).removeClass('hidden');
+          $(b).addClass('active');
+        });
+      };
+      var checkBookmarks = function(page, callback) {
+        var bookmarks = $(page).find('[name=bookmark]').toArray().map(b => {
+          return {url: b.value, index: b.getAttribute('index')};
+        });
+        $.ajax({
+          url: '/recipeExists/',
+          type: 'get',
+          data: {'urls': JSON.stringify(bookmarks)},
+          dataType: 'json',
+          success: function(data) {
+            data.data.forEach(d => {
+              $('#bookmark-container-' + d).remove();
+              exists++;
+              if (exists === 1) {
+                $('.done-recipes').removeClass('hidden');
+              }
+              $('#exists').text(exists);
+              console.log(d + ' exists');
+            });
+            if (callback && typeof(callback) === 'function') {
+              callback();
+            }
+          },
+          error: function(error) {
+            debugger;
+          }
+        });
+      };
+      checkBookmarks(pages[0], function() {
+        moveNext();
+        var rest = pages.slice(1);
+        rest.forEach(checkBookmarks);
+      });
       $('.bookmarks').on('submit', function(e) {
-        var index = this.getAttribute('index');
         var form = $(this);
         $('.next').addClass('hidden');
         $.ajax({
@@ -84,8 +123,13 @@
           data: form.serialize(),
           dataType: 'json',
           success: function(data) {
-            $('#content-' + index).html(data.rendered);
-            var height = parseInt($('#content-' + index).css('height'));
+            doneBookmarks += $('.active').length;
+            $('.active').remove();
+            var processed = $('#processed');
+            processed.html(data.rendered);
+            processed.removeClass('hidden');
+            $('#bookmarks').addClass('hidden');
+            var height = parseInt(processed.css('height'));
             $('.next').attr('data-tooltip', 'Continue')
               .css('margin-top', height / 2);
           },
@@ -97,24 +141,22 @@
       });
       $('.next').on('click', function(e) {
         var progress = $('.determinate');
-        var index = parseInt(progress.attr('index'));
         if ($('[type="checkbox"]:checked').length) {
-          $('.bookmarks[index=' + index + ']').submit();
+          $('.bookmarks').submit();
           return;
         }
-        $('#content-' + index).remove();
-        index++;
-        var width = parseFloat(progress.attr('stepSize')) * index;
+
+        doneBookmarks += $('.active').length;
+        $('.active').remove();
+        moveNext();
+        var width = parseFloat((doneBookmarks + exists) * 100 / total);
         progress.css('width', width + '%');
-        progress.attr('index', index);
         if (width > 100) {
           window.location = '/';
         }
-        $('#content-' + index).removeClass('hidden');
-        var urls = $('#content-' + index).find('[name=bookmark]').toArray();
-        checkRecipes(urls);
+
         var margin = Math.min(
-          parseInt($('#content-' + index).css('height')) / 2,
+          parseInt($('.bookmarks').css('height')) / 2,
           200
         );
         $('.next').attr('data-tooltip', 'Skip')

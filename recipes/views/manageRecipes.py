@@ -10,6 +10,7 @@ from recipes.models import Note, RecipeUser
 from urlparse import urlparse
 from utils import *
 
+import json
 import math
 import socket
 
@@ -199,11 +200,18 @@ def addBulk(request):
 @login_required(login_url='/')
 def recipeExists(request):
     get = request.GET
-    url = get.get('url')
-    if not url:
-        return JsonResponse({'exists': False})
+    urls = json.loads(get.get('urls'))
+    data = []
     recipeUser = getUser(request.user)
-    return JsonResponse({'exists': recipeUser.notes.filter(url = url).exists()})
+    for url in urls:
+        print url
+        if not url:
+            continue
+
+        u = url['url']
+        if recipeUser.notes.filter(url = u).exists():
+            data.append(url['index'])
+    return JsonResponse({'data': data})
 
 @login_required(login_url='/')
 def processBulk(request):
@@ -228,7 +236,8 @@ def processBulk(request):
         return render(request, 'addRecipes.html', context)
     if not request.FILES['bookmarks'].name.endswith('.html'):
         logger.info('Bookmarks not an html file: ' + request.FILES['bookmarks'].name)
-        return render(request, 'addRecipes.html', {'errors': [{'error': 'Please upload an html file'}]})
+        return render(request, 'addRecipes.html',
+            {'errors': [{'error': 'Please upload an html file'}]})
 
     recipeUser = getUser(request.user)
     try:
@@ -239,36 +248,28 @@ def processBulk(request):
         tags = soup.findAll('a')
         if len(tags) == 0:
             logger.info('No bookmarks in file: ' + request.FILES['bookmarks'].name)
-            return render(request, 'addRecipes.html', {'errors': [{'error': 'No bookmarks or links in the file!'}]})
+            return render(request, 'addRecipes.html',
+                {'errors': [{'error': 'No bookmarks or links in the file!'}]})
         print len(tags)
         for tag in tags:
             href = normalizeURL(tag.get('href'))
             text = tag.text if tag.text else href
-            if ((datetime.now() - start).seconds < 15 or done < 200) and recipeUser.notes.filter(url = href):
-            # if done < 0 and recipeUser.notes.filter(url = href):
-                # print 'checking'
-                done += 1
-            else:
-                # parsed_uri = urlparse(href)
-                # domain = '{uri.netloc}'.format(uri=parsed_uri)
-                # color = ''
-                # if domain in cookingDomains or 'recipe' in text.lower():
-                #     color = '#fff8e1'
-                urls.append({
-                    'url': href,
-                    'name': text,
-                    'color': ''
-                })
+            urls.append({
+                'url': href,
+                'name': text,
+                'color': ''
+            })
         context['urls'] = urls
         context['done'] = done
+
         context['pages'] = []
-        for i in range(int(math.ceil(len(urls) / 10)) + 1):
+        for i in range(int(math.ceil(len(urls) / 100)) + 1):
             context['pages'].append( \
-                urls[i * 10 : min((i + 1) * 10, len(urls))])
-        context['stepSize'] = 100.0 / len(context['pages'])
+                urls[i * 100 : min((i + 1) * 100, len(urls))])
     except Exception as e:
         logger.exception(e)
-        return render(request, 'addRecipes.html', {'errors': ['Invalid bookmark file']})
+        return render(request, 'addRecipes.html',
+            {'errors': [{'error' : 'Invalid bookmark file'}]})
     logger.info('Processing bulk time: ' + str((datetime.now() - start).seconds))
     return render(request, 'addRecipes.html', context)
 
