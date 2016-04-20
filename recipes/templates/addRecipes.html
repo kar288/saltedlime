@@ -87,8 +87,12 @@
         });
         $.ajax({
           url: '/recipeExists/',
-          type: 'get',
-          data: {'urls': JSON.stringify(bookmarks)},
+          type: 'post',
+          data: {
+            'urls': JSON.stringify(bookmarks),
+            'csrfmiddlewaretoken':
+              document.getElementsByName('csrfmiddlewaretoken')[0].value
+          },
           dataType: 'json',
           success: function(data) {
             data.data.forEach(d => {

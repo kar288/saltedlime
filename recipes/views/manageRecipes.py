@@ -199,12 +199,13 @@ def addBulk(request):
 
 @login_required(login_url='/')
 def recipeExists(request):
-    get = request.GET
-    urls = json.loads(get.get('urls'))
+    post = request.POST
+    if not post:
+        return JsonResponse({})
+    urls = json.loads(post.get('urls'))
     data = []
     recipeUser = getUser(request.user)
     for url in urls:
-        print url
         if not url:
             continue
 
