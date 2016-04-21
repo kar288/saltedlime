@@ -30,7 +30,7 @@
           id="bookmarks"
           action="."
           class="hidden bookmarks">
-            
+
             {% for url in urls %}
               <p class="hidden bookmark"
                 id="bookmark-container-{{forloop.counter}}"
@@ -46,7 +46,12 @@
             {% endfor %}
 
             <div class="btn select-all">
-              Select all
+              <div class="select">
+                Select all
+              </div>
+              <div class="un-select">
+                Deselect all
+              </div>
             </div>
           {% csrf_token %}
           <!-- <input class="recipe-form btn btn-success" type="submit"/> -->
@@ -173,7 +178,10 @@
           .css('margin-top', margin + 'px');
       });
       $('.select-all').on('click', function() {
-        $('.bookmark.active').find('input').attr('checked', true)
+        var action = $(this).hasClass('selected');
+        $('.bookmark.active').find('input').prop('checked', !action);
+        $(this).toggleClass('selected');
+
       });
     </script>
   {% else %}

@@ -29,6 +29,18 @@ main {
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
 
+.un-select {
+  display: none;
+}
+
+.selected .select {
+  display: none;
+}
+
+.selected .un-select {
+  display: block;
+}
+
 .bookmark-checkbox {
   height: 100%;
   margin: 5px;
