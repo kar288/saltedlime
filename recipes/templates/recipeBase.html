@@ -34,7 +34,11 @@
   <div class="navbar-fixed">
     <nav class="default-primary-color">
       <div class="nav-wrapper">
-        <a href="{% url 'recipesHome' %}" class="brand-logo">Salted Lime</a>
+        <a href="{% url 'recipesHome' %}" >
+          <h1 class="brand-logo">
+            Salted Lime
+          </h1>
+        </a>
         {% if user.is_authenticated %}
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-small-only">
@@ -108,7 +112,7 @@
   <div class="content{% block content-class %} padding{% endblock%}">
     {% block content %}
       <div class="recipe-general-description">
-        Keep track of recipes and notes
+        <h2 style="font-size: inherit;">Keep track of recipes and notes</h2>
         <div class="detail">
           Add your favorite recipes, rate, share and organize them!
         </div>

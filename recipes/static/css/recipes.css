@@ -208,7 +208,7 @@ input[type=text]:focus {
 
 .recipe .brand-logo {
   font-family: 'Yeseva One', cursive;
-  padding-left: 10px;
+  margin: 15px 0;
 }
 
 .add-recipe-content {
