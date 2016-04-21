@@ -47,6 +47,10 @@ main {
   width: 100%;
 }
 
+.bookmark.done {
+  display: none;
+}
+
 .sign-in {
   margin: 0 auto;
   width: 300px;

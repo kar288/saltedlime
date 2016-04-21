@@ -10,7 +10,14 @@
     The links that we think are recipes have been highlighted so that you can find them faster.
     If some of the links are already in your recipes they will appear at the bottom.
     <div class="row">
-      <div class="col s11">
+      <div class="col s1">
+        <i
+          class="hidden waves-effect arrow previous material-icons"
+          style="margin-top: 200px">
+          chevron_left
+        </i>
+      </div>
+      <div class="col s10">
         <div class="" id="processed">
           <div style="margin: 50px auto; width: 40px;">
             <div class="preloader-wrapper small active">
@@ -61,7 +68,7 @@
         <i data-position="top"
           data-delay="50"
           data-tooltip="Skip"
-          class="waves-effect next material-icons"
+          class="waves-effect arrow next material-icons"
           style="margin-top: 200px">
           chevron_right
         </i>
@@ -84,12 +91,27 @@
       var total = $('.bookmark').length;
       var moveNext = function() {
         $('#processed').html('');
-        var bookmarks = $('.bookmark').splice(0, 10);
+        var bookmarks = $('.bookmark').not('.done').splice(0, 10);
         $('.bookmarks').removeClass('hidden');
         bookmarks.forEach(b => {
           $(b).removeClass('hidden');
           $(b).addClass('active');
         });
+      };
+      var movePrevious = function() {
+        $('#processed').html('');
+        var bookmarks = $('.bookmark.done')
+          .splice($('.bookmark.done').length - 10);
+        $('.bookmarks').removeClass('hidden');
+        $('.bookmark.active').removeClass('active').addClass('hidden');
+        bookmarks.forEach(b => {
+          $(b).removeClass('hidden').removeClass('done');
+          $(b).addClass('active');
+        });
+
+        if ($('.bookmark.done').length < 10) {
+          $('.previous').addClass('hidden');
+        }
       };
       var checkBookmarks = function(page, callback) {
         var bookmarks = $(page).find('[name=bookmark]').toArray().map(b => {
@@ -112,7 +134,6 @@
                 $('.done-recipes').removeClass('hidden');
               }
               $('#exists').text(exists);
-              console.log(d + ' exists');
             });
             if (callback && typeof(callback) === 'function') {
               callback();
@@ -130,7 +151,7 @@
       });
       $('.bookmarks').on('submit', function(e) {
         var form = $(this);
-        $('.next').addClass('hidden');
+        $('.arrow').addClass('hidden');
         $.ajax({
           url: '/addBulk/',
           type: 'post',
@@ -138,20 +159,26 @@
           dataType: 'json',
           success: function(data) {
             doneBookmarks += $('.bookmark.active').length;
-            $('.active').remove();
+            $('[type="checkbox"]:checked')
+              .prop('checked', false);
+            $('.bookmark.active')
+              .removeClass('active')
+              .addClass('done');
             var processed = $('#processed');
             processed.html(data.rendered);
             processed.removeClass('hidden');
             $('#bookmarks').addClass('hidden');
             var height = parseInt(processed.css('height'));
-            $('.next').attr('data-tooltip', 'Continue')
-              .css('margin-top', height / 2);
+            $('.arrow').css('margin-top', height / 2);
           },
           error: function(error) {
             debugger;
           }
         });
         e.preventDefault();
+      });
+      $('.previous').on('click', function(e) {
+        movePrevious();
       });
       $('.next').on('click', function(e) {
         var progress = $('.determinate');
@@ -161,12 +188,11 @@
         }
 
         doneBookmarks += $('.bookmark.active').length;
-        $('.active').remove();
+        $('.bookmark.active').removeClass('active').addClass('done');
         moveNext();
         var width = parseFloat((doneBookmarks + exists) * 100 / total);
         progress.css('width', width + '%');
         if (width >= 100) {
-          debugger;
           window.location = '/';
         }
 
@@ -174,9 +200,9 @@
           parseInt($('.bookmarks').css('height')) / 2,
           200
         );
-        $('.next').attr('data-tooltip', 'Skip')
-          .css('margin-top', margin + 'px');
+        $('.arrow').removeClass('hidden').css('margin-top', margin + 'px');
       });
+
       $('.select-all').on('click', function() {
         var action = $(this).hasClass('selected');
         $('.bookmark.active').find('input').prop('checked', !action);
