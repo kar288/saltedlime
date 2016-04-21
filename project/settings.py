@@ -197,14 +197,19 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
+
+        'null': {
             'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'file': {
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'mysite.log',
             'formatter': 'verbose'
         },
         'parsing': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'recipeParsing.log',
             'formatter': 'verbose'
@@ -219,11 +224,11 @@ LOGGING = {
         'django': {
             'handlers':['file'],
             'propagate': True,
-            'level':'DEBUG',
+            'level':'INFO',
         },
         'recipes': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'recipesParsing': {
             'handlers': ['parsing', 'console'],
