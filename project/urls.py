@@ -4,6 +4,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 import recipes.views
+from django.http import HttpResponse
 
 urlpatterns = [
     url(r'^$', recipes.views.home, name='recipesHome'),
@@ -43,6 +44,7 @@ urlpatterns = [
 
     url(r'^recrawlImages/$', recipes.views.recrawlImages, name='recrawlImages'),
     url(r'^recipeExists/$', recipes.views.recipeExists, name='recipeExists'),
+    url(r'^robots.txt$', lambda r: HttpResponse("User-agent: *\n", content_type="text/plain")),
 
     url(r'^search/$', recipes.views.search, name='search'),
     url(r'^season/(?P<month>[\w]+)?/$', recipes.views.getSeasonRecipes, name='season'),
