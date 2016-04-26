@@ -184,7 +184,7 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
     except socket.timeout:
         logger.exception('timeout')
         return {'error': 'It took too long to get recipe. The site might be down.', 'level': 3}
-    except Exception:
+    except:
         logger.exception('another exception')
         traceback.print_exc()
         return {'error': sys.exc_info()[0], 'level': 3}
