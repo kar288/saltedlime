@@ -703,6 +703,13 @@ fieldset.rating {
     .recipe-card.recipe-large {
       min-width: 0;
     }
+    .welcome-title {
+      font-size: 4em;
+    }
+    .sign-in-welcome {
+      padding-top: 13em;
+      padding-bottom: 2em;
+    }
 }
 
 @media only screen and (max-width: 600px) {
