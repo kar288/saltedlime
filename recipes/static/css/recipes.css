@@ -29,6 +29,19 @@ main {
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
 
+.footer-col {
+  line-height: 40px;
+}
+
+#atftbx p {
+  display: none;
+}
+
+.xs {
+  margin: 0 auto;
+  width: 500px;
+}
+
 .logo {
   width: 100%;
 }
