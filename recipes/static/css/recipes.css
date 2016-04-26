@@ -29,6 +29,25 @@ main {
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
 
+.logo {
+  width: 100%;
+}
+
+.welcome-first {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.welcome-list  li {
+  list-style-type: disc;
+  padding: 10px;
+}
+
+.welcome-list {
+  
+  /*list-style-type: disc;*/
+}
+
 .un-select {
   display: none;
 }
@@ -50,17 +69,6 @@ main {
 .bookmark.done {
   display: none;
 }
-
-.sign-in {
-  margin: 0 auto;
-  width: 300px;
-}
-
-.sign-in .btn {
-  margin: 10px auto;
-  width: 100%;
-}
-
 .no-recipes {
   /*margin: 100%;*/
   text-align: center;
@@ -285,9 +293,9 @@ input[type=text]:focus {
   max-width: 600px;
 }
 
-.recipe-general-description .detail{
-  font-size: 0.5em;
-  padding: 15px;
+.recipe-general-description .detail {
+  font-size: 0.7em;
+  padding: 0 10px 20px 10px;
 }
 
 .table-container, .seasonal-content {
@@ -637,6 +645,20 @@ fieldset.rating {
   height: 20px;
   width: 20px;
 }
+
+
+.sign-in {
+  margin: 0 auto;
+  width: 300px;
+}
+
+.sign-in .btn {
+  margin: 10px auto;
+  width: 100%;
+  font-size: 0.5em;
+  height: inherit;
+}
+
 
 @media only screen
   and (min-device-width: 320px)

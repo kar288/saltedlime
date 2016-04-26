@@ -43,7 +43,7 @@ def home(request):
     get = request.GET
     if not request.user.is_authenticated():
         context['next'] = get.get('next', '/')
-        return render(request, 'recipeBase.html', context)
+        return render(request, 'welcome.html', context)
     recipeUser = getUser(request.user)
     notes = recipeUser.notes.all().order_by('-date_added')
 

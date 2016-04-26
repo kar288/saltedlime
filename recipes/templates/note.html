@@ -65,7 +65,9 @@
   </div>
   <div class="row">
     <div class="recipe-info col s12">
-      <div class="card-title grey-text text-darken-4"> Tags </div>
+      <div class="card-title grey-text text-darken-4" style="
+        float: left;
+        padding: 7px;"> Tags: </div>
       {% for tag in note.tags_as_list %}
         <div class="recipe-tag chip">
           <a href="{% url 'tags' tag %}">

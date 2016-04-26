@@ -1,0 +1,115 @@
+{% load staticfiles %}
+<html>
+  <head>
+    <link href="{% static 'css/recipes.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Yeseva+One&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather+Sans:400,800&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  </head>
+  <body class="recipe default-primary-color" style="font-size: 1em">
+    <main class="welcome">
+      <div class="default-primary-color" style="position: fixed; font-family: 'Yeseva One', cursive; color: white; width: 100%; text-align: center; font-size: 7em; padding: 0.5em 0;">
+        Salted Lime
+      </div>
+      <div class="welcome-first row" style="padding-top: 17.5em;">
+        <div class="col s4">
+          <img class="logo" src="{% static 'images/logo-2.png' %}"></img>
+        </div>
+        <div class="col s8 primary-text-color recipe-general-description">
+          <h2 style="font-size: inherit;">Keep track of recipes and notes</h2>
+          <div class="detail">
+            Add your favorite recipes, rate, share and organize them!
+          </div>
+          <ul class="sign-in">
+            <li>
+              <a id="google_login" href="/soc/login/google-oauth2/?next={{next}}" class="btn">
+                Sign in with Google
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'social:begin' 'facebook' %}?next={{next}}" class="btn">
+                Sign in with Facebook
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="accent-color row" style="margin-bottom: 0;">
+        <br>
+      </div>
+      <div class="light-primary-color row" style="padding: 50px; margin: 0;">
+        <div class="center" style="padding: 0 0 20px 0;">You can add recipes in three simple ways:</div>
+        <div class="row">
+          <div class="row center welcome-first">
+            <div class="col s4">
+              <div class="center primary-text-color" style="padding: 1em">
+                Import bookmarks at once
+              </div>
+              <div class="center">
+                Export all your bookmarks from a browser. You can later on select links that you want to import.
+              </div>
+            </div>
+            <div class="col s4" style="border: black 1px solid; border-top: none; border-bottom: none">
+              <div class="center primary-text-color" style="padding: 1em">
+                Add a recipe with a link
+              </div>
+              <div class="center">
+                Copy the link of a recipe from your favorite site. Add it and it will automatically be part of your recipes.
+              </div>
+            </div>
+            <div class="col s4">
+              <div class="center primary-text-color" style="padding: 1em">
+                Add a recipe manually
+              </div>
+              <div class="center">
+                Organize your favorite recipes by adding all the information manually.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="center" style="padding: 0 0 20px 0;">
+          Automatically imported recipes will contain all available information from the source like ingredients, instructions, categories, and servings.
+        </div>
+      </div>
+
+      <div class="accent-color row" style="margin-bottom: 0;">
+        <br>
+      </div>
+      <div class="row" style="background-color: rgb(250, 250, 250); padding: 50px; margin: 0;">
+        <div class="row welcome-first">
+          <div class="col s6">
+            <img style="width: 100%;" src="{% static 'images/recipe.png' %}"></img>
+          </div>
+          <div class="col s6" style="padding: 30px;">
+            <ul class="welcome-list">
+              <li> Organize your recipes with tags. </li>
+              <li> Add notes to keep track of modifications when you make them. </li>
+              <li> Share them with friends. </li>
+              <li> Search for them by the ingredients that you have in your kitchen. </li>
+              <li> Find the ones that contain seasonal ingredients. </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="page-footer light-primary-color">
+       <div class="container">
+         <div class="row">
+           <div class="col l4 m4 s4">
+             <a class="grey-text text-darken-2" href="{% url 'about' %}">About</a>
+           </div>
+           <div class="col l4 m4 s4">
+             <a class="grey-text text-darken-3" href="{% url 'contact' %}">Contact</a>
+           </div>
+         </div>
+       </div>
+       <div class="footer-copyright">
+         <!-- <div class="container">
+         © 2016 Copyright Text
+         <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+         </div> -->
+       </div>
+     </footer>
+  </body>
+</html>

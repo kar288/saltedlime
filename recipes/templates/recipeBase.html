@@ -109,26 +109,32 @@
       {{s}}
     </div>
   {% endfor %}
-  <div class="content{% block content-class %} padding{% endblock%}">
+  <div class="content{% block content-class %} default-primary-color padding{% endblock%}">
     {% block content %}
-      <div class="recipe-general-description">
-        <h2 style="font-size: inherit;">Keep track of recipes and notes</h2>
-        <div class="detail">
-          Add your favorite recipes, rate, share and organize them!
+      <div class="row">
+        <div class="col s4">
+          <img src="{% static 'images/logo-2.png' %}"></img>
+        </div>
+        <div class="col s8">
+          <h2 style="font-size: inherit;">Keep track of recipes and notes</h2>
+          <div class="detail">
+            Add your favorite recipes, rate, share and organize them!
+          </div>
+          <ul class="sign-in">
+            <li>
+              <a id="google_login" href="/soc/login/google-oauth2/?next={{next}}" class="btn">
+                Sign in with Google
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'social:begin' 'facebook' %}?next={{next}}" class="btn">
+                Sign in with Facebook
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
-      <ul class="sign-in">
-        <li>
-          <a id="google_login" href="/soc/login/google-oauth2/?next={{next}}" class="btn">
-            Sign in with Google
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'social:begin' 'facebook' %}?next={{next}}" class="btn">
-            Sign in with Facebook
-          </a>
-        </li>
-      </ul>
+
     {% endblock %}
   </div>
 </main>

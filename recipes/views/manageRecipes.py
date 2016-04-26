@@ -136,7 +136,7 @@ def addNote(request):
 def addRecipeByUrl(recipeUser, recipeUrl, post):
     socket.setdefaulttimeout(30)
     logger.info(recipeUrl)
-    if recipeUser.notes.filter(url = recipeUrl).exists():
+    if recipeUrl and recipeUser.notes.filter(url = recipeUrl).exists():
         logger.info(recipeUrl + ' Recipe exists')
         return {'error': 'Recipe already exists!', 'level': 0}
     try:
@@ -144,6 +144,7 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
         recipeData = {}
         if recipeUrl:
             recipeData = parseRecipe(recipeUrl)
+            domain = 'manual'
             if not recipeData or len(recipeData) == 1:
                 return {'error': 'Empty recipe?', 'level': 3}
             domain = tldextract.extract(recipeUrl).domain
@@ -155,7 +156,7 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
             return {'error': 'This recipe has a missing title or other essential information. Try adding it manually.', 'level': 3}
         note = Note.objects.create(
           url = recipeUrl,
-          image = recipeData.get('image', post.get('image', ''))[:400],
+          image = recipeData.get('image', post.get('image', '')),
           ingredients = recipeData.get('ingredients', post.get('ingredients', '')),
           instructions = recipeData.get('instructions', post.get('instructions', '')),
           title = title[:200],
