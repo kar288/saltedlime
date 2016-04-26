@@ -97,6 +97,7 @@
           $(b).removeClass('hidden');
           $(b).addClass('active');
         });
+        $('.select-all').removeClass('selected');
       };
       var movePrevious = function() {
         $('#processed').html('');
@@ -112,6 +113,7 @@
         if ($('.bookmark.done').length < 10) {
           $('.previous').addClass('hidden');
         }
+        $('.select-all').removeClass('selected');
       };
       var checkBookmarks = function(page, callback) {
         var bookmarks = $(page).find('[name=bookmark]').toArray().map(b => {
