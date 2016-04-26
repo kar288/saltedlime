@@ -150,12 +150,15 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
         tags = ','.join(recipeData.get('tags', []))
         if post.get('tags', ''):
             tags += ',' + post.get('tags', '')
+        title = recipeData.get('title', post.get('title', ''))
+        if not len(title):
+            return {'error': 'This recipe has a missing title or other essential information. Try adding it manually.', 'level': 3}
         note = Note.objects.create(
           url = recipeUrl,
           image = recipeData.get('image', post.get('image', ''))[:400],
           ingredients = recipeData.get('ingredients', post.get('ingredients', '')),
           instructions = recipeData.get('instructions', post.get('instructions', '')),
-          title = recipeData.get('title', post.get('title', 'No name'))[:200],
+          title = title[:200],
           date_added = datetime.now(),
           text = post.get('notes', ''),
           tags = tags,
