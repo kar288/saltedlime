@@ -1,5 +1,5 @@
 body {
-  background-color: rgba(0,0,0,0.02);
+  background-color: rgba(0,0,0,0.01);
   color: #727272;
 	font-family: Merriweather Sans, RobotoDraft, Helvetica Neue;
   font-size: 0.9em;
@@ -234,7 +234,7 @@ input[type=text]:focus {
 }
 
 .recipe .left-filters {
-  border-right: grey solid 1px;
+  border-right: 1px solid #ddd;
   padding: 15px 30px;
 }
 
