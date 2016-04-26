@@ -15,17 +15,17 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
     <title>Welcome - Salted Lime</title>
   </head>
-  <body class="recipe default-primary-color" style="font-size: 1em">
+  <body class="recipe default-primary-color">
     <main class="welcome">
-      <div class="default-primary-color" style="position: fixed; font-family: 'Yeseva One', cursive; color: white; width: 100%; text-align: center; font-size: 7em; padding: 0.5em 0;">
+      <div class="default-primary-color welcome-title">
         Salted Lime
       </div>
-      <div class="welcome-first row" style="padding-top: 17.5em;padding-bottom: 8.75em;">
+      <div class="welcome-first row sign-in-welcome">
         <div class="col s4">
           <img class="logo" src="{% static 'images/logo-2.png' %}"></img>
         </div>
         <div class="col s8 primary-text-color recipe-general-description">
-          <h2 style="font-size: inherit;">Keep track of recipes and notes</h2>
+          <h4>Keep track of recipes and notes</h4>
           <div class="detail">
             Add your favorite recipes, rate, share and organize them!
           </div>
@@ -43,23 +43,22 @@
           </ul>
         </div>
       </div>
-      <div class="accent-color row" style="margin-bottom: 0;">
-        <br>
+      <div class="accent-color row welcome-row">
       </div>
-      <div class="light-primary-color row" style="padding: 50px; margin: 0;">
-        <div class="center" style="padding: 0 0 20px 0;">You can add recipes in three simple ways:</div>
+      <div class="light-primary-color row welcome-row">
+        <div class="center welcome-row">You can add recipes in three simple ways:</div>
         <div class="row">
           <div class="row center welcome-first">
             <div class="col s4">
-              <div class="center primary-text-color" style="padding: 1em">
+              <div class="center primary-text-color import-description">
                 Import bookmarks at once
               </div>
               <div class="center">
                 Export all your bookmarks from a browser. You can later on select links that you want to import.
               </div>
             </div>
-            <div class="col s4" style="border: black 1px solid; border-top: none; border-bottom: none">
-              <div class="center primary-text-color" style="padding: 1em">
+            <div class="col s4 mid-col-description">
+              <div class="center primary-text-color import-description">
                 Add a recipe with a link
               </div>
               <div class="center">
@@ -67,7 +66,7 @@
               </div>
             </div>
             <div class="col s4">
-              <div class="center primary-text-color" style="padding: 1em">
+              <div class="center primary-text-color import-description">
                 Add a recipe manually
               </div>
               <div class="center">
@@ -76,20 +75,19 @@
             </div>
           </div>
         </div>
-        <div class="center" style="padding: 0 0 20px 0;">
+        <div class="center welcome-row">
           Automatically imported recipes will contain all available information from the source like ingredients, instructions, categories, and servings.
         </div>
       </div>
 
-      <div class="accent-color row" style="margin-bottom: 0;">
-        <br>
+      <div class="accent-color row welcome-row" >
       </div>
-      <div class="row" style="background-color: rgb(250, 250, 250); padding: 50px; margin: 0;">
+      <div class="row welcome-row grey-row">
         <div class="row welcome-first">
           <div class="col s6">
-            <img style="width: 100%;" src="{% static 'images/recipe.png' %}"></img>
+            <img class="logo" alt="Example of a recipe." src="{% static 'images/recipe.png' %}"></img>
           </div>
-          <div class="col s6" style="padding: 30px;">
+          <div class="col s6 welcome-list-container">
             <ul class="welcome-list">
               <li> Organize your recipes with tags. </li>
               <li> Add notes to keep track of modifications when you make them. </li>

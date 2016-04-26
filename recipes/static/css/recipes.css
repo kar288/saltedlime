@@ -33,6 +33,16 @@ main {
   width: 100%;
 }
 
+.welcome-title {
+  position: fixed;
+  font-family: 'Yeseva One', cursive;
+  color: white;
+  width: 100%;
+  text-align: center;
+  font-size: 7em;
+  padding: 0.5em 0;
+}
+
 .welcome-first {
   max-width: 1000px;
   margin: 0 auto;
@@ -43,9 +53,32 @@ main {
   padding: 10px;
 }
 
-.welcome-list {
-  
-  /*list-style-type: disc;*/
+.welcome-list-container {
+  padding: 30px;
+}
+
+.welcome-row {
+  margin: 0 !important;
+  padding: 20px;
+}
+
+.sign-in-welcome {
+  padding-top: 17.5em;
+  padding-bottom: 8.75em;
+}
+
+.grey-row {
+  background-color: rgb(250, 250, 250);
+}
+
+.import-description {
+  padding: 1em;
+}
+
+.mid-col-description {
+  border: black 1px solid;
+  border-top: none;
+  border-bottom: none;
 }
 
 .un-select {
