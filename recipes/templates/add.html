@@ -1,0 +1,13 @@
+{% extends "recipeBase.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col m6 s12">
+    {% include 'newRecipeForm.html' %}
+  </div>
+  <div class="col m6 s12" style="line-height: 170px;">
+    <a href="{% url 'addRecipes' %}"><div class="btn">Add from bookmarks</div></a>
+  </div>
+</div>
+
+{% endblock %}

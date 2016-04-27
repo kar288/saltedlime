@@ -29,12 +29,6 @@ Home
       {% endif %}
     </div>
     <div class="left-filters col s12 m3 l2 pull-m9 pull-l10">
-      <a href="{% url 'table' title 2 %}" class="btn recipe-form">
-        Table view
-      </a>
-      <a href="{% url 'season' %}" class="btn recipe-form">
-        Seasonal Recipes
-      </a>
       <div>
         {% if filters.items|length %}
           <form class="filter-form" action="{% url 'recipesHome' %}" method="get">

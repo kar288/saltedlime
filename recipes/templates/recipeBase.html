@@ -20,10 +20,6 @@
 </head>
 <body class="recipe">
   <header>
-  <ul id="dropdown1" class="add-recipe-content dropdown-content">
-    <li><a href="{% url 'addRecipe' %}">Add recipe</a></li>
-    <li><a href="{% url 'addRecipes' %}">Add recipes bulk</a></li>
-  </ul>
   <ul id="dropdown-search" class="add-recipe-content dropdown-content">
     <li>
       <a href="{% url 'advancedSearchHtml' title %}">
@@ -32,33 +28,57 @@
     </li>
   </ul>
   <div class="navbar-fixed">
-    <nav class="default-primary-color">
+    <nav class="recipe-navbar">
       <div class="nav-wrapper">
         <a href="{% url 'recipesHome' %}" >
-          <h1 class="brand-logo">
+          <h1 class="brand-logo center">
             Salted Lime
           </h1>
         </a>
         {% if user.is_authenticated %}
+
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-        <ul class="right hide-on-small-only">
+        <ul class="left hide-on-med-and-down">
           <li>
-            <form action="{% url 'search' %}" method="get">
-              <div class="input-field">
+            <a id="" href="{% url 'table' title 2 %}" class="">Manage</a>
+          </li>
+          <li>
+            <a id="" href="{% url 'season' %}" class="">Seasons</a>
+          </li>
+        </ul>
+        <ul class="right logout hide-on-small-only">
+          <li class="hide-on-med-and-down">
+            <a id="logout" href="{% url 'logout' %}" class="">
+              {% include 'logout.html' %}
+            </a>
+          </li>
+        </ul>
+
+        <ul class="right hide-on-small-only">
+          <li id="add">
+            <a href="{% url 'addRecipe' %}" class="">Add</a>
+            <ul id="add-options" class="extra-options invisible">
+              <li><a href="{% url 'addRecipe' %}">Add recipe</a></li>
+              <li><a href="{% url 'addRecipes' %}">Add recipes bulk</a></li>
+            </ul>
+          </li>
+          <li>
+            <form id="search-form" class="short" action="{% url 'search' %}" method="get">
+              <div class="input-field" >
                 <input id="search" type="search" name="query" value="{{query}}">
-                <label for="search">
-                  <a href="{% url 'advancedSearchHtml' title %}">
-                    <i class="material-icons">search</i>
-                  </a>
+                <label id="search-icon" for="search">
+                  <i class="material-icons">search</i>
+                  <ul id="search-options" class="extra-options invisible">
+                    <li>
+                      <a href="{% url 'advancedSearchHtml' title %}">
+                      Advanced Search
+                      </a>
+                    </li>
+                  </ul>
                 </label>
               </div>
             </form>
-          </li>
-          <li>
-            <a class="special-yellow waves-effect waves-light btn-floating dropdown-button" data-activates="dropdown1"><i class="short-icon material-icons">add</i></a>
-          </li>
-          <li class="hide-on-med-and-down">
-            <a id="logout" href="{% url 'logout' %}" class="">Logout</a>
+
           </li>
         </ul>
         <ul class="side-nav" id="mobile-demo">
@@ -147,6 +167,23 @@
     $(".button-collapse").sideNav();
     $('.tooltipped').tooltip({delay: 50});
     $('.modal-trigger').leanModal();
+    $('#add').on('mouseover', function() {
+      $('#add-options').removeClass('invisible');
+    });
+    $('#add').on('mouseout', function() {
+      $('#add-options').addClass('invisible');
+    });
+    $('#search-icon').on('mouseover', function() {
+      // debugger;
+      $('#search-options').removeClass('invisible');
+    });
+    $('#search-icon').on('mouseout', function() {
+      $('#search-options').addClass('invisible');
+    });
+    $('#search-icon').on('click', function() {
+      $('#search-form').removeClass('short');
+      $('#search-options').addClass('invisible');
+    });
   </script>
   {% include 'outside-scripts.html' %}
 </body>

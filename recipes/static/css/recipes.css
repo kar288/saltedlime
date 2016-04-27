@@ -29,6 +29,59 @@ main {
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
 
+#logout {
+  height: 64px;
+}
+
+.recipe-navbar {
+  background-color: white;
+  border-bottom: #4AAD4E 1px solid;
+  box-shadow: inherit;
+  color: black;
+}
+
+.recipe-navbar * {
+  color: #212121 !important;
+}
+
+.extra-options {
+  box-shadow: 0px 5px 5px 0 rgba(0,0,0,0.16), 2px 5px 5px 0 rgba(0,0,0,0.12);
+  position: absolute;
+  top: 63px;
+  z-index: 1000;
+  background-color: white;
+  -webkit-transition: visibility 1s linear 0;
+  transition: visibility 1s linear 0;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.extra-options li {
+  float: inherit;
+}
+
+#search {
+  margin-top: 20px;
+}
+
+.short {
+  width: 50px;
+  padding: 0;
+}
+
+#search-icon .material-icons {
+  cursor: pointer;
+  margin-top: -20px;
+}
+
+#search-options {
+  margin-top: -20px;
+  right: 0;
+  width: 200px;
+}
+
 .footer-col {
   line-height: 40px;
 }
@@ -263,10 +316,6 @@ input[type=text]:focus {
 
 .recipe .content.padding {
   padding: 30px;
-}
-
-.recipe nav * {
-  /*color: #666 !important;*/
 }
 
 .recipe .side-nav {
