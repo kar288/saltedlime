@@ -18,7 +18,7 @@ main {
  /*#FFC107*/
 .dark-primary-color    { background: #7B1FA2; }
 /*.default-primary-color { background: #9C27B0; }*/
-.default-primary-color { background: #4AAD4E; }
+.default-primary-color { background: #4AAD4E !important; }
 .light-primary-color   { background: #C8E6C9 !important; }
 /*.light-primary-color   { background: #E1BEE7 !important; }*/
 .text-primary-color    { color: #FFFFFF; }
@@ -258,15 +258,21 @@ input[type=text]:focus {
 
 .recipe .btn {
   color: #616161;
-  background-color: #C8E6C9;
+  /*background-color: #C8E6C9;*/
+
+  background-color: #4AAD4E;
+  /*border-radius: 200px;*/
+  color: white;
   /*background-color: #E1BEE7;*/
   height: 100%;
   font-family: 'Merriweather Sans', sans-serif;
-  font-weight: 800;
+  /*font-weight: 800;*/
+  text-transform: inherit;
 }
 
 .recipe .btn:hover {
-  background-color: #C8E6C9;
+  background-color: #4AAD4E;
+  /*background-color: #C8E6C9;*/
   /*background-color: #E1BEE7;*/
 }
 .recipe .btn-floating:hover {
@@ -308,7 +314,7 @@ input[type=text]:focus {
 }
 
 .recipe .left-filters .btn {
-  font-size: 0.9em;
+  /*font-size: 0.9em;*/
   width: 100%;
   overflow: hidden;
   margin: 10px 0px;
@@ -407,13 +413,14 @@ input[type=text]:focus {
   width: 600px;
 }
 
+.recipe .chip,
+.recipe-tag a {
+  color: #212121
+}
+
 .recipe-tag {
   background-color: #FFC107;
   margin: 2px 5px;
-}
-
-.recipe-tag a {
-  color: #727272;
 }
 
 .recipe-tag.to-add {
@@ -445,6 +452,17 @@ input[type=text]:focus {
   max-height: calc(400px - 40px);
   overflow: auto;
   padding: 15px 0;
+}
+
+.delete-note {
+  color: white;
+  font-size: 36px;
+  float: right;
+  margin-top: 10px;
+}
+
+.card-content.row {
+  margin: 0;
 }
 
 .recipe-edit-button {
