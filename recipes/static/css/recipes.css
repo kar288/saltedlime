@@ -590,11 +590,16 @@ input[type=text]:focus {
   background-color: #F8F8F8;
   height: 50px;
   padding: 0;
-  width: 300px;
+  /*width: 300px;*/
 }
 
 .table-header.rating {
   width: 105px;
+  line-height: 36px;
+}
+
+.table-header.rating .material-icons {
+  line-height: 36px;
 }
 
 .table-header.difficulty {
@@ -604,7 +609,7 @@ input[type=text]:focus {
 .table-header a {
   color: inherit;
   display: block;
-  height: 100%;
+  /*height: 100%;*/
   padding: 7px 5px;
   width: 100%;
 }
@@ -620,6 +625,14 @@ input[type=text]:focus {
 
 .table-header i {
   float: right;
+}
+
+.season-table {
+  width: 100%;
+}
+
+.season-table a {
+  padding: 2px;
 }
 
 .notes-container {

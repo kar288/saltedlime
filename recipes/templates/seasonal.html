@@ -13,8 +13,10 @@ Seasonal
     Choose a month and find recipes that have the ingredients that are in season.
   </p>
 </div>
-<div class="row seasonal-content">
-  <div class="col s12 m8 l6">
+<div class="row">
+<!-- <div class="row seasonal-content"> -->
+  <div class="col s12 m6 l5">
+    <!-- <table class="striped"> -->
     <table class="striped season-table">
       <thead>
         {% for month in months %}
@@ -38,7 +40,7 @@ Seasonal
       </tbody>
     </table>
   </div>
-  <div class="col s12 m4 l6">
+  <div class="col s12 m6 l7">
     <div class="row notes-container">
       {% for note in notes %}
         {% include 'smallRecipe.html' %}

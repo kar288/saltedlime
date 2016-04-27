@@ -11,7 +11,7 @@ def getSeasonIngredients(request):
     url = 'http://www.bbcgoodfood.com/seasonal-calendar/all'
     req = urllib2.Request(url, headers={'User-Agent' : "Magic Browser"})
     html = urllib2.urlopen(req)
-    soup = BeautifulSoup(html, convertEntities=BeautifulSoup.HTML_ENTITIES)
+    soup = BeautifulSoup(html)
     table = soup.find('table')
     monthLists = {}
     for i in range(12):

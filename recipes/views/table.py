@@ -31,7 +31,7 @@ def getTableFields(field, direction):
         }, {
             'field': 'created_at',
             'display': 'Date',
-            'selected': direction if 'rating' == field else 0
+            'selected': direction if 'created_at' == field else 0
         }]
     return fields
 
