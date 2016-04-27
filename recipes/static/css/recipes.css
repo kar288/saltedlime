@@ -92,7 +92,7 @@ main {
 
 .xs {
   margin: 0 auto;
-  width: 500px;
+  max-width: 500px;
 }
 
 .logo {
@@ -794,6 +794,9 @@ fieldset.rating {
     }
     .recipe-card.recipe-large {
       min-width: 0;
+    }
+    .recipe-card .card-content {
+      padding: 0 10px !important;
     }
     .welcome-title {
       font-size: 4em;

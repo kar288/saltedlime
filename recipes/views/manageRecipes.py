@@ -224,17 +224,17 @@ def processBulk(request):
     context = {}
     post = request.POST
     cookingDomains = {
-        'food52.com': True,
-        'smittenkitchen.com': True,
-        'www.thekitchn.com': True,
-        'www.epicurious.com': True,
-        'allrecipes.com': True,
-        'cooking.nytimes.com': True,
-        'www.food.com': True,
-        'www.101cookbooks.com': True,
-        'www.marthastewart.com': True,
-        'www.jamieoliver.com': True,
-        'allrecipes.com': True,
+        'food52': True,
+        'smittenkitchen': True,
+        'thekitchn.com': True,
+        'www.epicurious': True,
+        'allrecipes': True,
+        'cooking.nytimes': True,
+        'food': True,
+        '101cookbooks': True,
+        'marthastewart': True,
+        'jamieoliver': True,
+        'allrecipes': True,
     }
     if not post or not 'bookmarks' in request.FILES:
         logger.info('No bookmarks file')
@@ -262,7 +262,7 @@ def processBulk(request):
             urls.append({
                 'url': href,
                 'name': text,
-                'color': ''
+                'color': '#C8E6C9' if 'recipe' in text.lower() else ''
             })
         context['urls'] = urls
         context['done'] = done

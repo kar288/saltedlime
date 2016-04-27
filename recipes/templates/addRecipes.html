@@ -173,8 +173,8 @@
             processed.html(data.rendered);
             processed.removeClass('hidden');
             $('#bookmarks').addClass('hidden');
-            var height = parseInt(processed.css('height'));
-            $('.arrow').css('line-height', height);
+            var height = processed.css('height');
+            $('.arrow').removeClass('hidden').css('line-height', height);
           },
           error: function(error) {
             debugger;
@@ -191,7 +191,6 @@
           $('.bookmarks').submit();
           return;
         }
-
         doneBookmarks += $('.bookmark.active').length;
         $('.bookmark.active').removeClass('active').addClass('done');
         moveNext();
