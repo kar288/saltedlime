@@ -60,7 +60,7 @@
             </ul>
           </li>
           <li>
-            <form id="search-form" class="short" action="{% url 'search' %}" method="get">
+            <form id="search-form" {% if not query %}class="short"{% endif %} action="{% url 'search' %}" method="get">
               <div class="input-field" >
                 <input id="search" type="search" name="query" value="{{query}}">
                 <label id="search-icon" for="search">

@@ -8,7 +8,7 @@ Home
 
 {% block content %}
   <div class="row">
-    <div class="col s12 {% if 'no-filters' %}m12 l12{% else %}m9 l10 push-m3 push-l2{% endif %}">
+    <div class="col s12 {% if not filters %}m12 l12{% else %}m9 l10 push-m3 push-l2{% endif %}">
       <div class="row notes-container">
         {% for note in notes %}
           {% include 'smallRecipe.html' %}
@@ -28,7 +28,7 @@ Home
         </div>
       {% endif %}
     </div>
-    {% if not 'no-filters' %}
+    {% if filters %}
       <div class="left-filters col s12 m3 l2 pull-m9 pull-l10">
         <div>
           {% if filters.items|length %}

@@ -75,6 +75,7 @@ def home(request):
         values = getTopValues(allNotes, field, get.getlist(field))
         if values:
             context['filters'][field] = values
+
     return render(request, 'index.html', context)
 
 def getTopValues(notes, field, selected):
