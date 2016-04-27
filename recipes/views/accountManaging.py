@@ -1,6 +1,7 @@
 from django.contrib.auth import logout as auth_logout, login
 from django.shortcuts import redirect
 from recipes.models import RecipeUser
+from utils import *
 
 def save_profile(backend, user, response, *args, **kwargs):
     data = {}
