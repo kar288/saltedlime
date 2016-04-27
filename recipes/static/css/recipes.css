@@ -545,7 +545,7 @@ input[type=text]:focus {
 .recipe-card .card-image .card-title {
   background-color: rgba(0,0,0, 0.3);
   font-size: 1.3em;
-  height: 3.8em;
+  height: 3.7em;
   padding: 10px 20px;
   width: 100%;
   overflow: hidden;
