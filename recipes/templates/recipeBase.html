@@ -20,13 +20,6 @@
 </head>
 <body class="recipe">
   <header>
-  <ul id="dropdown-search" class="add-recipe-content dropdown-content">
-    <li>
-      <a href="{% url 'advancedSearchHtml' title %}">
-        Advanced Search
-      </a>
-    </li>
-  </ul>
   <div class="navbar-fixed">
     <nav class="recipe-navbar">
       <div class="nav-wrapper">
@@ -86,12 +79,11 @@
         </ul>
         <ul class="side-nav" id="mobile-demo">
           <li>
-            <form action="{% url 'search' %}" method="get">
-              <div class="input-field">
+            <form id="search-form" action="{% url 'search' %}" method="get">
+              <div class="input-field" >
                 <input id="search" type="search" name="query" value="{{query}}">
-                <label for="search">
-                    <i class="material-icons">search</i>
-                  </a>
+                <label id="search-icon" for="search">
+                  <i class="material-icons">search</i>
                 </label>
               </div>
             </form>

@@ -8,7 +8,7 @@ Home
 
 {% block content %}
   <div class="row">
-    <div class="col s12 m9 l10 push-m3 push-l2">
+    <div class="col s12 {% if 'no-filters' %}m12 l12{% else %}m9 l10 push-m3 push-l2{% endif %}">
       <div class="row notes-container">
         {% for note in notes %}
           {% include 'smallRecipe.html' %}
@@ -28,44 +28,46 @@ Home
         </div>
       {% endif %}
     </div>
-    <div class="left-filters col s12 m3 l2 pull-m9 pull-l10">
-      <div>
-        {% if filters.items|length %}
-          <form class="filter-form" action="{% url 'recipesHome' %}" method="get">
-            {% for filter, vals in filters.items %}
-              <h5> {{filter}} </h5>
-              {% for el in vals %}
-                <input value="{{el.name}}"
-                  name={{filter}}
-                  type="checkbox"
-                  id="{{filter}}-{{forloop.counter}}"
-                  {% if el.selected %}checked="checked"{% endif %}
-                />
-                <label for="{{filter}}-{{forloop.counter}}">{{el.name}}</label>
-                </br>
-              {% endfor %}
-            {% endfor %}
-            <br>
-            <label class="recipe-form">
-              Rated better than:<br>
-              <fieldset class="rating">
-                {% for i in rates %}
-                  {% if ratingFilter == i %}
-                    <input checked type="radio" id="star{{i}}" name="rating" value="{{i}}"><label class="full" for="star{{i}}" title=""></label>
-                  {% else %}
-                    <input type="radio" id="star{{i}}" name="rating" value="{{i}}"><label class="full" for="star{{i}}" title=""></label>
-                  {% endif %}
+    {% if not 'no-filters' %}
+      <div class="left-filters col s12 m3 l2 pull-m9 pull-l10">
+        <div>
+          {% if filters.items|length %}
+            <form class="filter-form" action="{% url 'recipesHome' %}" method="get">
+              {% for filter, vals in filters.items %}
+                <h5> {{filter}} </h5>
+                {% for el in vals %}
+                  <input value="{{el.name}}"
+                    name={{filter}}
+                    type="checkbox"
+                    id="{{filter}}-{{forloop.counter}}"
+                    {% if el.selected %}checked="checked"{% endif %}
+                  />
+                  <label for="{{filter}}-{{forloop.counter}}">{{el.name}}</label>
+                  </br>
                 {% endfor %}
-              </fieldset>
-            </label>
-            <span class="rating-clear">
-              <i onclick="$('input[name=rating]').attr('checked',false)" class="material-icons">clear</i>
-            </span>
-            <br>
-            <input class="btn" value="Filter" type="submit"/>
-          </form>
-        {% endif %}
+              {% endfor %}
+              <br>
+              <label class="recipe-form">
+                Rated better than:<br>
+                <fieldset class="rating">
+                  {% for i in rates %}
+                    {% if ratingFilter == i %}
+                      <input checked type="radio" id="star{{i}}" name="rating" value="{{i}}"><label class="full" for="star{{i}}" title=""></label>
+                    {% else %}
+                      <input type="radio" id="star{{i}}" name="rating" value="{{i}}"><label class="full" for="star{{i}}" title=""></label>
+                    {% endif %}
+                  {% endfor %}
+                </fieldset>
+              </label>
+              <span class="rating-clear">
+                <i onclick="$('input[name=rating]').attr('checked',false)" class="material-icons">clear</i>
+              </span>
+              <br>
+              <input class="btn" value="Filter" type="submit"/>
+            </form>
+          {% endif %}
+        </div>
       </div>
-    </div>
+    {% endif %}
   </div>
 {% endblock %}

@@ -164,6 +164,8 @@ def search(request):
     pagination(request, context, page, notes)
     for note in notes:
         print note.url
+    context['no-filters'] = True
+    context['success'] = ['Searched for term: ' + query]
     return render(request, 'index.html', context)
 
 @login_required(login_url='/')
