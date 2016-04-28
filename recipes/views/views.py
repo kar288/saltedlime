@@ -22,6 +22,8 @@ def about(request):
     return render(request, 'about.html', context)
 
 def contact(request):
+    context = {}
+    context['text'] = Text.objects.get(name='contact').text.split('\n')
     return render(request, 'contact.html')
 
 def pagination(request, context, page, notes):
