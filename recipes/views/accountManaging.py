@@ -17,6 +17,7 @@ def save_profile(backend, user, response, *args, **kwargs):
         data['name'] = response.get('name', None)
         data['email'] = response.get('email', None)
         data['facebookUser'] = user
+        logger.info(response)
         recipeUser = RecipeUser.objects.filter(facebookUser = user)
 
     if not recipeUser.exists():
