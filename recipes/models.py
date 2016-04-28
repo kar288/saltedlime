@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 class Text(models.Model):
     name = models.CharField(max_length=200)
     text = models.TextField()
+    def __unicode__(self):
+        return u'%s' % self.name
     def __str__(self):
         return self.name
 
@@ -69,6 +71,8 @@ class Note(models.Model):
 
     def __str__(self):
         return self.title
+    def __unicode__(self):
+        return u'%s' % self.title
     def difficulty_long(self):
         if self.difficulty == '':
             return '-'
@@ -103,3 +107,5 @@ class RecipeUser(models.Model):
 
   def __str__(self):
       return self.name
+  def __unicode__(self):
+      return u'%s' % self.name
