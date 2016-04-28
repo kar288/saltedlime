@@ -25,15 +25,16 @@ def save_profile(backend, user, response, *args, **kwargs):
             logging.info('email exists, joining account')
             recipeUser = userByEmail
         else:
-            logging.info('user')
-            logging.info(data)
-            RecipeUser.objects.create(
+            print user
+            print data
+            recipeUser = RecipeUser.objects.create(
                 googleUser = data.get('googleUser', None),
                 facebookUser = data.get('facebookUser', None),
                 profilePic = data.get('profilePic', None),
                 name = data.get('name', None),
                 email = data.get('email', None)
             )
+            recipeUser.save()
             return;
     recipeUser = recipeUser[0]
     changed = False
