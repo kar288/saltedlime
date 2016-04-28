@@ -24,7 +24,7 @@ def about(request):
 def contact(request):
     context = {}
     context['text'] = Text.objects.get(name='contact').text.split('\n')
-    return render(request, 'contact.html')
+    return render(request, 'contact.html', context)
 
 def pagination(request, context, page, notes):
     queries_without_page = request.GET.copy()
