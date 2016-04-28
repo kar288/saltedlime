@@ -10,7 +10,9 @@ About
       About
     </h4>
     <div>
-      {{text}}
+      {% for p in text %}
+        <p>{{p}}</p>
+      {% endfor %}
     </div>
   </div>
 {% endblock %}

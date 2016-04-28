@@ -18,7 +18,7 @@ PAGE_SIZE = 12
 
 def about(request):
     context = {}
-    context['text'] = Text.objects.get(name='about').get('text', '').split('\n')
+    context['text'] = Text.objects.get(name='about').text.split('\n')
     return render(request, 'about.html', context)
 
 def contact(request):
