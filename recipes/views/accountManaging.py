@@ -22,11 +22,11 @@ def save_profile(backend, user, response, *args, **kwargs):
     if not recipeUser.exists():
         userByEmail = RecipeUser.objects.filter(email = data['email'])
         if userByEmail.exists():
-            logging.info('email exists, joining account')
+            logger.info('email exists, joining account')
             recipeUser = userByEmail
         else:
-            print user
-            print data
+            logger.info(user)
+            logger.info(data)
             recipeUser = RecipeUser.objects.create(
                 googleUser = data.get('googleUser', None),
                 facebookUser = data.get('facebookUser', None),
