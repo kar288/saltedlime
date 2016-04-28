@@ -3,6 +3,9 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
+class Strings(models.Model):
+    text = models.TextField()
+
 class Month(models.Model):
   name = models.CharField(max_length=20)
   index = models.IntegerField()
