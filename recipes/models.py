@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
-class Strings(models.Model):
+class Text(models.Model):
     name = models.CharField(max_length=200)
     text = models.TextField()
 

@@ -5,7 +5,7 @@ from django.db.models.functions import Lower
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from manageRecipes import *
-from recipes.models import Note, RecipeUser, Month, Strings
+from recipes.models import Note, RecipeUser, Month, Text
 from urlparse import urlparse
 from utils import *
 
@@ -18,7 +18,7 @@ PAGE_SIZE = 12
 
 def about(request):
     context = {}
-    context['text'] = Strings.objects.get('name'='about')
+    context['text'] = Text.objects.get('name'='about')
     return render(request, 'about.html', context)
 
 def contact(request):
