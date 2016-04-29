@@ -16,3 +16,10 @@ def getUser(user):
     if not recipeUser.exists():
         raise Http404("No such user.")
     return recipeUser[0]
+
+
+def recipeUser(request):
+    if request.user.is_anonymous():
+        return {}
+    recipeUser = getUser(request.user)
+    return { 'profile_pic': recipeUser.profilePic }

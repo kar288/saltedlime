@@ -29,6 +29,16 @@ main {
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
 
+.profile-pic {
+  background-color: #bbb;
+  background-position: 50%;
+  background-size: cover;
+  border-radius: 60px;
+  height: 44px;
+  width: 44px;
+  margin: 10px;
+}
+
 #logout {
   height: 64px;
 }
@@ -47,12 +57,16 @@ main {
 .extra-options {
   box-shadow: 0px 5px 5px 0 rgba(0,0,0,0.16), 2px 5px 5px 0 rgba(0,0,0,0.12);
   position: absolute;
-  right: 0;
   top: 63px;
   z-index: 1000;
   background-color: white;
   -webkit-transition: visibility 1s linear 0;
   transition: visibility 1s linear 0;
+  white-space: nowrap;
+}
+
+.over-right {
+  right: 0;
 }
 
 .invisible {
@@ -65,6 +79,10 @@ main {
 
 #search {
   margin-top: 20px;
+}
+
+#profile-options {
+  right: 0;
 }
 
 .short {

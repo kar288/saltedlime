@@ -40,14 +40,20 @@
           </li>
         </ul>
         <ul class="right logout hide-on-small-only">
-          <li class="hide-on-med-and-down">
-            <a id="logout" href="{% url 'logout' %}"
-              class="tooltipped"
-              data-position="bottom"
-              data-delay="50"
-              data-tooltip="Logout">
-              {% include 'logout.html' %}
-            </a>
+          <li id="profile" class="hide-on-med-and-down">
+            <div
+              class="profile-pic"
+              style="background-image: url('{{profile_pic}}')"
+            ></div>
+            <ul id="profile-options" class="extra-options invisible">
+              <li><a href="{% url 'logout' %}">
+                <div class="row">
+                  <div class="col s3">{% include 'logout.html' %}</div>
+                  <div class="col s9">Logout</div>
+                </div>
+
+              </a></li>
+            </ul>
           </li>
         </ul>
 
@@ -108,7 +114,17 @@
           </li>
           <hr>
           <li>
-            <a id="logout" href="{% url 'logout' %}" class="">Logout</a>
+            <div class="row">
+              <div class="col s3">
+                <div
+                  class="profile-pic"
+                  style="background-image: url('{{profile_pic}}')"
+                ></div>
+              </div>
+              <div class="col s9">
+                <a id="logout" href="{% url 'logout' %}" class="">Logout</a>
+              </div>
+            </div>
           </li>
         </ul>
       {% endif %}
@@ -145,19 +161,28 @@
     $('.button-collapse').sideNav();
     $('.tooltipped').tooltip({delay: 50});
     $('.modal-trigger').leanModal();
-    $('#add').on('mouseover', function() {
-      $('#add-options').removeClass('invisible');
+    var menus = [
+      ['add', 'add-options'],
+      ['profile', 'profile-options'],
+      ['search-icon', 'search-options']
+    ];
+    menus.forEach(menu => {
+      $('#' + menu[0]).on('mouseover', function() {
+        var options = $('#' + menu[1]);
+        var rightEdge = options.width() + options.offset().left;
+        var screenWidth = $(window).width();
+        options.removeClass('invisible');
+        if (screenWidth < rightEdge) {
+          options.addClass('over-right');
+        } else {
+          options.removeClass('over-right');
+        }
+      });
+      $('#' + menu[0]).on('mouseout', function() {
+        $('#' + menu[1]).addClass('invisible');
+      });
     });
-    $('#add').on('mouseout', function() {
-      $('#add-options').addClass('invisible');
-    });
-    $('#search-icon').on('mouseover', function() {
-      // debugger;
-      $('#search-options').removeClass('invisible');
-    });
-    $('#search-icon').on('mouseout', function() {
-      $('#search-options').addClass('invisible');
-    });
+
     $('#search-icon').on('click', function() {
       $('#search-form').removeClass('short');
       $('#search-options').addClass('invisible');
