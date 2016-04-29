@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
   <head>
     <meta charset="utf-8">
     <meta name=viewport content="width=device-width, initial-scale=1">
@@ -13,18 +13,26 @@
     <link href='https://fonts.googleapis.com/css?family=Yeseva+One&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Merriweather+Sans:400,800&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
-    <title>Welcome - Salted Lime</title>
+    <title>Salted Lime - Recipe Organizing App</title>
+    <meta property="og:title" content="Salted Lime" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{% url 'recipesHome' %}" />
+    <meta property="og:image" content="{% static 'images/logo-2.png' %}" />
   </head>
-  <body class="recipe default-primary-color">
+  <body itemscope itemtype="http://schema.org/WebApplication" class="recipe default-primary-color">
     <main class="welcome">
-      <h1 class="default-primary-color welcome-title">
+      <h1 itemprop="name" class="default-primary-color welcome-title">
         Salted Lime
       </h1>
+      <meta itemprop="about" content="Application to manage, organize, and share recipes with notes, tags and seasonal recommendations." />
+      <meta itemprop="browserRequirements" content="" />
       <div style="background-image: url('{% static 'images/picture.png' %}');background-position: 50%;
       background-size: cover;"class=" sign-in-welcome">
-      <div class="welcome-first row">
+      <div itemscope itemtype="http://schema.org/Organization" class="welcome-first row">
         <div class="col s12 m4">
-          <img alt="Salted Lime logo" class="logo" src="{% static 'images/logo-2.png' %}">
+          <a itemprop="url" href="{% url 'recipesHome' %}">
+            <img itemprop="logo" alt="Salted Lime logo" class="logo" src="{% static 'images/logo-2.png' %}">
+          </a>
         </div>
         <div class="col s12 m8 primary-text-color recipe-general-description">
           <h4>Keep track of recipes and notes</h4>
