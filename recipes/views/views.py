@@ -167,8 +167,6 @@ def search(request):
         notes |= recipeUser.notes.filter(site__icontains = term)
     page = int(get.get('page', '1'))
     pagination(request, context, page, notes)
-    for note in notes:
-        print note.url
     context['no-filters'] = True
     context['success'] = ['Searched for term: ' + query]
     return render(request, 'index.html', context)
