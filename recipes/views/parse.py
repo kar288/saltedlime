@@ -1,3 +1,4 @@
+# import html5lib
 import tldextract
 import re
 import requests
@@ -81,6 +82,16 @@ def getTags(soup, attr=None, link=None):
 
     return list(set(tagsResult))
 
+def getTitle(soup, tag=None, attr=None):
+    result = soup.title.string
+    titleTag = soup.find(tag, attrs=attr)
+    if titleTag:
+        if 'content' in titleTag and titleTag['content']:
+            result = titleTag['content']
+        elif titleTag.text:
+            result = titleTag.text
+    return result
+
 def traverse(nodes, separator):
     texts = []
     for node in nodes:
@@ -106,7 +117,7 @@ def parseRecipe(url):
     #
     # result = requests.get(url)
     # html = result.content
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html, "html5lib")
     if 'nyt' in url:
         parseNYT(soup, recipe)
     elif 'food52' in url:
@@ -124,7 +135,6 @@ def parseRecipe(url):
     elif 'smittenkitchen' in url:
         parseSmittenKitchen(soup, recipe)
     elif 'thekitchn' in url:
-        print 'THE KITCHN'
         parseTheKitchn(soup, recipe)
     elif 'cookieandkate' in url:
         parseCookieAndKate(soup, recipe)
@@ -139,10 +149,7 @@ def parseRecipe(url):
 def parserTemplate(soup, recipe, tagAttr, tagLink, ingredientAttr,\
     image={"property": "og:image"}, imageKey='content'):
 
-    recipe['title'] = soup.title.string
-    title = soup.find(attrs={'property': 'og:title'})
-    if title:
-        recipe['title'] = title['content']
+    recipe['title'] = getTitle(soup, 'meta', {'property': 'og:title'})
     recipe['tags'] = getTags(soup, tagAttr, tagLink)
     instructionElements = soup.findAll(attrs={'itemprop': 'recipeInstructions'})
     recipe['instructions'] = traverse(instructionElements, '\n')
@@ -235,10 +242,7 @@ def parseFoodNetwork(soup, recipe):
     return recipe
 
 def parseSmittenKitchen(soup, recipe):
-    recipe['title'] = soup.title.string
-    title = soup.find('a', attrs={'rel': 'bookmark'})
-    if title:
-        recipe['title'] = title.text
+    recipe['title'] = getTitle(soup, 'a', {'rel': 'bookmark'})
     recipe['tags'] = getTags(soup, {}, re.compile(r'.*postmetadata.*'))
     recipe['image'] = getImage(soup, {"property": "og:image"}, 'content')
     instructions = []
@@ -269,66 +273,32 @@ def parseSmittenKitchen(soup, recipe):
     return recipe
 
 def parseTheKitchn(soup, recipe):
-    recipe['title'] = soup.title.string
-    title = soup.find(attrs={'property': 'og:title'})
-    if title:
-        recipe['title'] = title['content']
+    recipe['title'] = getTitle(soup, '', {'itemprop': 'name'})
     recipe['tags'] = getTags(soup, {}, re.compile(r'.*post-categories.*'))
     recipe['image'] = getImage(soup, {"property": "og:image"}, 'content')
     servings = soup.findAll(attrs={'itemprop': 'recipeYield'})
     recipe['servings'] = ' '.join(traverse(servings, ' '))
-
-    ingredientElements = soup.findAll(attrs={'itemprop': 'ingredients'})
-
-    # THIS IS A HACK BUT SOME INGREDIENTS DONT HAVE ITEMPROPS WHILE OTHERS DO
-    recipe['ingredients'] = []
-    # ingredients = traverse(ingredientElements[0].parent, '\n')
-    # for ingredient in ingredients:
-    #     recipe['ingredients'] += ingredient.split('\n')
+    ingredients = soup.findAll(attrs={'itemprop': 'ingredients'})
+    ingredientContainer = None
+    if len(ingredients):
+        ingredientContainer = ingredients[0].parent
+        recipe['ingredients'] = traverse([ingredientContainer], '\n')
+    instruction = ingredientContainer.nextSibling
 
     instructions = []
-    ingredients = []
-
-    node = soup.body.find(text=re.compile('^[ ]*(Serves|Yield|Makes)[s]*[: ].*'))
-    recipe['servings'] = node
-    if not node or node == None:
-        recipe['servings'] = ''
-        return recipe
-    while isinstance(node, NavigableString) or not node.name == 'p':
-        if node.parent:
-            node = node.parent
-        else:
-            break
-    while True:
-        node = node.nextSibling
-        if isinstance(node, NavigableString):
-            continue
-        if not node or node.name == 'script':
-            break
-
-        texts = node.findAll(text=True)
-        texts = [i.strip() for i in texts if len(i.strip())]
-        if node.find('br') and not node.find('li'):
-            ingredients += texts
-        else:
-            instructions += texts
-    if not len(recipe['ingredients']):
-        recipe['ingredients'] = ingredients
+    while instruction:
+        if not isinstance(instruction, NavigableString):
+            instructions.append('\n'.join(traverse([instruction], '\n')))
+        instruction = instruction.nextSibling
     recipe['instructions'] = instructions
-    if not recipe['servings']:
-        recipe['servings'] = ''
     return recipe
 
 def parseGeneral(url, soup, recipe):
-    if not soup or not soup.title:
+    if not soup:
         return
 
     recipe['image'] = getImage(soup)
-    ogTitle = soup.find(attrs={'property': 'og:title'})
-    if ogTitle:
-        recipe['title'] = ogTitle['content']
-    else:
-        recipe['title'] = soup.title.string
+    recipe['title'] = getTitle(soup, 'meta', {'property': 'og:title'})
 
     instructionElements = soup.findAll(attrs={'itemprop': 'recipeInstructions'})
     recipe['instructions'] = traverse(instructionElements, '\n')

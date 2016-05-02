@@ -21,7 +21,7 @@ class GeneralTests(TestCase):
         recipe = parseRecipe(url)
         self.recipe_general(recipe, url)
         self.assertEquals(recipe['servings'], '4')
-        self.assertEquals(len(recipe['ingredients']), 14)
+        self.assertEquals(len(recipe['ingredients'].split('\n')), 14)
         self.assertEquals(recipe['image'], 'http://cookieandkate.com/images/2014/07/feta-fiesta-kale-salad-with-avocado-and-crispy-tortilla-strips.jpg')
 
     def test_smitten_kitchen(self):
@@ -36,7 +36,7 @@ class GeneralTests(TestCase):
         recipe = parseRecipe(url)
         self.recipe_general(recipe, url)
         self.assertEquals(recipe['servings'], 'Makes' + u'\xa0' + 'fifty-six 2 1/4-inch cookies')
-        self.assertEquals(len(recipe['ingredients']), 14)
+        self.assertEquals(len(recipe['ingredients'].split('\n')), 14)
         self.assertEquals(recipe['image'], '//images.food52.com/BQivH7Yv0CGwcUaVCkBoc5sdQDs=/753x502/92615718-d956-44f5-99ae-fb261a204340--2015-0915_ginger-molasses-cookies_bobbi-lin_10395.jpg')
 
     def test_ny_times(self):
@@ -44,15 +44,15 @@ class GeneralTests(TestCase):
         recipe = parseRecipe(url)
         self.recipe_general(recipe, url)
         self.assertEquals(recipe['servings'], '4 servings')
-        self.assertEquals(len(recipe['ingredients']), 8)
-        self.assertEquals(recipe['image'], 'http://graphics8.nytimes.com/images/2016/03/30/dining/30SPICE3/30SPICE3-superJumbo.jpg')
+        self.assertEquals(len(recipe['ingredients'].split('\n')), 8)
+        self.assertIn('/images/2016/03/30/dining/30SPICE3/30SPICE3-superJumbo.jpg', recipe['image'])
 
     def test_epicurious(self):
         url = 'http://www.epicurious.com/recipes/food/views/strawberry-rhubarb-compote-with-matzo-streusel-topping-109345'
         recipe = parseRecipe(url)
         self.recipe_general(recipe, url)
         self.assertEquals(recipe['servings'], 'Makes 8 servings')
-        self.assertEquals(len(recipe['ingredients']), 12)
+        self.assertEquals(len(recipe['ingredients'].split('\n')), 12)
         self.assertEquals(recipe['image'], 'http://assets.epicurious.com/photos/56f4270b16f9f5a007cc18ca/1:1/w_600%2Ch_600/EPI_03162016_Strawberry-Rhubarb-Crumble_recipe.jpg')
 
     def test_the_kitchn(self):
@@ -60,13 +60,14 @@ class GeneralTests(TestCase):
         recipe = parseRecipe(url)
         self.recipe_general(recipe, url)
         self.assertEquals(recipe['servings'], 'Serves 8 to 10')
-        self.assertEquals(len(recipe['ingredients']), 13)
+        self.assertEquals(recipe['title'], 'Baked Croque-Monsieur Casserole')
+        self.assertEquals(len(recipe['ingredients'].split('\n')), 13)
         self.assertIn('pixstatic.com/570ab88b2a099a2623000f91/_w.1500_s.fit_/TheKitchn_BreakfastCasserole_CroqueMadam02_WEB.jpg', recipe['image'])
 
     def test_the_kitchn2(self):
         url = 'http://www.thekitchn.com/recipe-ham-and-cheese-breakfas-43364'
         recipe = parseRecipe(url)
         self.recipe_general(recipe, url)
-        self.assertEquals(recipe['servings'], ' Serves 6 to 8')
-        self.assertEquals(len(recipe['ingredients']), 13)
+        self.assertEquals(recipe['servings'], 'Serves 6 to 8')
+        self.assertEquals(len(recipe['ingredients'].split('\n')), 13)
         self.assertIn('pixstatic.com/56590647dbfa3f2935008d37/_w.1500_s.fit_/Ham-Cheese-Casserole-4884.jpg', recipe['image'])

@@ -152,6 +152,7 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
         if post.get('tags', ''):
             tags += ',' + post.get('tags', '')
         title = recipeData.get('title', post.get('title', ''))
+
         if not len(title):
             return {'error': 'This recipe has a missing title or other essential information. Try adding it manually.', 'level': 3}
         note = Note.objects.create(
@@ -255,7 +256,6 @@ def processBulk(request):
             logger.info('No bookmarks in file: ' + request.FILES['bookmarks'].name)
             return render(request, 'addRecipes.html',
                 {'errors': [{'error': 'No bookmarks or links in the file!'}]})
-        print len(tags)
         for tag in tags:
             href = normalizeURL(tag.get('href'))
             text = tag.text if tag.text else href
