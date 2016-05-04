@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^editNote/(?P<noteId>[0-9]+)/$', recipes.views.editNote, name='editNote'),
     url(r'^editNoteHtml/(?P<noteId>[0-9]+)/$', recipes.views.editNoteHtml, name='editNoteHtml'),
 
+    url(r'^getIngredientNames/$', recipes.views.getIngredientNames, name='getIngredientNames'),
     url(r'^getSeasonIngredients/$', recipes.views.getSeasonIngredients, name='getSeasonIngredients'),
 
     url(r'^ingredients/(?P<ingredients>[\w,]+)/$', recipes.views.ingredients, name='ingredients'),

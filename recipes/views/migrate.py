@@ -5,7 +5,48 @@ import urllib2
 from BeautifulSoup import BeautifulSoup, NavigableString
 from django.shortcuts import render, redirect, get_object_or_404
 from parse import *
-from recipes.models import Recipe, Note, RecipeUser, Month
+from pattern.en import singularize
+from recipes.models import Recipe, Note, RecipeUser, Month, Ingredient
+
+def getIngredientNames(index):
+    # get = request.GET
+    # index = int(get.get('index'))
+    #
+    #
+# from recipes.views import *
+# getIngredientNames(0)
+    urlBase = 'http://cooking.nytimes.com/recipes/'
+    while index < 2000000:
+        url = urlBase + str(index)
+        print index
+        index += 1
+        try:
+            req = urllib2.Request(url.encode("utf8"), headers={'accept': '*/*', 'User-Agent' : "Magic Browser"})
+            html = urllib2.urlopen(req, timeout=10)
+        except:
+            continue
+        soup = BeautifulSoup(html, "html5lib")
+        ingredients = soup.select('.ingredient-name span')
+        for i in ingredients:
+            i = i.text.lower()
+            if not 'nutritional information' in i:
+                if ' and ' in i:
+                    i = i.split(' and ')
+                elif ' or ' in i:
+                    i = i.split(' or ')
+                elif ', ' in i:
+                    i = i.split(' or ')
+                else:
+                    i = [i]
+                for part in i:
+                    if 'our' in part:
+                        Ingredient.objects.get_or_create(name = part)
+                    else:
+                        if part != singularize(part):
+                            print part, singularize(part)
+                        Ingredient.objects.get_or_create(name = singularize(part))
+    print 'DONE'
+    # return render(request, 'index.html', {'success': [index]})
 
 def getSeasonIngredients(request):
     url = 'http://www.bbcgoodfood.com/seasonal-calendar/all'
