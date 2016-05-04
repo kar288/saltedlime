@@ -13,7 +13,7 @@ def getIngredientNamesNYT():
     # f = open('nyt-ingredients-snapshot-2015.csv')
     # for line in f:
     #     print line
-    with open('https://raw.githubusercontent.com/NYTimes/ingredient-phrase-tagger/master/nyt-ingredients-snapshot-2015.csv', 'rb') as csvfile:
+    with open('nyt-ingredients-snapshot-2015.csv', 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',')
         for row in spamreader:
             Ingredient.objects.get_or_create(name = row[2].lower())
