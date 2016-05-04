@@ -21,6 +21,17 @@ def about(request):
     context['text'] = Text.objects.get(name='about').text.split('\n')
     return render(request, 'about.html', context)
 
+def test(request):
+    # url = 'http://cookieandkate.com/2014/feta-fiesta-kale-salad-with-avocado-and-crispy-tortilla-strips/'
+    notes = Note.objects.all()
+    print notes
+    context = {}
+    for note in notes:
+        # context['text'] = Text.objects.get(name='about').text.split('\n')
+        # recipe = parseRecipe(url)
+        getBasicIngredients(note.ingredients)
+    return render(request, 'about.html', context)
+
 def contact(request):
     context = {}
     context['text'] = Text.objects.get(name='contact').text.split('\n')

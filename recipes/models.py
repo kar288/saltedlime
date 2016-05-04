@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=200, unique=True)
+    count = models.IntegerField(default=0)
 
 class Text(models.Model):
     name = models.CharField(max_length=200)

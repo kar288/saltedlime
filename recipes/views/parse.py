@@ -6,21 +6,51 @@ import traceback
 import urllib2
 
 from bs4 import BeautifulSoup, NavigableString
+from pattern.en import singularize
+from recipes.models import Recipe, Note, RecipeUser, Month, Ingredient
 # from BeautifulSoup import BeautifulSoup, NavigableString
 #
+#
+#
+def getBigrams(parts):
+    bigrams = []
+    for i in range(len(parts) - 1):
+        bigrams.append(' '.join(parts[i : i + 2]))
+    return bigrams
 
 def getBasicIngredients(ingredients):
-    ingredients = ingredients.split('\n')
+    ingredients = ingredients.replace('  ', ' ').replace(",", "").lower().split('\n')
+    print ingredients
     for ingredient in ingredients:
+        ingredient = re.sub(r' \([^)]*\)', '', ingredient)
         print ingredient
-        ingredient = re.sub(r'\([^)]*\)', '', ingredient)
         parts = ingredient.strip().split(' ')
-        if len(parts) and parts[0][0].isdigit():
-            if len(parts) > 3:
-                print parts[2:]
-            elif len(parts) == 2:
-                print parts[1]
-
+        bigrams = getBigrams(parts)
+        done = False
+        for part in bigrams:
+            part = part.strip()
+            if not 'our' in part:
+                part = singularize(part)
+        #     print part
+            if 'spoon' in part or 'cup' in part:
+                continue
+            i = Ingredient.objects.filter(name = part)
+            if len(i):
+                print i[0].name
+                done = True
+                break
+        if not done:
+            for part in parts:
+                part = part.strip()
+                if not 'our' in part:
+                    part = singularize(part)
+                # print '--', part
+                if 'spoon' in part or 'cup' in part:
+                    continue
+                i = Ingredient.objects.filter(name = part)
+                if len(i):
+                    print i[0].name
+                    break
 
 def getImage(soup, attr=None, key=None):
     imageUrl = ''
@@ -97,6 +127,9 @@ def getTags(soup, attr=None, link=None):
     return list(set(tagsResult))
 
 def getTitle(soup, tag=None, attr=None):
+    title = soup.title
+    if not title:
+        return ''
     result = soup.title.string
     titleTag = soup.find(tag, attrs=attr)
     if titleTag:
@@ -297,7 +330,10 @@ def parseTheKitchn(soup, recipe):
     if len(ingredients):
         ingredientContainer = ingredients[0].parent
         recipe['ingredients'] = traverse([ingredientContainer], '\n')
-    instruction = ingredientContainer.nextSibling
+    if not ingredientContainer:
+        instruction = None
+    else:
+        instruction = ingredientContainer.nextSibling
 
     instructions = []
     while instruction:

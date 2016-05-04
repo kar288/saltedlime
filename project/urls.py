@@ -31,7 +31,6 @@ urlpatterns = [
     url(r'^editNote/(?P<noteId>[0-9]+)/$', recipes.views.editNote, name='editNote'),
     url(r'^editNoteHtml/(?P<noteId>[0-9]+)/$', recipes.views.editNoteHtml, name='editNoteHtml'),
 
-    url(r'^getIngredientNames/$', recipes.views.getIngredientNames, name='getIngredientNames'),
     url(r'^getSeasonIngredients/$', recipes.views.getSeasonIngredients, name='getSeasonIngredients'),
 
     url(r'^ingredients/(?P<ingredients>[\w,]+)/$', recipes.views.ingredients, name='ingredients'),
@@ -55,6 +54,8 @@ urlpatterns = [
     url(r'^table/(?P<field>[\w]*)/(?P<direction>[0-9]*)/$', recipes.views.table, name='table'),
     url(r'^tableAll/(?P<field>[\w]*)/$', recipes.views.tableAll, name='tableAll'),
     url(r'^tags/(?P<tags>.+)/$', recipes.views.tags, name='tags'),
+    url(r'^test/$', recipes.views.test, name='test'),
+
 
     url('', include('social.apps.django_app.urls', namespace='social')),
 ]
