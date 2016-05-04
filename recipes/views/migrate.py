@@ -14,8 +14,9 @@ def getIngredientNamesNYT():
     # for line in f:
     #     print line
     with open('nyt-ingredients-snapshot-2015.csv', 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',')
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in spamreader:
+            # print row, row[2].lower()
             Ingredient.objects.get_or_create(name = row[2].lower())
 
 def getIngredientNames(index):
