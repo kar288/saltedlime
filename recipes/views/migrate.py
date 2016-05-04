@@ -1,5 +1,6 @@
 import csv
 import datetime
+import sys
 import tldextract
 import urllib2
 
@@ -9,19 +10,60 @@ from parse import *
 from pattern.en import singularize
 from recipes.models import Recipe, Note, RecipeUser, Month, Ingredient
 
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 def getIngredientNamesNYT():
     # f = open('nyt-ingredients-snapshot-2015.csv')
     # for line in f:
     #     print line
+    Ingredient.objects.all().delete()
     with open('nyt-ingredients-snapshot-2015.csv', 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in spamreader:
-            # print row, row[2].lower()
-            ingredient = Ingredient.objects.get_or_create(name = row[2].lower())
-            count = ingredient.count + 1
-            setattr(ingredient, 'count', count)
-            ingredient.save()
-            print ingredient.name, ingredient.count
+            # row = [col.encode('utf-8') for col in row]
+            # if 'sugar' in row:
+            #     continue
+            # row = map(lambda s: s.strip(), row)
+            # if row[0] == '178814':
+                # print row
+            # else:
+                # continue
+            name = row[2].lower()
+            name = name.replace(u'\xc2', '')
+            name = name.replace(u'\xa0', '')
+            # \xa0\xc2\xa0')
+            name = re.sub(r' \([^)]*\)', '', name)
+            name = ' '.join(name.split())
+            name = name.split(',')[0]
+            parts = [name]
+            if ' or ' in name:
+                parts = name.split(' or ')
+            if ' and ' in name:
+                parts = name.split(' and ')
+
+            # print parts
+            for part in parts:
+                # print row[2], '----', part
+                clean = part
+                if not clean:
+                    # print row[2]
+                    continue
+                # print "BEFORE STRIP", clean + '*'
+                clean = clean.strip()
+                # print "AFTERR STRIP", clean + '*'
+                # print parts
+                # if clean[-1] == ' ':
+                    # print clean
+                if not 'our' in clean and not 'a' == clean[-1]:
+                    clean = singularize(clean)
+
+                # print clean
+                ingredient, created = Ingredient.objects.get_or_create(name=clean)
+                amount = ingredient.amount + 1
+                setattr(ingredient, 'amount', amount)
+                ingredient.save()
+                # print ingredient.name, ingredient.amount
 
 def getIngredientNames(index):
     # get = request.GET
