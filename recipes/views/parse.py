@@ -7,6 +7,20 @@ import urllib2
 
 from bs4 import BeautifulSoup, NavigableString
 # from BeautifulSoup import BeautifulSoup, NavigableString
+#
+
+def getBasicIngredients(ingredients):
+    ingredients = ingredients.split('\n')
+    for ingredient in ingredients:
+        print ingredient
+        ingredient = re.sub(r'\([^)]*\)', '', ingredient)
+        parts = ingredient.strip().split(' ')
+        if len(parts) and parts[0][0].isdigit():
+            if len(parts) > 3:
+                print parts[2:]
+            elif len(parts) == 2:
+                print parts[1]
+
 
 def getImage(soup, attr=None, key=None):
     imageUrl = ''
@@ -110,7 +124,7 @@ def parseRecipe(url):
     recipe = {'url': url}
     try:
         req = urllib2.Request(url.encode("utf8"), headers={'accept': '*/*', 'User-Agent' : "Magic Browser"})
-        html = urllib2.urlopen(req)
+        html = urllib2.urlopen(req, timeout=10)
     except urllib2.HTTPError, err:
         traceback.print_exc()
         html = urllib2.build_opener(urllib2.HTTPCookieProcessor).open(url)

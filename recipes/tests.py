@@ -15,6 +15,7 @@ class GeneralTests(TestCase):
             self.assertIn(field, recipe)
         self.assertGreater(len(recipe['tags']), 0)
         self.assertEquals(recipe['url'], url)
+        getBasicIngredients(recipe['ingredients'])
 
     def test_cookie_and_kate(self):
         url = 'http://cookieandkate.com/2014/feta-fiesta-kale-salad-with-avocado-and-crispy-tortilla-strips/'
