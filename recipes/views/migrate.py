@@ -24,7 +24,8 @@ def getIngredientNames(index):
     #
     #
 # from recipes.views import *
-# getIngredientNames(0)
+# getIngredientNames(8279)
+#
     urlBase = 'http://cooking.nytimes.com/recipes/'
     while index < 2000000:
         url = urlBase + str(index)
