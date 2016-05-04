@@ -17,7 +17,11 @@ def getIngredientNamesNYT():
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in spamreader:
             # print row, row[2].lower()
-            Ingredient.objects.get_or_create(name = row[2].lower())
+            ingredient = Ingredient.objects.get_or_create(name = row[2].lower())
+            count = ingredient.count + 1
+            setattr(ingredient, 'count', count)
+            ingredient.save()
+            print ingredient.name, ingredient.count
 
 def getIngredientNames(index):
     # get = request.GET
