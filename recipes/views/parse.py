@@ -41,11 +41,7 @@ def is_quantity(s):
 
     return tmp
 
-basicUnits = {
-    'ml': True,
-    'l': True,
-    'g': True,
-}
+basicUnits = ['ml', 'l', 'g']
 
 def is_unit(s):
     units = {
@@ -66,8 +62,11 @@ def is_unit(s):
         'grams': True,
         'head': True,
         'bunch': True,
+        'ml': True,
+        'l': True,
+        'g': True,
     }
-    return s in units or s in basicUnits
+    return s in units
 
 def is_descriptor(s):
     descriptors = {
@@ -147,7 +146,6 @@ def getIngredientName(ingredient):
                     if basicUnit in tmp:
                         tmp = tmp.replace(basicUnit, ' ' + basicUnit)
                         tokens = tmp.split() + tokens[1:]
-                        print tokens
                         break
 
             for token in tokens:
