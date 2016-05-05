@@ -112,6 +112,7 @@ def getNGrams(size, parts):
 def getIngredientName(ingredient):
     ingredient = ingredient.replace('  ', ' ').replace(",", "").lower()
     ingredient = re.sub(r' \([^)]*\)', '', ingredient)
+    ingredient = ingredient.replace('/', ' / ')
     parts = ingredient.strip().split(' ')
     for i in range(3, 0, -1):
         ngrams = getNGrams(i, parts)
