@@ -78,6 +78,7 @@ def is_descriptor(s):
         'heaping': True,
         'peeled': True,
         'to': True,
+        'overripe': True,
     }
     return s in descriptors
 
@@ -279,12 +280,12 @@ def parseRecipe(url):
     try:
         req = urllib2.Request(url.encode("utf8"), headers={'accept': '*/*', 'User-Agent' : "Magic Browser"})
         html = urllib2.urlopen(req, timeout=10)
+        charset = html.headers.getparam('charset')
+        html = html.read().decode(charset)
     except urllib2.HTTPError, err:
         traceback.print_exc()
         html = urllib2.build_opener(urllib2.HTTPCookieProcessor).open(url)
-    #
-    # result = requests.get(url)
-    # html = result.content
+
     soup = BeautifulSoup(html, "html5lib")
     if 'nyt' in url:
         parseNYT(soup, recipe)

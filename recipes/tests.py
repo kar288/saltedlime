@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.test import TestCase
 
 from views import *
@@ -50,6 +51,15 @@ class GeneralTests(TestCase):
         self.assertEquals(recipe['servings'], '4 servings')
         self.assertEquals(len(recipe['ingredients'].split('\n')), 8)
         self.assertIn('/images/2016/03/30/dining/30SPICE3/30SPICE3-superJumbo.jpg', recipe['image'])
+
+    def test_ny_times2(self):
+        url = 'http://cooking.nytimes.com/recipes/1017027-gingerbread-buche-de-noel'
+        recipe = parseRecipe(url)
+        self.recipe_general(recipe, url)
+        self.assertEquals(recipe['title'], u'Gingerbread B\xfbche de No\xebl Recipe - NYT Cooking')
+        # self.assertEquals(recipe['servings'], '4 servings')
+        # self.assertEquals(len(recipe['ingredients'].split('\n')), 8)
+        # self.assertIn('/images/2016/03/30/dining/30SPICE3/30SPICE3-superJumbo.jpg', recipe['image'])
 
     def test_epicurious(self):
         url = 'http://www.epicurious.com/recipes/food/views/strawberry-rhubarb-compote-with-matzo-streusel-topping-109345'

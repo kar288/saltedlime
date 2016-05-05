@@ -76,6 +76,7 @@ class Note(models.Model):
     def __str__(self):
         return self.title
     def __unicode__(self):
+        print self.title
         return u'%s' % self.title
     def difficulty_long(self):
         if self.difficulty == '':
