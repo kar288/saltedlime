@@ -32,12 +32,19 @@ def is_quantity(s):
     except ValueError:
         pass
 
-    return False
+    if len(s):
+        return False
+
+    tmp = True
+    for c in s:
+        tmp &= is_quantity(c)
+    return tmp
 
 def is_unit(s):
     units = {
         'pinch': True,
         'tablespoon': True,
+        'teaspoon': True,
         'tbsp': True,
         'tbsps': True,
         'tsp': True,
@@ -53,6 +60,8 @@ def is_unit(s):
         'millilitres': True,
         'grams': True,
         'g': True,
+        'head': True,
+        'bunch': True,
     }
     return s in units
 
@@ -61,9 +70,10 @@ def is_descriptor(s):
         'large': True,
         'small': True,
         'scant': True,
-        'large': True,
-        'large': True,
-        'large': True,
+        'medium': True,
+        'heaping': True,
+        'peeled': True,
+        'to': True,
     }
     return s in descriptors
 
