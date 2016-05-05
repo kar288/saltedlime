@@ -6,3 +6,4 @@ sed -i.bak '/to taste$/d' ingredients.txt &&
 sed -i.bak '/chopped$/d' ingredients.txt &&
 sed -i.bak '/round$/d' ingredients.txt
 sed -i.bak '/medium$/d' ingredients.txt
+sed -i.bak '/green$/d' ingredients.txt
