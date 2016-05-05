@@ -1,3 +1,4 @@
+import json
 import logging
 import math
 import operator
@@ -48,7 +49,19 @@ def menu(request):
                 'unit': parsed.get('unit', ''),
             })
 
-    context['ingredients'] = pairs
+    # ingredient -> unit -> [quantities]
+    perIngredient = {}
+    for obj in pairs:
+        quantities = perIngredient.get(obj['name'], {})
+        units = quantities.get(obj['unit'], [])
+        units.append({'string': obj['string'], 'quantity': obj['quantity']})
+        quantities[obj['unit']] = units
+        perIngredient[obj['name']] = quantities
+
+    # print json.dumps(perIngredient)
+
+    context['ingredients'] = perIngredient
+
 
     return render(request, 'menu.html', context)
 

@@ -10,7 +10,26 @@ Menu
       Menu
     </h4>
     <div>
-      <div class="row">
+      {% for name, units in ingredients.items %}
+        <h4>{{name}}</h4>
+        {% for unit, quantities in units.items %}
+          <h5>{{unit}}</h5>
+          {% for q in quantities %}
+            <div class="row">
+              <div class="col s4">
+                -
+              </div>
+              <div class="col s4">
+                {{q.string}}
+              </div>
+              <div class="col s4">
+                {{q.quantity}}
+              </div>
+            </div>
+          {% endfor %}
+        {% endfor %}
+      {% endfor %}
+      <!-- <div class="row">
         <div class="col s6">
           String
         </div>
@@ -39,7 +58,7 @@ Menu
             {{i.name}}
           </div>
         </div>
-      {% endfor %}
+      {% endfor %} -->
     </div>
   </div>
 {% endblock %}
