@@ -32,13 +32,20 @@ def is_quantity(s):
     except ValueError:
         pass
 
-    if len(s):
+    if len(s) == 1:
         return False
 
     tmp = True
     for c in s:
         tmp &= is_quantity(c)
+
     return tmp
+
+basicUnits = {
+    'ml': True,
+    'l': True,
+    'g': True,
+}
 
 def is_unit(s):
     units = {
@@ -53,17 +60,14 @@ def is_unit(s):
         'pound': True,
         'oz': True,
         'ounces': True,
-        'l': True,
         'liter': True,
-        'ml': True,
         'millilitre': True,
         'millilitres': True,
         'grams': True,
-        'g': True,
         'head': True,
         'bunch': True,
     }
-    return s in units
+    return s in units or s in basicUnits
 
 def is_descriptor(s):
     descriptors = {
@@ -77,6 +81,26 @@ def is_descriptor(s):
     }
     return s in descriptors
 
+def normalizeUnit(unit):
+    if not len(unit):
+        return unit
+    substitutions = [
+        {'name': 'teaspoon', 'sub': 'tsp'},
+        {'name': 'tablespoon', 'sub': 'tbsp'},
+        {'name': 'ounce', 'sub': 'oz'},
+        {'name': 'pound', 'sub': 'lb'},
+        {'name': 'millilitre', 'sub': 'ml'},
+        {'name': 'litre', 'sub': 'l'},
+        {'name': 'kilogram', 'sub': 'kg'},
+        {'name': 'gram', 'sub': 'g'},
+    ]
+    if unit[-1] == 's':
+        unit = unit[:-1]
+    for substitution in substitutions:
+        if substitution['name'] in unit:
+            return unit.replace(substitution['name'], substitution['sub'])
+    return unit
+
 def getNGrams(size, parts):
     if size == 1:
         return parts
@@ -88,7 +112,6 @@ def getNGrams(size, parts):
 def getIngredientName(ingredient):
     ingredient = ingredient.replace('  ', ' ').replace(",", "").lower()
     ingredient = re.sub(r' \([^)]*\)', '', ingredient)
-    ingredient = ingredient.replace('-', ' ')
     parts = ingredient.strip().split(' ')
     for i in range(3, 0, -1):
         ngrams = getNGrams(i, parts)
@@ -98,32 +121,55 @@ def getIngredientName(ingredient):
                 clean = singularize(clean)
             if 'spoon' in clean or 'cup' in clean:
                 continue
-            i = Ingredient.objects.filter(name = clean)
-            if len(i):
-                p = ingredient.split(part)
-                unit = '-'
-                quantity = ''
-                numbersDone = False
-                if len(p):
-                    tokens = p[0].split()
-                    print tokens, i[0].name
-                    for token in tokens:
-                        if is_unit(token) and not is_descriptor(token):
+            ingredients = Ingredient.objects.filter(name = clean)
+            if not len(ingredients):
+                continue
+            p = ingredient.split(part)
+            if not len(p):
+                return {
+                    'name': ingredients[0].name,
+                    'quantity': '-',
+                    'unit': '-'
+                }
+            unit = '-'
+            quantity = ''
+            numbersDone = False
+            tokens = p[0].split()
+            if not tokens:
+                continue
+            tmp = tokens[0]
+            # 25ml, 8g ...
+            if len(tmp) and is_quantity(tmp[0]):
+                for basicUnit in basicUnits:
+                    if basicUnit in tmp:
+                        tmp = tmp.replace(basicUnit, ' ' + basicUnit)
+                        tokens = tmp.split() + tokens[1:]
+                        break
+
+            for token in tokens:
+                if is_unit(token) and not is_descriptor(token):
+                    numbersDone = True
+                    unit = token
+                    break
+                if not numbersDone:
+                    if is_quantity(token):
+                        quantity += token + ' '
+                    elif token == '-':
+                        quantity = ''
+                    else:
+                        if len(quantity):
                             numbersDone = True
-                            unit = token
-                            break
-                        if not numbersDone:
-                            if is_quantity(token):
-                                quantity += token + ' '
-                            else:
-                                if len(quantity):
-                                    numbersDone = True
-                                    if not is_descriptor(token):
-                                        unit = token
-                                        break
-                if not quantity:
-                    quantity = '-'
-                return {'name': i[0].name, 'quantity': quantity, 'unit': unit}
+                            if not is_descriptor(token):
+                                unit = token
+                                break
+            unit = normalizeUnit(unit)
+            if not quantity:
+                quantity = '-'
+            return {
+                'name': ingredients[0].name,
+                'quantity': quantity,
+                'unit': unit
+            }
     return {}
 
 def getImage(soup, attr=None, key=None):
