@@ -24,10 +24,15 @@ def about(request):
 
 def menu(request):
     # url = 'http://cookieandkate.com/2014/feta-fiesta-kale-salad-with-avocado-and-crispy-tortilla-strips/'
-    notes = Note.objects.all()
-    print notes
     context = {}
     pairs = []
+    get = request.GET
+    start = int(get.get('start', 0))
+    end = int(get.get('end', 100))
+
+    notes = Note.objects.all()
+    notes = notes[start:min(end, len(notes))]
+
     for note in notes:
         # context['text'] = Text.objects.get(name='about').text.split('\n')
         # recipe = parseRecipe(url)
