@@ -147,6 +147,7 @@ def getIngredientName(ingredient):
                     if basicUnit in tmp:
                         tmp = tmp.replace(basicUnit, ' ' + basicUnit)
                         tokens = tmp.split() + tokens[1:]
+                        print tokens
                         break
 
             for token in tokens:
