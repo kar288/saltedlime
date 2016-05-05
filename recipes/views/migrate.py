@@ -1,5 +1,6 @@
 import csv
 import datetime
+import subprocess
 import sys
 import tldextract
 import urllib2
@@ -14,10 +15,10 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 def getIngredientNamesNYT():
-    # f = open('nyt-ingredients-snapshot-2015.csv')
-    # for line in f:
-    #     print line
     Ingredient.objects.all().delete()
+    target = open('clean.txt', 'w')
+    i = 0
+    bufferStr = ''
     with open('nyt-ingredients-snapshot-2015.csv', 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in spamreader:
@@ -41,12 +42,21 @@ def getIngredientNamesNYT():
                 if not 'our' in clean and not 'a' == clean[-1]:
                     clean = singularize(clean)
 
+                if i < 100000:
+                    bufferStr += clean + '\n'
+                    i += 1
+                else:
+                    target.write(bufferStr)
+                    i = 0
+    target.write(bufferStr)
+    i = 0
+    target.close()
 
-                ingredient, created = Ingredient.objects.get_or_create(name=clean)
-                amount = ingredient.amount + 1
-                setattr(ingredient, 'amount', amount)
-                ingredient.save()
-    Ingredient.objects.filter(amount__lte=7).delete()
+def ingredientsToDB():
+    with open('ingredients.txt', 'rb') as f:
+        for line in f:
+            row = line.split()
+            Ingredient.objects.get_or_create(name=' '.join(row[1:]), amount=int(row[0]))
 
 def getIngredientNames(index):
     # get = request.GET
