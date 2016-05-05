@@ -15,7 +15,6 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 def getIngredientNamesNYT():
-    Ingredient.objects.all().delete()
     target = open('clean.txt', 'w')
     i = 0
     bufferStr = ''
@@ -53,6 +52,7 @@ def getIngredientNamesNYT():
     target.close()
 
 def ingredientsToDB():
+    Ingredient.objects.all().delete()
     with open('ingredients.txt', 'rb') as f:
         for line in f:
             row = line.split()
