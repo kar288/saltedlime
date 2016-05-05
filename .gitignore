@@ -33,3 +33,4 @@ staticfiles
 db.sqlite3
 *.log
 *.csv
+clean.txt
