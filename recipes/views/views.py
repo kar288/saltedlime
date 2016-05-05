@@ -142,6 +142,7 @@ def note(request, noteId):
         context['shared'] = True
         if note.shared == False or not int(request.GET.get('share', '0')):
             raise Http404("No such recipe.")
+    context['ingredients'] = getBasicIngredients(note.ingredients)
     context['note'] = note
     context['shareUrl'] = \
         request.build_absolute_uri('/')[:-1] + request.get_full_path() + '?share=1'

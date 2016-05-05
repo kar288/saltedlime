@@ -21,6 +21,7 @@ def getBigrams(parts):
 def getBasicIngredients(ingredients):
     ingredients = ingredients.replace('  ', ' ').replace(",", "").lower().split('\n')
     print ingredients
+    result = []
     for ingredient in ingredients:
         ingredient = re.sub(r' \([^)]*\)', '', ingredient)
         print ingredient
@@ -31,12 +32,11 @@ def getBasicIngredients(ingredients):
             part = part.strip()
             if not 'our' in part:
                 part = singularize(part)
-        #     print part
             if 'spoon' in part or 'cup' in part:
                 continue
             i = Ingredient.objects.filter(name = part)
             if len(i):
-                print i[0].name
+                result.append(i[0].name)
                 done = True
                 break
         if not done:
@@ -44,13 +44,13 @@ def getBasicIngredients(ingredients):
                 part = part.strip()
                 if not 'our' in part:
                     part = singularize(part)
-                # print '--', part
                 if 'spoon' in part or 'cup' in part:
                     continue
                 i = Ingredient.objects.filter(name = part)
                 if len(i):
-                    print i[0].name
+                    result.append(i[0].name)
                     break
+    return result
 
 def getImage(soup, attr=None, key=None):
     imageUrl = ''
