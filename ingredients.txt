@@ -161,6 +161,7 @@
    8 smoked spanish paprika
    8 smoked turkey
    8 spelt
+   8 spring green
    8 suet
    8 superfine flour
    8 sweet apple cider
@@ -187,6 +188,7 @@
    8 yuca
    8 za’atar
    9 almond oil
+   9 baby green
    9 bacon dripping
    9 bacon grease
    9 balsamic
@@ -462,6 +464,7 @@
   11 tamarind concentrate
   11 thai chili
   11 tiny new potato
+  11 turnip green
   11 white fish
   11 whole allspice
   11 whole-milk yogurt
@@ -720,6 +723,7 @@
   16 liquor
   16 medium-size onion
   16 medjool date
+  16 mixed green
   16 mushroom broth
   16 nonstick pan spray
   16 orange twist
@@ -772,6 +776,7 @@
   18 chicory
   18 chopped fresh rosemary
   18 confectioner's sugar
+  18 dandelion green
   18 file powder
   18 finely chopped garlic
   18 grainy mustard
@@ -947,12 +952,14 @@
   23 pie crust
   23 pita bread
   23 sausage meat
+  23 scallion green
   23 shiitake
   23 short rib
   23 squab
   23 whole-wheat pastry flour
   24 all purpose flour
   24 beef chuck
+  24 beet green
   24 button mushroom
   24 chile
   24 chorizo sausage
@@ -1075,6 +1082,7 @@
   30 fresh tarragon
   30 grated nutmeg
   30 jalapeno chili
+  30 mustard green
   30 port wine
   30 raw brown sugar
   30 small garlic clove
@@ -1187,6 +1195,7 @@
   37 tamarind paste
   38 canola
   38 cantaloupe
+  38 collard green
   38 cornish hen
   38 farfalle
   38 finely minced garlic
@@ -1292,6 +1301,7 @@
   50 pomegranate molass
   50 pomegranate seed
   50 red snapper
+  50 salad green
   50 savoy cabbage
   50 squash
   50 superfine sugar
