@@ -1,10 +1,11 @@
 from django.conf.urls import include, url
-
 from django.contrib import admin
-admin.autodiscover()
+from django.http import HttpResponse
 
 import recipes.views
-from django.http import HttpResponse
+
+admin.autodiscover()
+
 
 urlpatterns = [
     url(r'^$', recipes.views.home, name='recipesHome'),
@@ -38,6 +39,8 @@ urlpatterns = [
     url(r'^login/$', recipes.views.home),
     url(r'^logout/$', recipes.views.logout, name='logout'),
 
+    url(r'^menu/$', recipes.views.menu, name='menu'),
+
     url(r'^note/(?P<noteId>[0-9]+)/$', recipes.views.note, name='note'),
 
     url(r'^processBulk/$', recipes.views.processBulk, name='processBulk'),
@@ -54,7 +57,6 @@ urlpatterns = [
     url(r'^table/(?P<field>[\w]*)/(?P<direction>[0-9]*)/$', recipes.views.table, name='table'),
     url(r'^tableAll/(?P<field>[\w]*)/$', recipes.views.tableAll, name='tableAll'),
     url(r'^tags/(?P<tags>.+)/$', recipes.views.tags, name='tags'),
-    url(r'^test/$', recipes.views.test, name='test'),
 
 
     url('', include('social.apps.django_app.urls', namespace='social')),

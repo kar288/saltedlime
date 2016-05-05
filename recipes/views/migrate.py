@@ -2,14 +2,15 @@ import csv
 import datetime
 import subprocess
 import sys
-import tldextract
 import urllib2
 
+import tldextract
 from BeautifulSoup import BeautifulSoup, NavigableString
-from django.shortcuts import render, redirect, get_object_or_404
-from parse import *
+from django.shortcuts import get_object_or_404, redirect, render
 from pattern.en import singularize
-from recipes.models import Recipe, Note, RecipeUser, Month, Ingredient
+
+from parse import *
+from recipes.models import Ingredient, Month, Note, Recipe, RecipeUser
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -57,6 +58,7 @@ def ingredientsToDB():
         for line in f:
             row = line.split()
             Ingredient.objects.get_or_create(name=' '.join(row[1:]), amount=int(row[0]))
+    return
 
 def getIngredientNames(index):
     # get = request.GET

@@ -1,0 +1,45 @@
+{% extends "recipeBase.html" %}
+
+{% block title %}
+Menu
+{% endblock %}
+
+{% block content %}
+  <div class="centered small">
+    <h4>
+      Menu
+    </h4>
+    <div>
+      <div class="row">
+        <div class="col s6">
+          String
+        </div>
+        <div class="col s2">
+          Quantity
+        </div>
+        <div class="col s2">
+          Unit
+        </div>
+        <div class="col s2">
+          Name
+        </div>
+      </div>
+      {% for i in ingredients %}
+        <div class="row">
+          <div class="col s6">
+            {{i.string}}
+          </div>
+          <div class="col s2">
+            {{i.quantity}}
+          </div>
+          <div class="col s2">
+            {{i.unit}}
+          </div>
+          <div class="col s2">
+            {{i.name}}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

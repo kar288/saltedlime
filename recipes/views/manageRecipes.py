@@ -1,18 +1,20 @@
 # from accountManaging import *
-from datetime import datetime, date
-from django.contrib.auth.decorators import login_required
-from django.db.models.functions import Lower
-from django.http import JsonResponse, Http404
-from django.shortcuts import render, redirect, get_object_or_404
-from django.template.loader import render_to_string
-from parse import *
-from recipes.models import Note, RecipeUser
-from urlparse import urlparse
-from utils import *
-
 import json
 import math
 import socket
+from datetime import date, datetime
+from urlparse import urlparse
+
+from django.contrib.auth.decorators import login_required
+from django.db.models.functions import Lower
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
+
+from parse import *
+from recipes.models import Note, RecipeUser
+from utils import *
+
 
 def getTagsForNote(note):
     tags = ['breakfast', 'lunch', 'dinner', 'snack', 'vegetarian', 'vegan']

@@ -1,7 +1,14 @@
-from django.contrib.auth import logout as auth_logout, login
+import base64
+import hashlib
+import hmac
+
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import login
 from django.shortcuts import redirect
+
 from recipes.models import RecipeUser
 from utils import *
+
 
 def save_profile(backend, user, response, *args, **kwargs):
     data = {}
@@ -60,9 +67,6 @@ app_id = ''
 app_secret = '';
 me_endpoint_base_url = 'https://graph.accountkit.com/v1.0/me';
 token_exchange_base_url = 'https://graph.accountkit.com/v1.0/access_token';
-import hmac
-import hashlib
-import base64
 
 def genAppSecretProof(app_secret, access_token):
     h = hmac.new (

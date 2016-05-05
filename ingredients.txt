@@ -485,7 +485,6 @@
   12 carp
   12 chicken soup
   12 chinese rice wine
-  12 chopped
   12 chopped dill
   12 chopped fresh cilantro
   12 chopped mint

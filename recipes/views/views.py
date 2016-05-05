@@ -1,18 +1,19 @@
-from accountManaging import *
-from datetime import datetime, date
-from django.contrib.auth.decorators import login_required
-from django.db.models.functions import Lower
-from django.http import JsonResponse, Http404
-from django.shortcuts import render, redirect, get_object_or_404
-from manageRecipes import *
-from recipes.models import Note, RecipeUser, Month, Text
-from urlparse import urlparse
-from utils import *
-
 import logging
 import math
 import operator
 import traceback
+from datetime import date, datetime
+from urlparse import urlparse
+
+from django.contrib.auth.decorators import login_required
+from django.db.models.functions import Lower
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+
+from accountManaging import *
+from manageRecipes import *
+from recipes.models import Month, Note, RecipeUser, Text
+from utils import *
 
 PAGE_SIZE = 12
 
@@ -21,16 +22,30 @@ def about(request):
     context['text'] = Text.objects.get(name='about').text.split('\n')
     return render(request, 'about.html', context)
 
-def test(request):
+def menu(request):
     # url = 'http://cookieandkate.com/2014/feta-fiesta-kale-salad-with-avocado-and-crispy-tortilla-strips/'
     notes = Note.objects.all()
     print notes
     context = {}
+    pairs = []
     for note in notes:
         # context['text'] = Text.objects.get(name='about').text.split('\n')
         # recipe = parseRecipe(url)
-        getBasicIngredients(note.ingredients)
-    return render(request, 'about.html', context)
+        ingredients = note.ingredients.split('\n')
+        for ingredient in ingredients:
+            if not ingredient:
+                continue
+            parsed = getIngredientName(ingredient)
+            pairs.append({
+                'string': ingredient,
+                'name': parsed.get('name', ''),
+                'quantity': parsed.get('quantity', ''),
+                'unit': parsed.get('unit', ''),
+            })
+
+    context['ingredients'] = pairs
+
+    return render(request, 'menu.html', context)
 
 def contact(request):
     context = {}
@@ -142,7 +157,10 @@ def note(request, noteId):
         context['shared'] = True
         if note.shared == False or not int(request.GET.get('share', '0')):
             raise Http404("No such recipe.")
-    context['ingredients'] = getBasicIngredients(note.ingredients)
+    ingredients = note.ingredients.split('\n')
+    context['ingredients'] = []
+    for ingredient in ingredients:
+        getIngredientName(ingredient)
     context['note'] = note
     context['shareUrl'] = \
         request.build_absolute_uri('/')[:-1] + request.get_full_path() + '?share=1'

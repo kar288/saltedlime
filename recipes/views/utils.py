@@ -1,8 +1,9 @@
-from django.db.models.functions import Lower
-from django.http import JsonResponse, Http404
-from recipes.models import RecipeUser
-
 import logging
+
+from django.db.models.functions import Lower
+from django.http import Http404, JsonResponse
+
+from recipes.models import RecipeUser
 
 logger = logging.getLogger('recipesParsing')
 

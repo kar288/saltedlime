@@ -1,56 +1,120 @@
 # import html5lib
-import tldextract
 import re
-import requests
 import traceback
 import urllib2
+from fractions import Fraction
 
+import requests
+import tldextract
 from bs4 import BeautifulSoup, NavigableString
 from pattern.en import singularize
-from recipes.models import Recipe, Note, RecipeUser, Month, Ingredient
-# from BeautifulSoup import BeautifulSoup, NavigableString
-#
-#
-#
-def getBigrams(parts):
+
+from recipes.models import Ingredient, Month, Note, Recipe, RecipeUser
+
+
+def is_quantity(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        pass
+
+    try:
+        import unicodedata
+        unicodedata.numeric(s)
+        return True
+    except (TypeError, ValueError):
+        pass
+
+    try:
+        Fraction(s)
+        return True
+    except ValueError:
+        pass
+
+    return False
+
+def is_unit(s):
+    units = {
+        'pinch': True,
+        'tablespoon': True,
+        'tbsp': True,
+        'tbsps': True,
+        'tsp': True,
+        'tsps': True,
+        'cup': True,
+        'pound': True,
+        'oz': True,
+        'ounces': True,
+        'l': True,
+        'liter': True,
+        'ml': True,
+        'millilitre': True,
+        'millilitres': True,
+        'grams': True,
+        'g': True,
+    }
+    return s in units
+
+def is_descriptor(s):
+    descriptors = {
+        'large': True,
+        'small': True,
+        'scant': True,
+        'large': True,
+        'large': True,
+        'large': True,
+    }
+    return s in descriptors
+
+def getNGrams(size, parts):
+    if size == 1:
+        return parts
     bigrams = []
-    for i in range(len(parts) - 1):
-        bigrams.append(' '.join(parts[i : i + 2]))
+    for i in range(len(parts) - size + 1):
+        bigrams.append(' '.join(parts[i : i + size]))
     return bigrams
 
-def getBasicIngredients(ingredients):
-    ingredients = ingredients.replace('  ', ' ').replace(",", "").lower().split('\n')
-    print ingredients
-    result = []
-    for ingredient in ingredients:
-        ingredient = re.sub(r' \([^)]*\)', '', ingredient)
-        print ingredient
-        parts = ingredient.strip().split(' ')
-        bigrams = getBigrams(parts)
-        done = False
-        for part in bigrams:
-            part = part.strip()
-            if not 'our' in part:
-                part = singularize(part)
-            if 'spoon' in part or 'cup' in part:
+def getIngredientName(ingredient):
+    ingredient = ingredient.replace('  ', ' ').replace(",", "").lower()
+    ingredient = re.sub(r' \([^)]*\)', '', ingredient)
+    ingredient = ingredient.replace('-', ' ')
+    parts = ingredient.strip().split(' ')
+    for i in range(3, 0, -1):
+        ngrams = getNGrams(i, parts)
+        for part in ngrams:
+            clean = part.strip()
+            if not 'our' in clean:
+                clean = singularize(clean)
+            if 'spoon' in clean or 'cup' in clean:
                 continue
-            i = Ingredient.objects.filter(name = part)
+            i = Ingredient.objects.filter(name = clean)
             if len(i):
-                result.append(i[0].name)
-                done = True
-                break
-        if not done:
-            for part in parts:
-                part = part.strip()
-                if not 'our' in part:
-                    part = singularize(part)
-                if 'spoon' in part or 'cup' in part:
-                    continue
-                i = Ingredient.objects.filter(name = part)
-                if len(i):
-                    result.append(i[0].name)
-                    break
-    return result
+                p = ingredient.split(part)
+                unit = '-'
+                quantity = ''
+                numbersDone = False
+                if len(p):
+                    tokens = p[0].split()
+                    print tokens, i[0].name
+                    for token in tokens:
+                        if is_unit(token) and not is_descriptor(token):
+                            numbersDone = True
+                            unit = token
+                            break
+                        if not numbersDone:
+                            if is_quantity(token):
+                                quantity += token + ' '
+                            else:
+                                if len(quantity):
+                                    numbersDone = True
+                                    if not is_descriptor(token):
+                                        unit = token
+                                        break
+                if not quantity:
+                    quantity = '-'
+                return {'name': i[0].name, 'quantity': quantity, 'unit': unit}
+    return {}
 
 def getImage(soup, attr=None, key=None):
     imageUrl = ''

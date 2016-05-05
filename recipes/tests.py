@@ -1,6 +1,7 @@
 from django.test import TestCase
-# from unittest import *
+
 from views import *
+
 
 class GeneralTests(TestCase):
     # testUrls = [
@@ -15,7 +16,9 @@ class GeneralTests(TestCase):
             self.assertIn(field, recipe)
         self.assertGreater(len(recipe['tags']), 0)
         self.assertEquals(recipe['url'], url)
-        getBasicIngredients(recipe['ingredients'])
+        ingredients = recipe['ingredients'].split('\n')
+        for ingredient in ingredients:
+            getIngredientName(ingredient)
 
     def test_cookie_and_kate(self):
         url = 'http://cookieandkate.com/2014/feta-fiesta-kale-salad-with-avocado-and-crispy-tortilla-strips/'
