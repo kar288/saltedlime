@@ -60,12 +60,6 @@ class Note(models.Model):
     ingredients = models.TextField()
     instructions = models.TextField()
     date_added = models.CharField(max_length=200)
-    recipe = models.OneToOneField(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name="recipe",
-        null=True
-    )
     text = models.TextField()
     tags = models.TextField()
     rating = models.IntegerField()
