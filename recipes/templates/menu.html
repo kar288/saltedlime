@@ -12,7 +12,7 @@ Menu
     <div class="row">
       <div class="col s12 m6">
         <div class="ui-widget">
-          <label for="note-title">Note: </label>
+          <label for="note-title">Recipe Title: </label>
           <input id="note-title">
         </div>
         {% for note in notes %}
@@ -63,7 +63,15 @@ Menu
         serviceUrl: '/note-autocomplete',
         minLength: 2,
         transformResult: function(data) {
-          return JSON.parse(data);
+          var exist = {};
+          $('.menu-recipe').each(function() {
+            exist[$(this).attr('note-id')] = true;
+          });
+          return {
+            suggestions: JSON.parse(data).suggestions.filter(function(el) {
+              return !exist[el.id];
+            })
+          };
         },
         onSelect: function(suggestion) {
           debugger;
