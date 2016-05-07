@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 # import html5lib
 import re
 import traceback
+import unicodedata
 import urllib2
 from fractions import Fraction
 
@@ -11,33 +14,65 @@ from pattern.en import singularize
 
 from recipes.models import Ingredient, Month, Note, Recipe, RecipeUser
 
+vulgarFractions = {
+    u'↉': '0',
+    u'⅟': '1',
+    u'⅒': '1/10',
+    u'½': '1/2',
+    u'⅓': '1/3',
+    u'¼': '1/4',
+    u'⅕': '1/5',
+    u'⅙': '1/5',
+    u'⅐': '1/7',
+    u'⅛': '1/8',
+    u'⅑': '1/9',
+    u'⅔': '2/3',
+    u'⅖': '2/5',
+    u'¾': '3/4',
+    u'⅗': '3/5',
+    u'⅜': '3/8',
+    u'⅘': '4/5',
+    u'⅚': '5/6',
+    u'⅝': '5/8',
+    u'⅞': '7/8',
+}
 
-def is_quantity(s):
+def isInt(s):
     try:
-        float(s)
-        return True
+        return s == int(s)
+    except ValueError:
+        return False
+
+def getQuantity(s):
+    try:
+        number = float(s)
+        return s
     except ValueError:
         pass
 
     try:
         import unicodedata
-        unicodedata.numeric(s)
-        return True
+        number = unicodedata.numeric(s)
+        return ' ' + str(vulgarFractions.get(s, ''))
     except (TypeError, ValueError):
         pass
 
     try:
-        Fraction(s)
-        return True
+        number = float(Fraction(s))
+        return s
     except ValueError:
         pass
 
     if len(s) == 1:
-        return False
+        return ''
 
-    tmp = True
+    tmp = ''
     for c in s:
-        tmp &= is_quantity(c)
+        q = getQuantity(c)
+        if not q:
+            return ''
+        else:
+            tmp += q
 
     return tmp
 
@@ -130,10 +165,10 @@ def getIngredientName(ingredient):
             if not len(p):
                 return {
                     'name': ingredients[0].name,
-                    'quantity': '-',
-                    'unit': '-'
+                    'quantity': '',
+                    'unit': ''
                 }
-            unit = '-'
+            unit = ''
             quantity = ''
             numbersDone = False
             tokens = p[0].split()
@@ -141,7 +176,7 @@ def getIngredientName(ingredient):
                 continue
             tmp = tokens[0]
             # 25ml, 8g ...
-            if len(tmp) and is_quantity(tmp[0]):
+            if len(tmp) and getQuantity(tmp[0]):
                 for basicUnit in basicUnits:
                     if basicUnit in tmp:
                         tmp = tmp.replace(basicUnit, ' ' + basicUnit)
@@ -154,8 +189,9 @@ def getIngredientName(ingredient):
                     unit = token
                     break
                 if not numbersDone:
-                    if is_quantity(token):
-                        quantity += token + ' '
+                    tmpQuantity = getQuantity(token)
+                    if tmpQuantity:
+                        quantity += tmpQuantity + ' '
                     elif token == '-':
                         quantity = ''
                     else:
@@ -166,7 +202,7 @@ def getIngredientName(ingredient):
                                 break
             unit = normalizeUnit(unit)
             if not quantity:
-                quantity = '-'
+                quantity = ''
             return {
                 'name': ingredients[0].name,
                 'quantity': quantity,

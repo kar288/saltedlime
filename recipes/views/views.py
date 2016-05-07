@@ -1,9 +1,11 @@
+import collections
 import json
 import logging
 import math
 import operator
 import traceback
 from datetime import date, datetime
+from fractions import Fraction
 from urlparse import urlparse
 
 from django.contrib.auth.decorators import login_required
@@ -15,8 +17,24 @@ from accountManaging import *
 from manageRecipes import *
 from recipes.models import Month, Note, RecipeUser, Text
 from utils import *
+from forms import *
 
 PAGE_SIZE = 12
+
+from dal import autocomplete
+# from dal_select2_queryset_sequence.views import Select2QuerySetSequenceView
+
+def note_autocomplete(request):
+    q = request.GET.get('query', '')
+    notes = Note.objects.filter(title__icontains = q )[:20]
+    results = []
+    for note in notes:
+        note_json = {}
+        note_json['id'] = note.id
+        note_json['label'] = note.title
+        note_json['value'] = note.title
+        results.append(note_json)
+    return JsonResponse({'suggestions': results})
 
 def about(request):
     context = {}
@@ -28,15 +46,13 @@ def menu(request):
     context = {}
     pairs = []
     get = request.GET
-    start = int(get.get('start', 0))
-    end = int(get.get('end', 100))
+    ids = get.getlist('id', [])
 
-    notes = Note.objects.all()
-    notes = notes[start:min(end, len(notes))]
+    notes = Note.objects.none()
+    for noteId in ids:
+        notes |= Note.objects.filter(id = noteId)
 
     for note in notes:
-        # context['text'] = Text.objects.get(name='about').text.split('\n')
-        # recipe = parseRecipe(url)
         ingredients = note.ingredients.split('\n')
         for ingredient in ingredients:
             if not ingredient:
@@ -44,24 +60,59 @@ def menu(request):
             parsed = getIngredientName(ingredient)
             pairs.append({
                 'string': ingredient,
-                'name': parsed.get('name', ''),
+                'name': parsed.get('name', 'unknown'),
                 'quantity': parsed.get('quantity', ''),
                 'unit': parsed.get('unit', ''),
+                'note': note.id,
+                'title': note.title
             })
 
     # ingredient -> unit -> [quantities]
     perIngredient = {}
     for obj in pairs:
         quantities = perIngredient.get(obj['name'], {})
-        units = quantities.get(obj['unit'], [])
-        units.append({'string': obj['string'], 'quantity': obj['quantity']})
-        quantities[obj['unit']] = units
+        units = quantities.get(obj['unit'], {})
+        details = units.get('details', [])
+        total = units.get('total', 0)
+        details.append({
+            'string': obj['string'],
+            'quantity': obj['quantity'],
+            'note': obj['note'],
+            'title': obj['title']
+        })
+        quantity = obj['quantity']
+        parts = quantity.strip().split(' ')
+        for part in parts:
+            if part and not part == '-':
+                total += float(Fraction(part))
+        quantities[obj['unit']] = {'details': details, 'total': total}
         perIngredient[obj['name']] = quantities
 
-    # print json.dumps(perIngredient)
+    for name in perIngredient:
+        quantities = perIngredient.get(name, {})
+        for unit in quantities:
+            total = quantities[unit]['total']
+            if isInt(total):
+                total = int(total)
+                if total == 0:
+                    total = ''
+            else:
+                tmp = format(total, '.2f')
+                if total < 1:
+                    if '.66' in str(total):
+                        total = '2/3'
+                    elif '.33' in str(total):
+                        total = '1/3'
+                    else:
+                        total = Fraction(total)
+                else:
+                    total = tmp
 
-    context['ingredients'] = perIngredient
-
+            perIngredient[name][unit]['total'] = total
+    context['ingredients'] = \
+        collections.OrderedDict(sorted(perIngredient.items()))
+    context['notes'] = notes
+    context['form'] = MenuNoteForm()
 
     return render(request, 'menu.html', context)
 

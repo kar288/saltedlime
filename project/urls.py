@@ -42,7 +42,7 @@ urlpatterns = [
     url(r'^menu/$', recipes.views.menu, name='menu'),
 
     url(r'^note/(?P<noteId>[0-9]+)/$', recipes.views.note, name='note'),
-
+    url(r'^note-autocomplete/$', recipes.views.note_autocomplete, name='note-autocomplete'),
     url(r'^processBulk/$', recipes.views.processBulk, name='processBulk'),
 
     url(r'^recrawlImages/$', recipes.views.recrawlImages, name='recrawlImages'),
