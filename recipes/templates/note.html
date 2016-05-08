@@ -15,7 +15,7 @@
       </span>
     </div>
     <div class="col s1">
-      <a class="recipe-original-link" href="{% url 'deleteNoteHtml' note.id %}">
+      <a class="modal-trigger recipe-original-link" href="#delete-modal-{{note.id}}">
         <i class="delete-note material-icons">delete</i>
       </a>
     </div>
@@ -135,4 +135,5 @@
     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Done</a>
   </div>
 </div>
+{% include 'deleteNote.html' %}
 {% endblock %}

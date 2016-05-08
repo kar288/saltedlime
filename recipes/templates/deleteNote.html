@@ -1,21 +1,10 @@
-{% extends "recipeBase.html" %}
-
-{% block content %}
-  <div class="centered small">
-     <h5>
-       {{note.title}}
-     </h5>
+<div id="delete-modal-{{note.id}}" class="modal">
+  <div class="modal-content">
+    <h5>Are you sure you want to delete this recipe?</h5>
+    <p>{{note.title}}</p>
   </div>
-  <div class="row centered small">
-    <div class="col s6">
-      <a href="{% url 'note' note.id %}" class="btn blue recipe-form">
-        Cancel
-      </a>
-    </div>
-    <div class="col s6">
-      <a href="{% url 'deleteNote' note.id %}" class="btn red recipe-form">
-        Delete Recipe
-      </a>
-    </div>
+  <div class="modal-footer">
+    <a href="{% url 'deleteNote' note.id %}" class="modal-action modal-close waves-effect waves-green btn-flat">Delete</a>
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
   </div>
-{% endblock %}
+</div>

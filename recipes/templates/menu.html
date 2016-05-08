@@ -5,30 +5,70 @@ Menu
 {% endblock %}
 
 {% block content %}
-  <div class="centered medium">
+  <div class="menu">
     <h4>
       Menu
     </h4>
-    <div class="row">
+    <div class="centered medium row">
       <div class="col s12 m6">
-        <div class="ui-widget">
-          <label for="note-title">Recipe Title: </label>
-          <input id="note-title">
-        </div>
-        {% for note in notes %}
-        <div class="row">
-          <div class="col s11">
-            <a class="menu-recipe" note-id="{{note.id}}" href="{% url 'note' note.id %}">
-              {{note.title}}
-            </a>
+        <h5>
+          Days
+        </h5>
+        {% for day in week %}
+          <div class="day">
+            <div class="header">
+              {{day.dateString}}
+              <a style="float:right;" href="#add-modal-{{day.date}}" class="modal-trigger waves-effect waves-light">
+                <i class="material-icons">add</i>
+              </a>
+            </div>
+            {% if day.notes %}
+              <div class="content">
+                {% for note in day.notes %}
+                  <div class="row">
+                    <div class="col s11">
+                      <a class="menu-recipe
+                        {% if not note.ingredients %}
+                          no-ingredients tooltipped
+                        {% endif %}"
+                        data-position="top"
+                        data-delay="50"
+                        data-tooltip="Recipe is missing ingredients!"
+                        note-id="{{note.id}}"
+                        href="{% url 'note' note.id %}">
+                        {{note.title}}
+                      </a>
+                    </div>
+                    <div class="col s1 delete-menu-recipe" note-id="{{note.id}}" day="{{day.date}}">
+                      <i class="material-icons">close</i>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
           </div>
-          <div class="col s1 delete-menu-recipe" note-id="{{note.id}}">
-            <i class="material-icons">close</i>
+
+          <div id="add-modal-{{day.date}}" class="modal">
+            <div class="modal-content">
+              <h5>
+                Add recipe to day menu {{day.dateString}}:
+              </h5>
+              <form class="ui-widget">
+                <label for="note-title-{{day.date}}">Recipe Title: </label>
+                <input id="note-title-{{day.date}}" day="{{day.date}}" class="autocomplete">
+              </form>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+            </div>
           </div>
-        </div>
         {% endfor %}
+
       </div>
       <div class="col s12 m6">
+        <h5>
+          Ingredients
+        </h5>
         {% for name, units in ingredients.items %}
           <div class="menu-ingredient" id="ingredient-{{forloop.counter}}">
             <b>{{name}}</b>
@@ -65,7 +105,7 @@ Menu
   </div>
   <script>
     $(function() {
-      $('#note-title').autocomplete({
+      $('.autocomplete').autocomplete({
         serviceUrl: '/note-autocomplete',
         minLength: 2,
         transformResult: function(data) {
@@ -80,29 +120,20 @@ Menu
           };
         },
         onSelect: function(suggestion) {
-          var ids = 'id=' + suggestion.id;
-          $('.menu-recipe').each(function() {
-            ids += '&id=' + $(this).attr('note-id');
-          });
-          document.location.href = '/menu/?' + ids;
+          document.location.href = '/addToMenu/?day=' +
+            $(this).attr('day') + '&note=' + suggestion.id;
         }
       });
     });
 
     $('.delete-menu-recipe').on('click', function() {
-      var deleteId = $(this).attr('note-id');
-      var ids = '';
-      $('.menu-recipe').each(function() {
-        var id = $(this).attr('note-id');
-        if (id != deleteId) {
-          ids += '&id=' + id;
-        }
-      });
-      document.location.href = '/menu/?' + ids;
+      document.location.href = '/deleteFromMenu/?day=' +
+        $(this).attr('day') + '&note=' + $(this).attr('note-id');
     });
 
     $('.menu-ingredient').on('click', function() {
       $('[ingredient="' + $(this).attr('id') + '"]').toggleClass('hidden');
     });
   </script>
+
 {% endblock %}

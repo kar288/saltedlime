@@ -1,5 +1,5 @@
 <div class="card recipe-card" style="float: left">
-  <a class="recipe-original-link" href="{% url 'deleteNoteHtml' note.id %}">
+  <a class="modal-trigger recipe-original-link" href="#delete-modal-{{note.id}}">
     <i class="delete-note-small material-icons">close</i>
   </a>
   <a href="{% url 'note' note.id %}">
@@ -27,3 +27,4 @@
     </div>
   </a>
 </div>
+{% include 'deleteNote.html' %}

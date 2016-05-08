@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^addBulk/$', recipes.views.addBulk, name='addBulk'),
     url(r'^addNote/$', recipes.views.addNote, name='addNote'),
     url(r'^addRecipe/$', recipes.views.addRecipeHtml, name='addRecipe'),
+    url(r'^addToMenu/$', recipes.views.addToMenu, name='addToMenu'),
     url(r'^addRecipeAsync/$', recipes.views.addRecipeAsync, name='addRecipeAsync'),
     url(r'^addRecipes/$', recipes.views.addRecipesHtml, name='addRecipes'),
     url(r'^addSharedRecipe/(?P<noteId>[0-9]+)/$', recipes.views.addSharedRecipe, name='addSharedRecipe'),
@@ -26,8 +27,9 @@ urlpatterns = [
     url(r'^convertNotes/$', recipes.views.convertNotes, name='convertNotes'),
 
     url(r'^deleteNote/(?P<noteId>[0-9]+)/$', recipes.views.deleteNote, name='deleteNote'),
-    url(r'^deleteNoteHtml/(?P<noteId>[0-9]+)/$', recipes.views.deleteNoteHtml, name='deleteNoteHtml'),
+    # url(r'^deleteNoteHtml/(?P<noteId>[0-9]+)/$', recipes.views.deleteNoteHtml, name='deleteNoteHtml'),
     url(r'^deleteRecipes/$', recipes.views.deleteRecipes, name='deleteRecipes'),
+    url(r'^deleteFromMenu/$', recipes.views.deleteFromMenu, name='deleteFromMenu'),
 
     url(r'^editNote/(?P<noteId>[0-9]+)/$', recipes.views.editNote, name='editNote'),
     url(r'^editNoteHtml/(?P<noteId>[0-9]+)/$', recipes.views.editNoteHtml, name='editNoteHtml'),

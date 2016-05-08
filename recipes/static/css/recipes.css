@@ -48,6 +48,39 @@ main {
   cursor: pointer;
 }
 
+.menu-recipe.no-ingredients {
+  opacity: 0.3;
+}
+
+.menu .day {
+  float: left;
+  width: calc(100% / 7);
+  border: 1px solid black;
+  min-width: 200px;
+  width: 100%;
+}
+
+.menu .day .header {
+  background-color: rgba(0,0,0, 0.1);
+  padding: 10px;
+}
+
+.menu .day .content {
+  margin-top: 10px;
+}
+
+.row .col .delete-menu-recipe {
+  padding-left: 0;
+}
+
+.delete-menu-recipe .material-icons {
+  font-size: 15px;
+}
+
+.menu a {
+  color: #666;
+}
+
 .profile-pic {
   background-color: #bbb;
   background-position: 50%;

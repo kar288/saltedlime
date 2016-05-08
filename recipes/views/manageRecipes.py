@@ -42,17 +42,6 @@ def addRecipeHtml(request):
         'note': {'rating': -1}
     })
 
-@login_required(login_url='/')
-def deleteNoteHtml(request, noteId):
-    context = {}
-    recipeUser = getUser(request.user)
-    note = get_object_or_404(Note, id = noteId)
-    if not note in recipeUser.notes.all():
-        context['errors'] = ['Note not found']
-    else:
-        context['note'] = note
-    return render(request, 'deleteNote.html', context)
-
 def deleteNote(request, noteId):
     context = {}
     recipeUser = getUser(request.user)
@@ -63,7 +52,10 @@ def deleteNote(request, noteId):
         context['success'] = ['Recipe was deleted: ' + note.title]
         note.delete()
         context['notes'] = recipeUser.notes.all()
-    return redirect('/')
+    referrer = request.META.get('HTTP_REFERER')
+    if 'note' in referrer:
+        return redirect('/')
+    return redirect(referrer)
 
 def deleteRecipes(request):
     context = {}

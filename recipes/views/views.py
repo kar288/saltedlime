@@ -1,11 +1,9 @@
-import collections
 import json
 import logging
 import math
 import operator
 import traceback
 from datetime import date, datetime
-from fractions import Fraction
 from urlparse import urlparse
 
 from django.contrib.auth.decorators import login_required
@@ -17,12 +15,10 @@ from accountManaging import *
 from manageRecipes import *
 from recipes.models import Month, Note, RecipeUser, Text
 from utils import *
-from forms import *
 
 PAGE_SIZE = 12
 
 from dal import autocomplete
-# from dal_select2_queryset_sequence.views import Select2QuerySetSequenceView
 
 def note_autocomplete(request):
     q = request.GET.get('query', '')
@@ -41,81 +37,6 @@ def about(request):
     context = {}
     context['text'] = Text.objects.get(name='about').text.split('\n')
     return render(request, 'about.html', context)
-
-def menu(request):
-    # url = 'http://cookieandkate.com/2014/feta-fiesta-kale-salad-with-avocado-and-crispy-tortilla-strips/'
-    context = {}
-    pairs = []
-    get = request.GET
-    ids = get.getlist('id', [])
-
-    notes = Note.objects.none()
-    for noteId in ids:
-        notes |= Note.objects.filter(id = noteId)
-
-    for note in notes:
-        ingredients = note.ingredients.split('\n')
-        for ingredient in ingredients:
-            if not ingredient:
-                continue
-            parsed = getIngredientName(ingredient)
-            pairs.append({
-                'string': ingredient,
-                'name': parsed.get('name', 'unknown'),
-                'quantity': parsed.get('quantity', ''),
-                'unit': parsed.get('unit', ''),
-                'note': note.id,
-                'title': note.title
-            })
-
-    # ingredient -> unit -> [quantities]
-    perIngredient = {}
-    for obj in pairs:
-        quantities = perIngredient.get(obj['name'], {})
-        units = quantities.get(obj['unit'], {})
-        details = units.get('details', [])
-        total = units.get('total', 0)
-        details.append({
-            'string': obj['string'],
-            'quantity': obj['quantity'],
-            'note': obj['note'],
-            'title': obj['title']
-        })
-        quantity = obj['quantity']
-        parts = quantity.strip().split(' ')
-        for part in parts:
-            if part and not part == '-':
-                total += float(Fraction(part))
-        quantities[obj['unit']] = {'details': details, 'total': total}
-        perIngredient[obj['name']] = quantities
-
-    for name in perIngredient:
-        quantities = perIngredient.get(name, {})
-        for unit in quantities:
-            total = quantities[unit]['total']
-            if isInt(total):
-                total = int(total)
-                if total == 0:
-                    total = ''
-            else:
-                tmp = format(total, '.2f')
-                if total < 1:
-                    if '.66' in str(total):
-                        total = '2/3'
-                    elif '.33' in str(total):
-                        total = '1/3'
-                    else:
-                        total = Fraction(total)
-                else:
-                    total = tmp
-
-            perIngredient[name][unit]['total'] = total
-    context['ingredients'] = \
-        collections.OrderedDict(sorted(perIngredient.items()))
-    context['notes'] = notes
-    context['form'] = MenuNoteForm()
-
-    return render(request, 'menu.html', context)
 
 def contact(request):
     context = {}

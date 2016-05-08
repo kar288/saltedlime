@@ -3,6 +3,12 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
+
+class DayMenu(models.Model):
+    date = models.DateField()
+    notes = models.TextField(default='')
+    name = models.CharField(max_length=200, null=True)
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=200, unique=True)
     amount = models.IntegerField(default=0)
@@ -99,9 +105,8 @@ class RecipeUser(models.Model):
   profilePic = models.CharField(max_length=400, null=True)
   name = models.CharField(max_length=200, null=True)
   email = models.CharField(max_length=200, null=True)
-  notes = models.ManyToManyField(
-    Note
-  )
+  notes = models.ManyToManyField(Note)
+  menus = models.ManyToManyField(DayMenu)
 
   def __str__(self):
       return self.name
