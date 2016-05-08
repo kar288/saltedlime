@@ -39,6 +39,55 @@ main {
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
 
+.add-recipe-modal .picker__holder {
+  position: initial;
+}
+
+.add-recipe-modal .picker__frame {
+  opacity: 1;
+}
+
+.add-recipe-modal .picker__box {
+  border: 0;
+  box-shadow: none;
+}
+
+.add-recipe-modal .picker__date-display {
+  display: none;
+}
+
+.add-recipe-modal .picker__day--selected,
+.add-recipe-modal .picker__day--selected:hover,
+.add-recipe-modal .picker--focused .picker__day--selected {
+  padding: 5px 0;
+  background-color: #FFC107;
+}
+
+.add-recipe-modal .picker__nav--prev:hover, .picker__nav--next:hover {
+  background-color: #FFC107;
+}
+
+.add-recipe-modal .picker__day.picker__day--today,
+.add-recipe-modal .picker__close, .picker__today {
+  color: #FFC107;
+}
+
+.add-recipe-modal {
+  height: 550px;
+  width: 350px;
+  max-height: 100%;
+}
+
+.add-recipe-modal .picker__close {
+  display: none;
+}
+
+.add-recipe-modal .modal-footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
 #processed {
   padding-top: 20px;
 }
@@ -628,19 +677,30 @@ input[type=text]:focus {
 }
 
 .recipe-card .card-image .card-title {
-  background-color: rgba(0,0,0, 0.3);
   font-size: 1.3em;
   height: 3.7em;
   padding: 10px 20px;
   width: 100%;
   overflow: hidden;
+}
+
+.recipe-card .card-image .card-title {
+  background-color: rgba(0,0,0, 0.3);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+
+  /*-webkit-transition: opacity 0.5s ease;*/
+  /*transition: opacity 0.5s ease;*/
+}
+
+.recipe-card .card-image .card-title.add-to-menu {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .recipe-card .recipe-info .card-title {
-  padding: 20px;
+  /*padding: 20px;*/
 }
 
 .recipe-card .card-image .card-wash {
@@ -652,12 +712,22 @@ input[type=text]:focus {
   width: 100%;
 }
 
-.recipe-card .card-image .card-wash:hover {
+.recipe-card:hover .card-image .card-wash {
   opacity: 0;
 }
 
 .recipe-card:hover .delete-note-small {
   display: block;
+}
+
+.recipe-card .title-container:hover .card-title.title {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.recipe-card .title-container:hover .card-title.add-to-menu {
+  opacity: 1;
+  visibility: visible;
 }
 
 .recipe-card .recipe-image {

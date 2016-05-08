@@ -1,0 +1,37 @@
+<div id="add-modal-{{day.date}}" class="modal">
+  <div class="modal-content">
+    <h5>
+      Add recipe to day menu {{day.dateString}}:
+    </h5>
+    <form class="ui-widget">
+      <label for="note-title-{{day.date}}">Recipe Title: </label>
+      <input id="note-title-{{day.date}}" day="{{day.date}}" class="autocomplete">
+    </form>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+  </div>
+</div>
+<script>
+  $(function() {
+    $('.autocomplete').autocomplete({
+      serviceUrl: '/note-autocomplete',
+      minLength: 2,
+      transformResult: function(data) {
+        var exist = {};
+        $('.menu-recipe').each(function() {
+          exist[$(this).attr('note-id')] = true;
+        });
+        return {
+          suggestions: JSON.parse(data).suggestions.filter(function(el) {
+            return !exist[el.id];
+          })
+        };
+      },
+      onSelect: function(suggestion) {
+        document.location.href = '/addToMenu/?day=' +
+          $(this).attr('day') + '&note=' + suggestion.id;
+      }
+    });
+  });
+</script>

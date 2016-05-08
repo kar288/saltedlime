@@ -1,0 +1,31 @@
+<div note-id="{{note.id}}" id="add-modal-{{note.id}}" class="add-recipe-modal modal">
+  <div class="modal-content">
+    <h5>
+      Add recipe to day menu:
+    </h5>
+    <div>{{note.title}}</div>
+    <input type="date" class="hidden datepicker">
+    <div id="date-picker-container-{{note.id}}">
+    </div>
+    <div class="modal-footer">
+      <a href="" class="done-date-picker modal-action modal-close waves-effect waves-green btn-flat">Done</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+    </div>
+  </div>
+</div>
+<script>
+  $('.datepicker').pickadate({
+    container: '#date-picker-container-{{note.id}}',
+    selectMonths: true,
+    selectYears: 1
+  });
+  $('.picker__day').on('click', function() {
+    var note = $(this).closest('.add-recipe-modal').attr('note-id');
+    var day = $(this).attr('aria-label');
+    $('.done-date-picker')
+      .attr(
+        'href',
+        '/addToMenu/?day=' + day + '&note=' + note
+      );
+  });
+</script>

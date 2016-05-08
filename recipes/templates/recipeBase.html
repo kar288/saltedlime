@@ -8,7 +8,7 @@
   <meta name="description" content="Application to manage, organize, and share recipes with notes and seasonal recommendations.">
 
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
   <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'js/materialize-tags/css/materialize-tags.min.css' %}">
   <link href='https://fonts.googleapis.com/css?family=Yeseva+One&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
@@ -16,6 +16,7 @@
   <script src="{% static 'js/jquery.autocomplete.min.js' %}"></script>
   <link href='https://fonts.googleapis.com/css?family=Merriweather+Sans:400,800&subset=latin' rel='stylesheet' type='text/css'>
   <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
   <title>{% block title %}Home{% endblock %} - Salted Lime</title>
   <link href="{% static 'css/recipes.css' %}" rel="stylesheet">
 </head>
@@ -159,7 +160,6 @@
 </main>
 
 {% include 'footer.html' %}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
   <script>
     $('select').material_select();
     $('.dropdown-button').dropdown();

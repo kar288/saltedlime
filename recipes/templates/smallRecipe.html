@@ -2,15 +2,24 @@
   <a class="modal-trigger recipe-original-link" href="#delete-modal-{{note.id}}">
     <i class="delete-note-small material-icons">close</i>
   </a>
-  <a href="{% url 'note' note.id %}">
-    <div class="card-image">
+  <div class="card-image">
+    <a href="{% url 'note' note.id %}">
       <div
         class="recipe-image"
         style="background-image: url('{{note.image}}')"
       ></div>
       <div class="card-wash"></div>
-      <div class="card-title">{{note.title}}</div>
+    </a>
+    <div class="title-container">
+      <div class="card-title title">{{note.title}}</div>
+      <a class="modal-trigger" href="#add-modal-{{note.id}}">
+        <div class="default-primary-color card-title add-to-menu">
+          Add to day menu
+        </div>
+      </a>
     </div>
+  </div>
+  <a href="{% url 'note' note.id %}">
     <div class="card-content">
       <div class=" recipe-details">
         <div class="recipe-detail">
@@ -27,4 +36,5 @@
     </div>
   </a>
 </div>
+{% include 'addRecipeToMenuModal.html' %}
 {% include 'deleteNote.html' %}

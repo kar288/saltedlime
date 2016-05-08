@@ -14,12 +14,19 @@ def addToMenu(request):
     get = request.GET
     dayString = get.get('day', '')
     note = get.get('note', '')
+    print get
     if not dayString or not note:
+        print '-0----0-0--'
         return redirect('/menu')
 
     recipeUser = getUser(request.user)
-    day =  datetime.strptime(dayString, dayFormat)
+    if ' ' in dayString:
+        day = datetime.strptime(dayString, '%d %B, %Y')
+    else:
+        day = datetime.strptime(dayString, dayFormat)
+    print day
     dayMenu, created = recipeUser.menus.get_or_create(date = day)
+    print dayMenu
     if created:
         recipeUser.menus.add(dayMenu)
     notes = dayMenu.notes.split()
