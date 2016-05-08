@@ -26,7 +26,8 @@ from dal import autocomplete
 
 def note_autocomplete(request):
     q = request.GET.get('query', '')
-    notes = Note.objects.filter(title__icontains = q )[:20]
+    recipeUser = getUser(request.user)
+    notes = recipeUser.notes.filter(title__icontains = q).order_by('-date_added')[:20]
     results = []
     for note in notes:
         note_json = {}
