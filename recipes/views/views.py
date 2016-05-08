@@ -130,7 +130,15 @@ def pagination(request, context, page, notes):
     end = min(len(notes), start + PAGE_SIZE)
     pages = range(1, int(math.ceil(len(notes) / (PAGE_SIZE * 1.0))) + 1)
     context['notes'] = notes[start:end]
-    context['pages'] = pages
+    context['pages'] = []
+    for tmpPage in pages:
+        if tmpPage == pages[0] or tmpPage == pages[-1] or \
+            tmpPage == page or \
+            math.fabs(tmpPage - page) < 3:
+            context['pages'].append(tmpPage)
+        elif tmpPage == pages[1] or tmpPage == pages[-2]:
+            context['pages'].append(0)
+
     context['page'] = page
     context['filters'] = {}
     context['queries'] = queries_without_page

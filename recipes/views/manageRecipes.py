@@ -90,7 +90,9 @@ def addRecipeAsync(request):
     url = get.get('url', '')
     recipeUser = getUser(request.user)
     try:
-        context['error'] = addRecipeByUrl(recipeUser, url, get)
+        tmp = addRecipeByUrl(recipeUser, url, get)
+        if 'error' in tmp:
+            context['error'] = tmp
     except:
         context['error'] = {'error': 'An unexpected error occured!', 'level': 2}
     return JsonResponse(context)
@@ -123,10 +125,11 @@ def addNote(request):
         return redirect('/addRecipe/')
     recipeUser = getUser(request.user)
     recipeUrl = post['recipeUrl']
-    error = addRecipeByUrl(recipeUser, recipeUrl, post)
-    if error:
-        return render(request, 'addRecipe.html', {'errors': [error]})
-    return redirect('/')
+    tmp = addRecipeByUrl(recipeUser, recipeUrl, post)
+    print tmp
+    if not isinstance(tmp, Note):
+        return render(request, 'addRecipe.html', {'errors': [tmp]})
+    return redirect('/' + 'note/' + str(tmp.id))
 
 
 def addRecipeByUrl(recipeUser, recipeUrl, post):
@@ -166,6 +169,7 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
           servings = recipeData.get('servings', post.get('servings', ''))[:100]
         )
         recipeUser.notes.add(note)
+        return note
     except urllib2.URLError, err:
         traceback.print_exc()
         logger.exception('urlerror')

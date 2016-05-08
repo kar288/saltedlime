@@ -39,6 +39,10 @@ main {
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
 
+#processed {
+  padding-top: 20px;
+}
+
 .menu-ingredient,
 .delete-menu-recipe {
   cursor: pointer;
@@ -586,7 +590,7 @@ input[type=text]:focus {
   color: #666;
 }
 
-.recipe-card a {
+.recipe-card a .recipe-detail {
   color: #666;
 }
 
