@@ -145,6 +145,8 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
         title = recipeData.get('title', post.get('title', ''))
 
         if not len(title):
+            logger.exception('missing data')
+            logger.exception(recipeUrl)
             return {'error': 'This recipe has a missing title or other essential information. Try adding it manually.', 'level': 3}
         note = Note.objects.create(
           url = recipeUrl,
@@ -163,6 +165,7 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
         recipeUser.notes.add(note)
         return note
     except urllib2.URLError, err:
+        logger.exception(recipeUrl)
         traceback.print_exc()
         logger.exception('urlerror')
         if 'code' in err and err.code == 404:
@@ -170,15 +173,18 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
                 'level': 3 }
         return {'error': 'Could not get recipe. The site might be down.', 'level': 3}
     except urllib2.HTTPError, err:
+        logger.exception(recipeUrl)
         traceback.print_exc()
         logger.exception('httperror')
         if err.code == 404:
             return {'error': 'The rcipe was not found, it might have been removed!', 'level': 3}
         return {'error': 'Could not get recipe. The site might be down.', 'level': 3}
     except socket.timeout:
+        logger.exception(recipeUrl)
         logger.exception('timeout')
         return {'error': 'It took too long to get recipe. The site might be down.', 'level': 3}
     except:
+        logger.exception(recipeUrl)
         logger.exception('another exception')
         traceback.print_exc()
         return {'error': sys.exc_info()[0], 'level': 3}

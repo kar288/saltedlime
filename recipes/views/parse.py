@@ -317,8 +317,11 @@ def parseRecipe(url):
         req = urllib2.Request(url.encode("utf8"), headers={'accept': '*/*', 'User-Agent' : "Magic Browser"})
         html = urllib2.urlopen(req, timeout=10)
         charset = html.headers.getparam('charset')
+        if not charset:
+            charset = 'utf-8'
         html = html.read().decode(charset)
     except urllib2.HTTPError, err:
+        logger.info(url)
         traceback.print_exc()
         html = urllib2.build_opener(urllib2.HTTPCookieProcessor).open(url)
 
