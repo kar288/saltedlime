@@ -1,6 +1,8 @@
-
-<a href="{% url 'note' note.id %}">
-  <div class="card recipe-card" style="float: left">
+<div class="card recipe-card" style="float: left">
+  <a class="recipe-original-link" href="{% url 'deleteNoteHtml' note.id %}">
+    <i class="delete-note-small material-icons">close</i>
+  </a>
+  <a href="{% url 'note' note.id %}">
     <div class="card-image">
       <div
         class="recipe-image"
@@ -23,5 +25,5 @@
         </div>
       </div>
     </div>
-  </div>
-</a>
+  </a>
+</div>

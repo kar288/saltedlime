@@ -16,10 +16,16 @@ Menu
           <input id="note-title">
         </div>
         {% for note in notes %}
-          <a class="menu-recipe" note-id="{{note.id}}" href="{% url 'note' note.id %}">
-            {{note.title}}
-          </a>
-          <br>
+        <div class="row">
+          <div class="col s11">
+            <a class="menu-recipe" note-id="{{note.id}}" href="{% url 'note' note.id %}">
+              {{note.title}}
+            </a>
+          </div>
+          <div class="col s1 delete-menu-recipe" note-id="{{note.id}}">
+            <i class="material-icons">close</i>
+          </div>
+        </div>
         {% endfor %}
       </div>
       <div class="col s12 m6">
@@ -74,7 +80,6 @@ Menu
           };
         },
         onSelect: function(suggestion) {
-          debugger;
           var ids = 'id=' + suggestion.id;
           $('.menu-recipe').each(function() {
             ids += '&id=' + $(this).attr('note-id');
@@ -82,6 +87,18 @@ Menu
           document.location.href = '/menu/?' + ids;
         }
       });
+    });
+
+    $('.delete-menu-recipe').on('click', function() {
+      var deleteId = $(this).attr('note-id');
+      var ids = '';
+      $('.menu-recipe').each(function() {
+        var id = $(this).attr('note-id');
+        if (id != deleteId) {
+          ids += '&id=' + id;
+        }
+      });
+      document.location.href = '/menu/?' + ids;
     });
 
     $('.menu-ingredient').on('click', function() {

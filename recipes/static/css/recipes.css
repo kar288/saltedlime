@@ -39,7 +39,8 @@ main {
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
 
-.menu-ingredient {
+.menu-ingredient,
+.delete-menu-recipe {
   cursor: pointer;
 }
 
@@ -492,6 +493,17 @@ input[type=text]:focus {
   margin-top: 7px;
 }
 
+.delete-note-small {
+  background-color: white;
+  border-radius: 50px;
+  box-shadow: 0px 5px 5px 0 rgba(0,0,0,0.16);
+  display: none;
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  z-index: 100;
+}
+
 .card-content.row {
   margin: 0;
 }
@@ -574,6 +586,10 @@ input[type=text]:focus {
   color: #666;
 }
 
+.recipe-card a {
+  color: #666;
+}
+
 .recipe-card .card-image .card-title {
   background-color: rgba(0,0,0, 0.3);
   font-size: 1.3em;
@@ -601,6 +617,10 @@ input[type=text]:focus {
 
 .recipe-card .card-image .card-wash:hover {
   opacity: 0;
+}
+
+.recipe-card:hover .delete-note-small {
+  display: block;
 }
 
 .recipe-card .recipe-image {

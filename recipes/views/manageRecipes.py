@@ -60,10 +60,7 @@ def deleteNote(request, noteId):
     if not note in recipeUser.notes.all():
         context['errors'] = ['Note not found']
     else:
-        recipe = note.recipe
         context['success'] = ['Recipe was deleted: ' + note.title]
-        if recipe:
-            recipe.delete()
         note.delete()
         context['notes'] = recipeUser.notes.all()
     return redirect('/')
@@ -78,10 +75,7 @@ def deleteRecipes(request):
             note = recipeUser.notes.get(id = noteId)
         except:
             context['errors'] = ['Note not found']
-        recipe = note.recipe
         context['success'] = ['Recipe was deleted: ' + note.title]
-        if recipe:
-            recipe.delete()
         note.delete()
     return redirect('/table/title/1')
 
