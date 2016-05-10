@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup, NavigableString
 from pattern.en import singularize
 
 from recipes.models import Ingredient, Month, Note, Recipe, RecipeUser
+from utils import * 
 
 vulgarFractions = {
     u'↉': '0',
