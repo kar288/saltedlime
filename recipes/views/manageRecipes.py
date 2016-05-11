@@ -86,6 +86,8 @@ def addRecipeAsync(request):
         if 'error' in tmp:
             context['error'] = tmp
     except:
+        traceback.print_exc()
+        logger.error('unexpected')
         context['error'] = {'error': 'An unexpected error occured!', 'level': 2}
     return JsonResponse(context)
 
