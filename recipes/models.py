@@ -14,7 +14,7 @@ class Ingredient(models.Model):
     amount = models.IntegerField(default=0)
 
 class Text(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(unique=True, max_length=200)
     text = models.TextField()
     def __unicode__(self):
         return u'%s' % self.name

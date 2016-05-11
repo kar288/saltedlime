@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 
 from parse import *
-from recipes.models import Note, RecipeUser
+from recipes.models import Note, RecipeUser, Text
 from utils import *
 
 
@@ -74,7 +74,14 @@ def deleteRecipes(request):
 
 @login_required(login_url='/')
 def addRecipesHtml(request):
-    return render(request, 'addRecipes.html')
+    context = {}
+    try:
+        context['text1'] = Text.objects.get(name='addRecipes1').text.split('\n')
+        context['text2'] = Text.objects.get(name='addRecipes2').text.split('\n')
+    except:
+        logger.info('no text')
+        pass
+    return render(request, 'addRecipes.html', context)
 
 def addRecipeAsync(request):
     context = {}
@@ -120,7 +127,6 @@ def addNote(request):
     recipeUser = getUser(request.user)
     recipeUrl = post['recipeUrl']
     tmp = addRecipeByUrl(recipeUser, recipeUrl, post)
-    print tmp
     if not isinstance(tmp, Note):
         return render(request, 'addRecipe.html', {'errors': [tmp]})
     return redirect('/' + 'note/' + str(tmp.id))
@@ -224,6 +230,12 @@ def recipeExists(request):
 def processBulk(request):
     start = datetime.now()
     context = {}
+    try:
+        context['text1'] = Text.objects.get(name='addRecipes1').text.split('\n')
+        context['text2'] = Text.objects.get(name='addRecipes2').text.split('\n')
+    except:
+        logger.info('no text')
+        pass
     post = request.POST
     cookingDomains = {
         'food52': True,
