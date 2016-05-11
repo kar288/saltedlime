@@ -83,7 +83,7 @@ def addRecipeAsync(request):
     recipeUser = getUser(request.user)
     try:
         tmp = addRecipeByUrl(recipeUser, url, get)
-        if 'error' in tmp:
+        if not isinstance(tmp, Note):
             context['error'] = tmp
     except:
         traceback.print_exc()
