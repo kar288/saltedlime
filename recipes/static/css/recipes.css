@@ -39,6 +39,23 @@ main {
 .divider-color         { border-color: #B6B6B6; }
 /**************************************/
 
+.ingredient-helper {
+  background-color: white;
+  box-shadow: 0px 5px 5px 0 rgba(0,0,0,0.16), 2px 5px 5px 0 rgba(0,0,0,0.12);
+  padding: 20px;
+  position: absolute;
+  text-align: center;
+  -webkit-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+  transition-delay: 0.5s;
+  max-width: 400px;
+  z-index: 100;
+}
+
+.bold-word {
+  font-weight: bold;
+}
+
 .add-recipe-modal .picker__holder {
   position: initial;
 }

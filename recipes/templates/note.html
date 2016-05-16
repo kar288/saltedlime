@@ -97,8 +97,12 @@
       <div class="card-title grey-text text-darken-4">
         Ingredients
       </div>
-      {% for ingredient in note.ingredients_as_list %}
-          <p>{{ ingredient }}</p>
+      {% for ingredient in ingredients %}
+        <p ingredient="{{ingredient.short.name}}">
+          {% for word in ingredient.long %}
+            <span>{{word}} </span>
+          {% endfor %}
+        </p>
       {% endfor %}
     </div>
     <div class="recipe-info col s12 m8">
@@ -106,7 +110,11 @@
         Instructions
       </div>
       {% for instructions in note.instructions_as_list %}
-          <p>{{ instructions }}</p>
+        <p>
+          {% for word in instructions %}
+            <span class="word" word="{{word}}">{{word}} </span>
+          {% endfor %}
+        </p>
       {% endfor %}
     </div>
   </div>
@@ -135,5 +143,31 @@
     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Done</a>
   </div>
 </div>
+<div class="hidden ingredient-helper">
+</div>
+<script>
+  var hoverWord = function(e) {
+    var word = $(this).text().toLowerCase().trim().replace(/[,\.]/gi, '');
+    if (word.length < 2) {
+      return;
+    }
+    var ingredient = $('[ingredient*="' + word + '"]');
+    var helper = $('.ingredient-helper')[0];
+    if (!ingredient.length) {
+      $(helper).addClass('hidden');
+      helper.style.opacity = 0;
+      return;
+    }
+    ingredient.toggleClass('bold-word');;
+    helper.innerHTML = ingredient.text();
+    // debugger;
+    $(helper).removeClass('hidden');
+    helper.style.top = (e.pageY - 10 - $(helper).outerHeight()) + 'px';
+    helper.style.left = (e.pageX - $(helper).outerWidth() / 2) + 'px';
+    helper.style.opacity = 1;
+  };
+  $('span').on('mouseover', hoverWord);
+  $('span').on('mouseout', hoverWord);
+</script>
 {% include 'deleteNote.html' %}
 {% endblock %}

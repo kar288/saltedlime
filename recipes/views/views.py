@@ -158,8 +158,14 @@ def note(request, noteId):
             raise Http404("No such recipe.")
     ingredients = note.ingredients.split('\n')
     context['ingredients'] = []
+    context['baseIngredients'] = []
     for ingredient in ingredients:
-        getIngredientName(ingredient)
+        baseIngredient = getIngredientName(ingredient)
+        context['ingredients'].append({
+            'short': baseIngredient,
+            'long': ingredient.split(),
+        })
+        context['baseIngredients'].append(baseIngredient.get('name', ''))
     context['note'] = note
     context['shareUrl'] = \
         request.build_absolute_uri('/')[:-1] + request.get_full_path() + '?share=1'

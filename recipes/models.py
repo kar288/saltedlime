@@ -92,7 +92,7 @@ class Note(models.Model):
     def ingredients_as_list(self):
         return self.ingredients.split('\n')
     def instructions_as_list(self):
-        return self.instructions.split('\n')
+        return [row.split() for row in self.instructions.split('\n')]
     def title_short(self):
         return self.title[:30]
     def date_added_formatted(self):
