@@ -189,11 +189,10 @@ MEDIA_URL = '/media/'
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'verbose': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%d/%b/%Y %H:%M:%S"
+            'format' : "%(levelname)s [%(name)s:%(lineno)s] %(message)s",
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
