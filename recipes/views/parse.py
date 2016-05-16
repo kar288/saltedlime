@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup, NavigableString
 from pattern.en import singularize
 
 from recipes.models import Ingredient, Month, Note, Recipe, RecipeUser
-from utils import * 
+from utils import *
 
 vulgarFractions = {
     u'↉': '0',
@@ -322,8 +322,8 @@ def parseRecipe(url):
             charset = 'utf-8'
         html = html.read().decode(charset)
     except urllib2.HTTPError, err:
-        logger.info(url)
         traceback.print_exc()
+        logger.error(url + ' - error in parsing httperror')
         html = urllib2.build_opener(urllib2.HTTPCookieProcessor).open(url)
 
     soup = BeautifulSoup(html, "html5lib")

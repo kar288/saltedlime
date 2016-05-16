@@ -80,7 +80,7 @@ def addRecipesHtml(request):
         context['text1'] = Text.objects.get(name='addRecipes1').text.split('\n')
         context['text2'] = Text.objects.get(name='addRecipes2').text.split('\n')
     except:
-        logger.info('no text')
+        logger.error('Add recipes missing text.')
         pass
     return render(request, 'addRecipes.html', context)
 
@@ -95,7 +95,7 @@ def addRecipeAsync(request):
             context['error'] = tmp
     except:
         traceback.print_exc()
-        logger.error('unexpected')
+        logger.error(url + ' - unexpected error parsing recipe in async.')
         context['error'] = {'error': 'An unexpected error occured!', 'level': 2}
     return JsonResponse(context)
 
@@ -135,8 +135,7 @@ def addNote(request):
 
 def addRecipeByUrl(recipeUser, recipeUrl, post):
     socket.setdefaulttimeout(30)
-    logger.info(recipeUrl)
-    logger.info(recipeUser.id)
+    logger.info('user: ' + recipeUser.id)
     if recipeUrl and recipeUser.notes.filter(url = recipeUrl).exists():
         logger.info(recipeUrl + ' Recipe exists')
         return {'error': 'Recipe already exists!', 'level': 0}
@@ -155,8 +154,7 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
         title = recipeData.get('title', post.get('title', ''))
 
         if not len(title):
-            logger.exception('missing data')
-            logger.exception(recipeUrl)
+            logger.exception(recipeUrl + ' - missing data')
             return {'error': 'This recipe has a missing title or other essential information. Try adding it manually.', 'level': 3}
         note = Note.objects.create(
           url = recipeUrl,
@@ -173,30 +171,27 @@ def addRecipeByUrl(recipeUser, recipeUrl, post):
           servings = recipeData.get('servings', post.get('servings', ''))[:100]
         )
         recipeUser.notes.add(note)
+        logger.info(recipeUrl + ' - success')
         return note
     except urllib2.URLError, err:
-        logger.exception(recipeUrl)
         traceback.print_exc()
-        logger.exception('urlerror')
+        logger.exception(recipeUrl + ' - urlerror')
         if 'code' in err and err.code == 404:
             return {'error': 'The recipe was not found, it might have been removed!', \
                 'level': 3 }
         return {'error': 'Could not get recipe. The site might be down.', 'level': 3}
     except urllib2.HTTPError, err:
-        logger.exception(recipeUrl)
         traceback.print_exc()
-        logger.exception('httperror')
+        logger.exception(recipeUrl + ' - httperror')
         if err.code == 404:
             return {'error': 'The rcipe was not found, it might have been removed!', 'level': 3}
         return {'error': 'Could not get recipe. The site might be down.', 'level': 3}
     except socket.timeout:
-        logger.exception(recipeUrl)
-        logger.exception('timeout')
+        logger.exception(recipeUrl + ' - timeout')
         return {'error': 'It took too long to get recipe. The site might be down.', 'level': 3}
     except:
-        logger.exception(recipeUrl)
-        logger.exception('another exception')
         traceback.print_exc()
+        logger.exception(recipeUrl + ' - another exception')
         return {'error': sys.exc_info()[0], 'level': 3}
 
 @login_required(login_url='/')
@@ -235,7 +230,7 @@ def processBulk(request):
         context['text1'] = Text.objects.get(name='addRecipes1').text.split('\n')
         context['text2'] = Text.objects.get(name='addRecipes2').text.split('\n')
     except:
-        logger.info('no text')
+        logger.error('Add recipes missing text.')
         pass
     post = request.POST
     cookingDomains = {
@@ -252,10 +247,10 @@ def processBulk(request):
         'allrecipes': True,
     }
     if not post or not 'bookmarks' in request.FILES:
-        logger.info('No bookmarks file')
+        logger.error('No bookmarks file')
         return render(request, 'addRecipes.html', context)
     if not request.FILES['bookmarks'].name.endswith('.html'):
-        logger.info('Bookmarks not an html file: ' + request.FILES['bookmarks'].name)
+        logger.error('Bookmarks not an html file: ' + request.FILES['bookmarks'].name)
         return render(request, 'addRecipes.html',
             {'errors': [{'error': 'Please upload an html file'}]})
 
@@ -286,6 +281,7 @@ def processBulk(request):
             context['pages'].append( \
                 urls[i * 100 : min((i + 1) * 100, len(urls))])
     except Exception as e:
+        traceback.print_exc()
         logger.exception(e)
         return render(request, 'addRecipes.html',
             {'errors': [{'error' : 'Invalid bookmark file'}]})
