@@ -135,7 +135,7 @@ def addNote(request):
 
 def addRecipeByUrl(recipeUser, recipeUrl, post):
     socket.setdefaulttimeout(30)
-    logger.info('user: ' + recipeUser.id)
+    logger.info('user: ' + str(recipeUser.id))
     if recipeUrl and recipeUser.notes.filter(url = recipeUrl).exists():
         logger.info(recipeUrl + ' Recipe exists')
         return {'error': 'Recipe already exists!', 'level': 0}
