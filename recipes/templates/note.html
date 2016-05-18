@@ -148,6 +148,9 @@
 <script>
   var hoverWord = function(e) {
     var word = $(this).text().toLowerCase().trim().replace(/[,\.]/gi, '');
+    if (word.endsWith('s')) {
+      word = word.substr(0, word.length - 1);
+    }
     if (word.length < 2) {
       return;
     }
@@ -160,11 +163,11 @@
     }
     ingredient.toggleClass('bold-word');;
     helper.innerHTML = ingredient.text();
-    // debugger;
     $(helper).removeClass('hidden');
     helper.style.top = (e.pageY - 10 - $(helper).outerHeight()) + 'px';
     helper.style.left = (e.pageX - $(helper).outerWidth() / 2) + 'px';
-    helper.style.opacity = !ingredient.hasClass('bold-word') * 1;
+    console.log(!ingredient.hasClass('bold-word') * 1);
+    helper.style.opacity = ingredient.hasClass('bold-word') * 1;
   };
   $('span').on('mouseover', hoverWord);
   $('span').on('mouseout', hoverWord);
