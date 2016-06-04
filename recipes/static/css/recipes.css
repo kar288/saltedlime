@@ -442,7 +442,8 @@ input[type=text]:focus {
   overflow: hidden;
 }
 
-.filter-form label {
+.filter-form label,
+.table-site {
   color: inherit;
 }
 

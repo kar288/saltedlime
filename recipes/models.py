@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
+import tldextract
 
 class DayMenu(models.Model):
     date = models.DateField()
@@ -98,6 +99,9 @@ class Note(models.Model):
     def date_added_formatted(self):
         # return self.date_added
         return self.created_at.strftime("%d/%b/%y")
+    def siteLink(self):
+        parts = tldextract.extract(self.url)
+        return '//' + parts.domain + '.' + parts.suffix
 
 class RecipeUser(models.Model):
   googleUser = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
