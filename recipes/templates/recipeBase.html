@@ -68,7 +68,7 @@
               <li><a href="{% url 'addRecipes' %}">Add recipes bulk</a></li>
             </ul>
           </li>
-          <li id="search-li">
+          <li>
             <form id="search-form" {% if not query %}class="short"{% endif %} action="{% url 'search' %}" method="get">
               <div class="input-field" >
                 <input id="search" type="search" name="query" value="{{query}}">
@@ -169,7 +169,7 @@
     var menus = [
       ['add', 'add-options'],
       ['profile', 'profile-options'],
-      ['search-li', 'search-options']
+      ['search-icon', 'search-options']
     ];
     menus.forEach(menu => {
       $('#' + menu[0]).on('mouseover', function() {
@@ -192,6 +192,9 @@
     $('#search-icon').on('click', function() {
       $('#search-form').removeClass('short');
       $('#search-options').addClass('invisible');
+      $('#search-icon').on('click', function() {
+        $('#search-form').submit();
+      });
     });
   </script>
   {% include 'outside-scripts.html' %}
