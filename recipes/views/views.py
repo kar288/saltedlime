@@ -305,14 +305,32 @@ def getSeasonRecipes(request, month):
     if not month:
         month = datetime.now().strftime("%b")
     month = Month.objects.filter(name__icontains = month)
+
+    seasonalIngredients = []
+    permanentIngredients = []
+    for ingredient in ingredientSeasons:
+        if len(ingredientSeasons[ingredient]) < 8:
+            seasonalIngredients.append(ingredient)
+        else:
+            permanentIngredients.append(ingredient)
+    print permanentIngredients
+
     if len(month):
         ingredients = month[0].ingredients.split(',')
         for ingredient in ingredients:
-            if len(ingredientSeasons[ingredient]) < 6 and not ingredient == 'garlic':
+            if not ingredient in permanentIngredients and not ingredient == 'garlic':
                 notes |= recipeUser.notes.filter(ingredients__icontains = ingredient)
         context['selected'] = date(1900, month[0].index, 1).strftime('%b')
         context['selectedIndex'] = month[0].index
 
+    context['permanentIngredients'] = permanentIngredients
+    context['seasonalIngredients'] = seasonalIngredients
+
+    # for ingredient in permanentIngredients:
+        # print ingredient, len(ingredientSeasons[ingredient])
+    context['seasonalSource'] = Text.objects.get(name='seasonalSource').text;
+    context['permanentIngredientsText'] = \
+        Text.objects.get(name='permanentIngredients').text;
     context['notes'] = notes
     return render(request, 'seasonal.html', context)
 

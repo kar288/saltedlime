@@ -27,18 +27,33 @@ Seasonal
       </thead>
       <tbody>
         {% for ingredient, months in ingredientSeasons.items %}
-        <tr>
-          <td class="in-season-ingredient">
-            {{ingredient}}
-          </td>
-          {% for month in months %}
-            <td class="{% if month %}in-season{% endif %}{% if month == selectedIndex %} selected{% endif %}">
-            </td>
-          {% endfor %}
-        </tr>
+          {% if ingredient in seasonalIngredients %}
+            <tr>
+              <td class="in-season-ingredient">
+                {{ingredient}}
+              </td>
+              {% for month in months %}
+                <td class="{% if month %}in-season{% endif %}{% if month == selectedIndex %} selected{% endif %}">
+                </td>
+              {% endfor %}
+            </tr>
+          {% endif %}
         {% endfor %}
       </tbody>
     </table>
+    <p>
+      {{permanentIngredientsText}}
+      <div class="row">
+        {% for ingredient in permanentIngredients %}
+        <div class="col s4">
+          {{ingredient}}
+        </div>
+        {% endfor %}
+      </div>
+    </p>
+    <p>
+      {{seasonalSource | safe}}
+    </p>
   </div>
   <div class="col s12 m6 l7">
     <div class="row notes-container">
