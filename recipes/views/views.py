@@ -275,6 +275,7 @@ def ingredients(request, ingredients):
 @login_required(login_url='/')
 def getSeasonRecipes(request, month):
     context = {}
+    get = request.GET
     recipeUser = getUser(request.user)
     notes = Note.objects.none()
 
@@ -313,7 +314,6 @@ def getSeasonRecipes(request, month):
             seasonalIngredients.append(ingredient)
         else:
             permanentIngredients.append(ingredient)
-    print permanentIngredients
 
     if len(month):
         ingredients = month[0].ingredients.split(',')
@@ -326,12 +326,15 @@ def getSeasonRecipes(request, month):
     context['permanentIngredients'] = permanentIngredients
     context['seasonalIngredients'] = seasonalIngredients
 
-    # for ingredient in permanentIngredients:
-        # print ingredient, len(ingredientSeasons[ingredient])
     context['seasonalSource'] = Text.objects.get(name='seasonalSource').text;
     context['permanentIngredientsText'] = \
         Text.objects.get(name='permanentIngredients').text;
     context['notes'] = notes
+    page = 1
+    for field in get:
+        if field == 'page':
+            page = int(get.get(field))
+    pagination(request, context, page, notes)
     return render(request, 'seasonal.html', context)
 
 @login_required(login_url='/')

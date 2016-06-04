@@ -15,32 +15,33 @@ Seasonal
 </div>
 <div class="row">
 <!-- <div class="row seasonal-content"> -->
-  <div class="col s12 m6 l5" style="overflow-x: scroll;">
-    <!-- <table class="striped"> -->
-    <table class="striped season-table">
-      <thead>
-        {% for month in months %}
-          <th class="table-header {% if selected == month %} selected{% endif %}">
-            <a href="/season/{{month}}"> {{month}} </a>
-          </th>
-        {% endfor %}
-      </thead>
-      <tbody>
-        {% for ingredient, months in ingredientSeasons.items %}
-          {% if ingredient in seasonalIngredients %}
-            <tr>
-              <td class="in-season-ingredient">
-                {{ingredient}}
-              </td>
-              {% for month in months %}
-                <td class="{% if month %}in-season{% endif %}{% if month == selectedIndex %} selected{% endif %}">
+  <div class="col s12 m6 l5">
+    <div style="overflow: scroll; height: 800px;">
+      <table class="striped season-table">
+        <thead>
+          {% for month in months %}
+            <th class="table-header {% if selected == month %} selected{% endif %}">
+              <a href="/season/{{month}}"> {{month}} </a>
+            </th>
+          {% endfor %}
+        </thead>
+        <tbody>
+          {% for ingredient, months in ingredientSeasons.items %}
+            {% if ingredient in seasonalIngredients %}
+              <tr>
+                <td class="in-season-ingredient">
+                  {{ingredient}}
                 </td>
-              {% endfor %}
-            </tr>
-          {% endif %}
-        {% endfor %}
-      </tbody>
-    </table>
+                {% for month in months %}
+                  <td class="{% if month %}in-season{% endif %}{% if month == selectedIndex %} selected{% endif %}">
+                  </td>
+                {% endfor %}
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     <p>
       {{permanentIngredientsText}}
       <div class="row">
@@ -61,6 +62,7 @@ Seasonal
         {% include 'smallRecipe.html' %}
       {% endfor %}
     </div>
+    {% include 'pagination.html' %}
   </div>
 </div>
 {% endblock %}
