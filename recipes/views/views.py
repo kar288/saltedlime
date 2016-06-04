@@ -1,3 +1,4 @@
+import collections
 import json
 import logging
 import math
@@ -61,7 +62,7 @@ def pagination(request, context, page, notes):
             context['pages'].append(0)
 
     context['page'] = page
-    context['filters'] = {}
+    context['filters'] = collections.OrderedDict()
     context['queries'] = queries_without_page
     context['previous'] = page - 1 if page - 1 > 0 else 0
     context['next'] = page + 1 if page + 1 <= len(pages) else 0
@@ -327,6 +328,7 @@ def getSeasonRecipes(request, month):
     context['seasonalIngredients'] = seasonalIngredients
 
     context['seasonalSource'] = Text.objects.get(name='seasonalSource').text;
+    context['seasonalText'] = Text.objects.get(name='seasonalText').text;
     context['permanentIngredientsText'] = \
         Text.objects.get(name='permanentIngredients').text;
     context['notes'] = notes
