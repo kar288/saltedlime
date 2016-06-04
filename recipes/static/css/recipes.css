@@ -180,6 +180,10 @@ main {
   white-space: nowrap;
 }
 
+.extra-options li a {
+  width: 100%;
+}
+
 .over-right {
   right: 0;
 }

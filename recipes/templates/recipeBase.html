@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name=viewport content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="description" content="Application to manage, organize, and share recipes with notes and seasonal recommendations.">
 
@@ -11,10 +11,10 @@
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
   <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'js/materialize-tags/css/materialize-tags.min.css' %}">
-  <link href='https://fonts.googleapis.com/css?family=Yeseva+One&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Yeseva+One&subset=latin,latin-ext" rel="stylesheet" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="{% static 'js/jquery.autocomplete.min.js' %}"></script>
-  <link href='https://fonts.googleapis.com/css?family=Merriweather+Sans:400,800&subset=latin' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,800&subset=latin" rel="stylesheet" type="text/css">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
   <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
   <title>{% block title %}Home{% endblock %} - Salted Lime</title>
@@ -68,13 +68,13 @@
               <li><a href="{% url 'addRecipes' %}">Add recipes bulk</a></li>
             </ul>
           </li>
-          <li>
+          <li id="search-li">
             <form id="search-form" {% if not query %}class="short"{% endif %} action="{% url 'search' %}" method="get">
               <div class="input-field" >
                 <input id="search" type="search" name="query" value="{{query}}">
                 <label id="search-icon" for="search">
                   <i class="material-icons">search</i>
-                  <ul id="search-options" class="extra-options invisible">
+                  <ul id="search-options" class="extra-options invisible over-right">
                     <li>
                       <a href="{% url 'advancedSearchHtml' title %}">
                       Advanced Search
@@ -89,7 +89,7 @@
         <ul class="side-nav" id="mobile-demo">
           <li>
             <form id="search-form" action="{% url 'search' %}" method="get">
-              <div class="input-field" >
+              <div class="input-field">
                 <input id="search" type="search" name="query" value="{{query}}">
                 <label id="search-icon" for="search">
                   <i class="material-icons">search</i>
@@ -97,8 +97,8 @@
               </div>
             </form>
           </li>
-          <li>
-            <a href="{% url 'advancedSearchHtml' title %}">
+          <li >
+            <a class="over-right" href="{% url 'advancedSearchHtml' title %}">
               Advanced Search
             </a>
           </li>
@@ -140,7 +140,7 @@
 </header>
 <main>
   {% for error in errors %}
-    <div class='recipe-general-error'>
+    <div class="recipe-general-error">
       {% if error %}
         {{error.error}}
       {% else %}
@@ -149,7 +149,7 @@
     </div>
   {% endfor %}
   {% for s in success %}
-    <div class='recipe-general-success'>
+    <div class="recipe-general-success">
       {{s}}
     </div>
   {% endfor %}
@@ -169,7 +169,7 @@
     var menus = [
       ['add', 'add-options'],
       ['profile', 'profile-options'],
-      ['search-icon', 'search-options']
+      ['search-li', 'search-options']
     ];
     menus.forEach(menu => {
       $('#' + menu[0]).on('mouseover', function() {
@@ -177,11 +177,12 @@
         var rightEdge = options.width() + options.offset().left;
         var screenWidth = $(window).width();
         options.removeClass('invisible');
-        if (screenWidth < rightEdge) {
-          options.addClass('over-right');
-        } else {
-          options.removeClass('over-right');
-        }
+        // if (screenWidth < rightEdge) {
+        //   console.log(options)
+        //   options.addClass('over-right');
+        // } else {
+        //   options.removeClass('over-right');
+        // }
       });
       $('#' + menu[0]).on('mouseout', function() {
         $('#' + menu[1]).addClass('invisible');
