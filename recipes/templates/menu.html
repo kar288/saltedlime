@@ -14,6 +14,19 @@ Menu
         <h5>
           Days
         </h5>
+        <form>
+          <div class="row">
+            <div class="col s6">
+              <label for="start">From:</label>
+              <input data-value="{{start}}" id="start" type="date" class="datepicker">
+            </div>
+            <div class="col s6">
+              <label for="end">To:</label>
+              <input data-value="{{end}}" id="end" type="date" class="datepicker">
+            </div>
+          </div>
+        </form>
+
         {% for day in week %}
           <div class="day">
             <div class="header">
@@ -90,6 +103,46 @@ Menu
     </div>
   </div>
   <script>
+    var dateSettings = {
+      selectMonths: true, // Creates a dropdown to control month
+      selectYears: 15, // Creates a dropdown of 15 years to control year
+      today: '',
+      clear: 'Clear',
+      close: 'Done',
+      formatSubmit: 'dd-mmmm-yyyy',
+      onStart: function() {
+        console.log('Hello there :)')
+      },
+      onRender: function() {
+        console.log('Whoa.. rendered anew')
+      },
+      onOpen: function() {
+        console.log('Opened up')
+      },
+      onClose: function() {
+        var start = $('#start').val().replace(/ /g, '-').replace(',', '');
+        var end = $('#end').val().replace(/ /g, '-').replace(',', '');
+        window.location.href = '/menu/?start=' + start + '&end=' + end;
+      },
+      onStop: function() {
+        console.log('See ya.')
+      },
+      onSet: function(context) {
+        var t = new Date(1970, 0, 1); // Epoch
+        t.setSeconds(context);
+        console.log(t)
+        console.log('Just set stuff:', context)
+        // $('#end').pickadate(Object.assign(dateSettings, {
+        //   min: context
+        // }));
+      }
+    };
+    $('#start').pickadate(Object.assign(dateSettings, {}));
+
+    $('#end').pickadate(Object.assign(dateSettings, {
+      // min: {{startSeconds}}
+    }));
+
     $('.delete-menu-recipe').on('click', function() {
       document.location.href = '/deleteFromMenu/?day=' +
         $(this).attr('day') + '&note=' + $(this).attr('note-id');

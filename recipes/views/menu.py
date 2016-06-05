@@ -61,10 +61,25 @@ def menu(request):
 
     notes = Note.objects.none()
 
+    start = datetime.now()
+    if 'start' in get:
+        start = datetime.strptime(get.get('start', ''), dayFormat)
+
+    end = start + timedelta(7)
+    if 'end' in get:
+        end = datetime.strptime(get.get('end', ''), dayFormat)
+
+    context['start'] = start.strftime(dayFormat)
+    # context['start-year'] = start.strftime('%Y')
+    context['startSeconds'] = (start - datetime(1970,1,1)).total_seconds()
+    context['end'] = end.strftime(dayFormat)
+
+    delta = end - start
+
     context['week'] = []
     recipeUser = getUser(request.user)
-    for i in range(7):
-        currentData = datetime.now() + timedelta(i)
+    for i in range(delta.days + 1):
+        currentData = start + timedelta(i)
         try:
             dayMenu = recipeUser.menus.get(date = currentData)
         except:
