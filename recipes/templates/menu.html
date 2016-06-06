@@ -144,8 +144,14 @@ Menu
     }));
 
     $('.delete-menu-recipe').on('click', function() {
-      document.location.href = '/deleteFromMenu/?day=' +
-        $(this).attr('day') + '&note=' + $(this).attr('note-id');
+      $.ajax({
+        url: '/deleteFromMenu/?day=' +
+          $(this).attr('day') + '&note=' + $(this).attr('note-id')
+      }).done(function(data) {
+        if (data.success) {
+          $(this.parentElement).remove();
+        }
+      }.bind(this));
     });
 
     $('.menu-ingredient').on('click', function() {

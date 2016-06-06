@@ -38,7 +38,7 @@ def deleteFromMenu(request):
     dayString = get.get('day', '')
     note = get.get('note', '')
     if not dayString or not note:
-        return redirect('/menu')
+        JsonResponse({'error': 'missing data!'})
 
     recipeUser = getUser(request.user)
     day =  datetime.strptime(dayString, dayFormat)
@@ -49,9 +49,9 @@ def deleteFromMenu(request):
         setattr(dayMenu, 'notes', ' '.join(notes))
         dayMenu.save()
     except:
-        return redirect('/menu')
+        return JsonResponse({'error': 'some error'})
 
-    return redirect('/menu')
+    return JsonResponse({'success': True})
 
 def menu(request):
     context = {}
