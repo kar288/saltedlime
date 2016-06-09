@@ -93,7 +93,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="recipe-info col s12 m4">
+    <div class="recipe-info col s12 m4 ingredients">
       <div class="card-title grey-text text-darken-4">
         Ingredients
       </div>
@@ -105,7 +105,7 @@
         </p>
       {% endfor %}
     </div>
-    <div class="recipe-info col s12 m8">
+    <div class="recipe-info col s12 m8 instructions">
       <div class="card-title grey-text text-darken-4">
         Instructions
       </div>
@@ -169,8 +169,8 @@
     console.log(!ingredient.hasClass('bold-word') * 1);
     helper.style.opacity = ingredient.hasClass('bold-word') * 1;
   };
-  $('span').on('mouseover', hoverWord);
-  $('span').on('mouseout', hoverWord);
+  $('.instructions span').on('mouseover', hoverWord);
+  $('.instructions span').on('mouseout', hoverWord);
 </script>
 {% include 'deleteNote.html' %}
 {% endblock %}
