@@ -165,11 +165,9 @@ def getMenuInternal(request):
 
 def getMenu(request):
     context = getMenuInternal(request)
-    print context['week']
     for day in context['week']:
         if 'notes' in day:
             day['notes'] = [{'title': note.title, 'id': note.id} for note in day['notes']]
-    print context
     return JsonResponse(context)
 
 def menu(request):
