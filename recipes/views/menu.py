@@ -2,6 +2,7 @@ import collections
 from datetime import date, datetime, timedelta
 from fractions import Fraction
 
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from parse import *
@@ -53,7 +54,7 @@ def deleteFromMenu(request):
 
     return JsonResponse({'success': True})
 
-def menu(request):
+def getMenuInternal(request):
     context = {}
     pairs = []
     get = request.GET
@@ -153,12 +154,23 @@ def menu(request):
                     elif '.33' in str(total):
                         total = '1/3'
                     else:
-                        total = Fraction(total)
+                        total = float(Fraction(total))
                 else:
                     total = tmp
 
             perIngredient[name][unit]['total'] = total
     context['ingredients'] = \
         collections.OrderedDict(sorted(perIngredient.items()))
+    return context
 
-    return render(request, 'menu.html', context)
+def getMenu(request):
+    context = getMenuInternal(request)
+    print context['week']
+    for day in context['week']:
+        if 'notes' in day:
+            day['notes'] = [{'title': note.title, 'id': note.id} for note in day['notes']]
+    print context
+    return JsonResponse(context)
+
+def menu(request):
+    return render(request, 'menu.html', getMenuInternal(request))

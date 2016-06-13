@@ -1,0 +1,17 @@
+@import "./colors";
+@import "./dialog";
+
+.header {
+  background-color: $default-primary-color;
+}
+
+.day {
+  &:hover:not(.active):not(.disabled) > span {
+    // color: $calendar-primary-contrast-color;
+    background: $light-primary-color;
+  }
+  &.active > span {
+    // color: $calendar-primary-contrast-color;
+    background: $default-primary-color;
+  }
+}

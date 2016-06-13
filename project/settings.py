@@ -238,3 +238,7 @@ LOGGING = {
         },
     }
 }
+
+PIPELINE_COMPILERS = (
+  'react.utils.pipeline.JSXCompiler',
+)

@@ -1,0 +1,36 @@
+.menu {
+  .day {
+    float: left;
+    width: calc(100% / 7);
+    border: 1px solid black;
+    min-width: 200px;
+    width: 100%;
+    .header {
+      background-color: rgba(0,0,0, 0.1);
+      padding: 10px;
+    }
+    .content .row {
+      margin-top: 10px;
+    }
+  }
+  a {
+    color: #666;
+  }
+}
+
+.menu-ingredient,
+.delete-menu-recipe {
+  cursor: pointer;
+}
+
+.menu-recipe.no-ingredients {
+  opacity: 0.3;
+}
+
+.delete-menu-recipe {
+  padding-left: 0 !important;
+}
+
+.delete-menu-recipe .material-icons {
+  font-size: 15px;
+}

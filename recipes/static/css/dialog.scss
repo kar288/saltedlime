@@ -1,0 +1,10 @@
+@import "./colors";
+
+.dialog {
+  > [role="navigation"] {
+    background-color: $light-primary-color;
+  }
+  > [role="navigation"] > .button {
+    color: black;
+  }
+}
