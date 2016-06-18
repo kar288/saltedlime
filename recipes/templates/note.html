@@ -135,11 +135,11 @@
   <div class="modal-content">
     <h4>Share recipe</h4>
     <p>Copy the given link and share it with your friends</p>
-    <blockquote class="share-link">
-      {{shareUrl}}
-    </blockquote>
+    <label for="share">Share link:</label>
+    <input type="text" id="share" value="{{shareUrl}}" />
   </div>
   <div class="modal-footer">
+    <a href="#!" data-copytarget="#share" class="modal-action waves-effect waves-green btn-flat">Copy</a>
     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Done</a>
   </div>
 </div>
@@ -171,6 +171,29 @@
   };
   $('.instructions span').on('mouseover', hoverWord);
   $('.instructions span').on('mouseout', hoverWord);
+  document.body.addEventListener('click', copy, true);
+  function copy(e) {
+    // find target element
+    var t = e.target;
+    var c = t.dataset.copytarget;
+    var inp = (c ? document.querySelector(c) : null);
+    if (inp && inp.select) {
+      // select text
+      inp.select();
+      try {
+        // copy text
+        document.execCommand('copy');
+        inp.blur();
+
+        // copied animation
+        t.classList.add('disabled');
+        // setTimeout(function() { t.classList.remove('copied'); }, 1500);
+      }
+      catch (err) {
+        alert('please press Ctrl/Cmd+C to copy');
+      }
+    }
+  }
 </script>
 {% include 'deleteNote.html' %}
 {% endblock %}
