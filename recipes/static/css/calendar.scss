@@ -2,16 +2,16 @@
 @import "./dialog";
 
 .header {
-  background-color: $default-primary-color;
+  background-color: $default-primary-color !important;
 }
 
 .day {
   &:hover:not(.active):not(.disabled) > span {
     // color: $calendar-primary-contrast-color;
-    background: $light-primary-color;
+    background: $default-primary-color !important;
   }
   &.active > span {
     // color: $calendar-primary-contrast-color;
-    background: $default-primary-color;
+    background: $default-primary-color !important;
   }
 }

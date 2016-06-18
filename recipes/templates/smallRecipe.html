@@ -1,4 +1,4 @@
-<div class="card recipe-card" style="float: left">
+<div note-id={{note.id}} class="card recipe-card" style="float: left">
   <a class="modal-trigger recipe-original-link" href="#delete-modal-{{note.id}}">
     <i class="delete-note-small material-icons">close</i>
   </a>
@@ -12,10 +12,7 @@
     </a>
     <div class="title-container">
       <div class="card-title title">{{note.title}}</div>
-      <a class="modal-trigger" href="#add-modal-{{note.id}}">
-        <div class="default-primary-color card-title add-to-menu">
-          Add to day menu
-        </div>
+      <a class="add-recipe">
       </a>
     </div>
   </div>
@@ -36,5 +33,5 @@
     </div>
   </a>
 </div>
-{% include 'addRecipeToMenuModal.html' %}
+
 {% include 'deleteNote.html' %}

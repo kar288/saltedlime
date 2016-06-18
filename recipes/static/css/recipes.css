@@ -53,55 +53,6 @@ main {
   font-weight: bold;
 }
 
-.add-recipe-modal .picker__holder {
-  position: initial;
-}
-
-.add-recipe-modal .picker__frame {
-  opacity: 1;
-}
-
-.add-recipe-modal .picker__box {
-  border: 0;
-  box-shadow: none;
-}
-
-.add-recipe-modal .picker__date-display {
-  display: none;
-}
-
-.add-recipe-modal .picker__day--selected,
-.add-recipe-modal .picker__day--selected:hover,
-.add-recipe-modal .picker--focused .picker__day--selected {
-  padding: 5px 0;
-  background-color: #FFC107;
-}
-
-.add-recipe-modal .picker__nav--prev:hover, .picker__nav--next:hover {
-  background-color: #FFC107;
-}
-
-.add-recipe-modal .picker__day.picker__day--today,
-.add-recipe-modal .picker__close, .picker__today {
-  color: #FFC107;
-}
-
-.add-recipe-modal {
-  height: 550px;
-  width: 350px;
-  max-height: 100%;
-}
-
-.add-recipe-modal .picker__close {
-  display: none;
-}
-
-.add-recipe-modal .modal-footer {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-
 #processed {
   padding-top: 20px;
 }
@@ -805,7 +756,6 @@ input[type=text]:focus {
 
 .form-control,
 .recipe-form {
-  /*border-radius: 0;*/
   width: 100%;
 }
 
@@ -900,9 +850,6 @@ fieldset.rating {
   color: #FFED85;
 }
 
-/*[type="radio"] {*/
-/*}*/
-
 .recipe-add-row {
   border-bottom: 1px solid grey;
   line-height: 2em;
@@ -922,7 +869,6 @@ fieldset.rating {
   height: 20px;
   width: 20px;
 }
-
 
 .sign-in {
   margin: 0 auto;

@@ -16,7 +16,7 @@ def addToMenu(request):
     dayString = get.get('day', '')
     note = get.get('note', '')
     if not dayString or not note:
-        return redirect('/menu')
+        return JsonResponse({'success': False})
 
     recipeUser = getUser(request.user)
     if ' ' in dayString:
@@ -32,7 +32,16 @@ def addToMenu(request):
         setattr(dayMenu, 'notes', ' '.join(notes))
         dayMenu.save()
 
-    return redirect('/menu')
+    noteObject = Note.objects.get(id=note)
+
+    return JsonResponse({
+        'success': True,
+        'note': {
+            'id': noteObject.id,
+            'title': noteObject.title,
+            'ingredientCount': len(noteObject.ingredients)
+        }
+    })
 
 def deleteFromMenu(request):
     get = request.GET
@@ -167,7 +176,7 @@ def getMenu(request):
     context = getMenuInternal(request)
     for day in context['week']:
         if 'notes' in day:
-            day['notes'] = [{'title': note.title, 'id': note.id} for note in day['notes']]
+            day['notes'] = [{'title': note.title, 'id': note.id, 'ingredientCount': len(note.ingredients)} for note in day['notes']]
     return JsonResponse(context)
 
 def menu(request):

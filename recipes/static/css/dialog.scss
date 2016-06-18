@@ -2,9 +2,9 @@
 
 .dialog {
   > [role="navigation"] {
-    background-color: $light-primary-color;
+    background-color: $accent-color;
   }
   > [role="navigation"] > .button {
-    color: black;
+    color: black !important;
   }
 }

@@ -1,0 +1,30 @@
+@import "~react-toolbox/lib/date_picker/theme";
+@import "./calendar";
+@import "./dialog";
+@import "./colors";
+
+.dialog {
+  width: 50em;
+}
+
+.body {
+  padding: 0;
+}
+
+.header {
+  background-color: white !important;
+  color: $primary-text-color;
+}
+
+.title {
+  padding: 1em;
+}
+
+.name {
+  color: $primary-text-color;
+}
+
+.progress {
+  margin: 20px auto;
+  display: block;
+}

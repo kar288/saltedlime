@@ -5,7 +5,7 @@ const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-    entry: "./recipes/static/js/dayMenu.js",
+    entry: "./recipes/static/js/App.js",
     output: {
         path: __dirname + '/recipes/static/js/',
         filename: "bundle.js"
