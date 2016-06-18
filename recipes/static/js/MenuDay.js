@@ -48,6 +48,7 @@ class MenuDay extends React.Component {
   }
 
   removeRecipe(id) {
+    debugger;
     $.ajax({
       url: '/deleteFromMenu/?day=' +
         this.props.date + '&note=' + id
@@ -101,7 +102,7 @@ class MenuDay extends React.Component {
             <i className="material-icons">add</i>
           </a>
         </div>
-        <div className="content">
+        <div className={classnames('content', this.props.theme.content)}>
           {recipes}
         </div>
         <Dialog
@@ -122,6 +123,10 @@ class MenuDay extends React.Component {
 }
 
 class MenuDayRecipe extends React.Component {
+  removeRecipe() {
+    this.props.removeRecipe(this.props.recipe.id);
+  }
+
   render() {
     return <div
       className={classnames(this.props.theme.row, 'row')}
@@ -144,7 +149,7 @@ class MenuDayRecipe extends React.Component {
         </a>
       </div>
       <div
-        onClick={this.props.removeRecipe.bind(this.props.recipe.id)}
+        onClick={this.removeRecipe.bind(this)}
         className={classnames('col', 's1', this.props.theme['delete-menu-recipe'])}
       >
         <i className={classnames('material-icons', this.props.theme['material-icons'])}>close</i>

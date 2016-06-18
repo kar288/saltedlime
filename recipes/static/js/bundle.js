@@ -24673,6 +24673,7 @@
 	  }, {
 	    key: 'removeRecipe',
 	    value: function removeRecipe(id) {
+	      debugger;
 	      $.ajax({
 	        url: '/deleteFromMenu/?day=' + this.props.date + '&note=' + id
 	      }).done(function (data) {
@@ -24741,7 +24742,7 @@
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'content' },
+	          { className: (0, _classnames3.default)('content', this.props.theme.content) },
 	          recipes
 	        ),
 	        _react2.default.createElement(
@@ -24782,6 +24783,11 @@
 	  }
 
 	  _createClass(MenuDayRecipe, [{
+	    key: 'removeRecipe',
+	    value: function removeRecipe() {
+	      this.props.removeRecipe(this.props.recipe.id);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
@@ -24807,7 +24813,7 @@
 	        _react2.default.createElement(
 	          'div',
 	          {
-	            onClick: this.props.removeRecipe.bind(this.props.recipe.id),
+	            onClick: this.removeRecipe.bind(this),
 	            className: (0, _classnames3.default)('col', 's1', this.props.theme['delete-menu-recipe'])
 	          },
 	          _react2.default.createElement(

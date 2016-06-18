@@ -1040,7 +1040,7 @@
     background-color: rgba(0, 0, 0, 0.1);
     padding: 10px; }
   .dayMenu__menu___1rgtt .dayMenu__day___2GyOq .dayMenu__content___12kjE .dayMenu__row___3S6Fr {
-    margin-top: 10px; }
+    margin-top: 20px; }
 
 .dayMenu__menu___1rgtt a {
   color: #666; }
@@ -1051,6 +1051,9 @@
 
 .dayMenu__menu-recipe___5hnto.dayMenu__no-ingredients___l5LIo {
   opacity: 0.3; }
+
+.dayMenu__delete-menu-recipe___2qciI {
+  padding: 0 !important; }
 
 .dayMenu__delete-menu-recipe___2qciI .dayMenu__material-icons___2MsG3 {
   font-size: 15px; }
