@@ -26,22 +26,31 @@ def addToMenu(request):
     dayMenu, created = recipeUser.menus.get_or_create(date = day)
     if created:
         recipeUser.menus.add(dayMenu)
-    notes = dayMenu.notes.split()
+    notes = dayMenu.notes.split('\n')
     if not note in notes:
         notes.append(note)
-        setattr(dayMenu, 'notes', ' '.join(notes))
+        setattr(dayMenu, 'notes', '\n'.join(notes))
         dayMenu.save()
 
-    noteObject = Note.objects.get(id=note)
+    try:
+        noteObject = Note.objects.get(id=note)
 
-    return JsonResponse({
-        'success': True,
-        'note': {
-            'id': noteObject.id,
-            'title': noteObject.title,
-            'ingredientCount': len(noteObject.ingredients)
-        }
-    })
+        return JsonResponse({
+            'success': True,
+            'note': {
+                'id': noteObject.id,
+                'title': noteObject.title,
+                'ingredientCount': len(noteObject.ingredients)
+            }
+        })
+    except:
+        return JsonResponse({
+            'success': True,
+            'note': {
+                'title': note
+            }
+        })
+
 
 def deleteFromMenu(request):
     get = request.GET
@@ -54,9 +63,9 @@ def deleteFromMenu(request):
     day =  datetime.strptime(dayString, dayFormat)
     try:
         dayMenu = recipeUser.menus.get(date = day)
-        notes = dayMenu.notes.split()
+        notes = dayMenu.notes.split('\n')
         notes.remove(note)
-        setattr(dayMenu, 'notes', ' '.join(notes))
+        setattr(dayMenu, 'notes', '\n'.join(notes))
         dayMenu.save()
     except:
         return JsonResponse({'error': 'some error'})
@@ -100,11 +109,20 @@ def getMenuInternal(request):
             continue
         menu = None
         menuNotes = []
-        noteIds = dayMenu.notes.split()
+        noteIds = dayMenu.notes.split('\n')
         for noteId in noteIds:
-            note = recipeUser.notes.filter(id = noteId)
-            notes |= note
-            menuNotes.append(note[0])
+            if noteId == '':
+                continue
+            try:
+                note = recipeUser.notes.filter(id = noteId)
+                notes |= note
+                menuNotes.append({
+                    'title': note[0].title,
+                    'id': note[0].id,
+                    'ingredientCount': len(note[0].ingredients)
+                })
+            except:
+                menuNotes.append({'title': noteId, 'id': noteId})
         context['week'].append({
             'date': currentData.strftime(dayFormat),
             'dateString': currentData.strftime(dayFormatHR),
@@ -174,9 +192,6 @@ def getMenuInternal(request):
 
 def getMenu(request):
     context = getMenuInternal(request)
-    for day in context['week']:
-        if 'notes' in day:
-            day['notes'] = [{'title': note.title, 'id': note.id, 'ingredientCount': len(note.ingredients)} for note in day['notes']]
     return JsonResponse(context)
 
 def menu(request):

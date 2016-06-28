@@ -26,14 +26,19 @@ class MenuDay extends React.Component {
     this.setState({active: !this.state.active});
   }
 
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
   submitRecipe(e) {
     e.preventDefault();
-    if (!this.state.selected) {
-      return;
+    var text = this.state.value;
+    if (this.state.selected) {
+      text = this.state.selected.id;
     }
     $.ajax({
       url: '/addToMenu/?day=' +
-        this.props.date + '&note=' + this.state.selected.id
+        this.props.date + '&note=' + text
     }).done(function(data) {
       if (data.success) {
         this.props.updateRecipes();
@@ -48,7 +53,6 @@ class MenuDay extends React.Component {
   }
 
   removeRecipe(id) {
-    debugger;
     $.ajax({
       url: '/deleteFromMenu/?day=' +
         this.props.date + '&note=' + id
@@ -115,7 +119,11 @@ class MenuDay extends React.Component {
         >
           <form className="ui-widget" onSubmit={this.submitRecipe.bind(this)}>
             <label for={'note-title-' + this.props.date} >Recipe Title: </label>
-            <input id={'note-title-' + this.props.date} day="{this.props.date}" className="autocomplete"/>
+            <input id={'note-title-' + this.props.date}
+              onChange={this.handleChange.bind(this)}
+              day="{this.props.date}"
+              className="autocomplete"
+            />
           </form>
         </Dialog>
       </div>;
